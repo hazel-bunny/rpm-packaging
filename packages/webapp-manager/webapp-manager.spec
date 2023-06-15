@@ -1,0 +1,58 @@
+Name:    webapp-manager
+Version: 1.3.0
+Release: 1%{?dist}
+License: GPLv3+
+URL:     https://github.com/linuxmint/%{name}
+Summary: Web Application Manager
+
+Source0: %url/archive/%{version}/%{name}-%{version}.tar.gz
+
+BuildArch: noarch
+
+Requires: python3-beautifulsoup4
+Requires: python3-configobj
+Requires: python3-gobject
+Requires: python3-pillow
+Requires: python3-setproctitle
+Requires: python3-tldextract
+Requires: xapps
+
+BuildRequires: gettext
+BuildRequires: make
+BuildRequires: python3-devel
+
+%{?python_disable_dependency_generator}
+
+%description
+Launch websites as if they were apps.
+
+%prep
+%autosetup -p1
+sed -i 's,/usr/lib/,${libdir}/,' usr/bin/%{name}
+
+%build
+%make_build
+libdir="%{_libdir}" envsubst '$libdir' <usr/bin/%{name} > %{name}
+%py_byte_compile %{python3} usr/lib/%{name}/*.py
+
+%install
+install -Dm 755 %{name} -t %{buildroot}%{_bindir}
+cp -r etc %{buildroot}%{_sysconfdir}
+cp -r usr/lib %{buildroot}%{_libdir}
+cp -r usr/share %{buildroot}%{_datadir}
+
+%files
+%{_bindir}/%{name}
+%{_libdir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/kde4/%{name}.desktop
+%{_datadir}/desktop-directories/webapps-webapps.directory
+%{_datadir}/glib-2.0/schemas/org.x.%{name}.gschema.xml
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/icons/hicolor/scalable/categories/applications-webapps.svg
+%{_datadir}/locale/
+%{_datadir}/%{name}/
+%{_sysconfdir}/xdg/menus/applications-merged/webapps.menu
+
+%changelog
+%autochangelog
