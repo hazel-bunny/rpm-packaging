@@ -13,6 +13,7 @@ Version:  1.0.1
 Version:  1.0.1%{?date:^git%{date}.%{shortcommit}}
 %endif
 Release:  1%{?dist}
+License:  LGPLv2.1
 URL:      https://github.com/MartinF99/%{_basename}
 Summary:  Fork of QPlastiqueStyle from qt5-styleplugins
 
