@@ -1,10 +1,11 @@
 Name:           httraqt
 Version:        1.4.11
 Release:        1%{?dist}
-Summary:        HTTrack Qt GUI
 License:        GPLv3
-URL:            http://httraqt.sourceforge.net/
-Source0:        http://downloads.sourceforge.net/project/httraqt/httraqt-%{version}.tar.gz
+URL:            https://httraqt.sourceforge.net/
+Summary:        HTTrack Qt GUI
+
+Source0:        https://downloads.sourceforge.net/project/httraqt/httraqt-%{version}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
