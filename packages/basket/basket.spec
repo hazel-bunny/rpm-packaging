@@ -1,19 +1,33 @@
-%global upstreamversion 2.49b
+%define git 1
+
+%global commit e016f3e99a7dec3cc317ecc83fcba30f614ca32d
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global date 20230612
+
 Name:          basket
+%if ! 0%{?git}
 Version:       2.49
-Release:       2%{?dist}
-Summary:       Taking care of your ideas
-
-Group:         Applications/Productivity
+%else
+Version:       2.49%{?git:^git%{date}.%{shortcommit}}
+%endif
+Release:       1%{?dist}
 License:       GPLv2+
-URL:           https://launchpad.net/basket
-Source0:       %{name}-%{version}.tar.gz
-Patch0:        01-fix-mimetype-installation.patch
-BuildRoot:     %{_tmppath}/%{name}-%{version}-root-%(%{__id_u} -n)
+Group:         Applications/Productivity
+URL:           https://apps.kde.org/basket
+Summary:       A multi-purpose note-taking application
 
+%if 0%{?git}
+Source0: https://github.com/KDE/basket/archive/%{commit}/%{name}-%{commit}.tar.gz
+%else
+Source0: https://github.com/KDE/basket/archive/v%{version}/%{name}-%{version}.tar.gz
+%endif
+
+BuildRequires: cmake
 BuildRequires: extra-cmake-modules
 BuildRequires: kf5-rpm-macros
-BuildRequires: cmake(Phonon4Qt5)
+BuildRequires: pkgconfig(libgit2)
+BuildRequires: pkgconfig(x11)
+BuildRequires: pkgconfig(phonon4qt5)
 BuildRequires: cmake(KF5Archive)
 BuildRequires: cmake(KF5Completion)
 BuildRequires: cmake(KF5Config)
@@ -36,6 +50,14 @@ BuildRequires: cmake(KF5TextWidgets)
 BuildRequires: cmake(KF5WidgetsAddons)
 BuildRequires: cmake(KF5WindowSystem)
 BuildRequires: cmake(KF5XmlGui)
+BuildRequires: cmake(Qt5Concurrent)
+BuildRequires: cmake(Qt5Core)
+BuildRequires: cmake(Qt5DBus)
+BuildRequires: cmake(Qt5Gui)
+BuildRequires: cmake(Qt5Test)
+BuildRequires: cmake(Qt5Widgets)
+BuildRequires: cmake(Qt5Xml)
+BuildRequires: kdelibs4support
 BuildRequires: shared-mime-info
 BuildRequires: gpgme-devel
 
@@ -44,11 +66,30 @@ BuildRequires: desktop-file-utils
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
+Recommends:     %{name}-lang = %{version}
+
+Provides:       basket5 = %{version}
+
+Obsoletes:      basket5 < %{version}
+
 %description
-A multi-purpose note-taking application that makes it easy to write down ideas
-as you think, and quickly find them later.  You can collect, import or share
-any data, tag your notes and secure it some or all of it with passwords and/or
-encryption.
+This multi-purpose note-taking application can helps you to:
+
+- Easily take all sort of notes
+- Collect research results and share them
+- Centralize your project data and re-use them
+- Quickly organize your toughts in idea boxes
+- Keep track of your information in a smart way
+- Make intelligent To Do lists
+- And a lot more...
+
+This application provides several baskets where to drop every sort of notes:
+rich text, links, images, sounds, files, colors, application launcher...
+Objects can be edited, copied, dragged... So, you can arrange them as you want!
+This application can be used to quickly drop web objects (link, text, images...)
+or notes, as well as to free your clutered desktop (if any).
+It is also useful to collect informations for a report. Those data can be shared
+with co-workers by exporting baskets to HTML.
 
 %package libs
 Summary:        Basket libraries
@@ -59,25 +100,19 @@ Requires:       %{name} = %{version}-%{release}
 Basket libraries
 
 %prep
-%setup -q -n %{name}-%{upstreamversion}
-%patch0 -p1
+%autosetup -p1
 
 %build
 %cmake_kf5
-
 %cmake_build
 
 %install
 %cmake_install
 
 # Menu
-desktop-file-validate \
-        %{buildroot}%{_kf5_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{name}.desktop
 
 %find_lang %{name} --with-kde --with-html
-
-%clean
-rm -rf %{buildroot}
 
 %post libs -p /sbin/ldconfig
 
@@ -101,20 +136,24 @@ update-desktop-database -q &> /dev/null
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc README.md AUTHORS COPYING
-%{_kf5_bindir}/basket
-%{_kf5_datadir}/applications/*.desktop
-%{_kf5_datadir}/basket/
-%{_kf5_datadir}/kxmlgui5/
-%{_kf5_datadir}/kservices5/
-%{_kf5_datadir}/icons/hicolor/
-%{_kf5_datadir}/mime/packages/basket.xml
+%{_kf5_bindir}/%{name}
+%{_kf5_datadir}/%{name}/
+%{_kf5_datadir}/applications/%{name}.desktop
+%{_kf5_datadir}/kxmlgui5/%{name}/%{name}ui.rc
+%{_kf5_datadir}/icons/hicolor/16x16/actions/*.png
+%{_kf5_datadir}/icons/hicolor/*/apps/%{name}.png
+%{_kf5_datadir}/kservices5/%{name}*.desktop
 
 %files libs
 %defattr(-,root,root,-)
-%{_kf5_libdir}/*.so*
-%{_kf5_libdir}/qt5/plugins/*.so
+%{_qt5_plugindir}/%{name}thumbcreator.so
+%{_qt5_plugindir}/kcm_%{name}.so
 
 %changelog
+* Sun Jun 18 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49^git20230612-1
+- switch to git snapshot
+- refactor spec
+
 * Fri Aug 05 2022 Luigi Toscano <luigi.toscano@tiscali.it> - 2.49-2
 - adapt to the new cmake, make it compile again
 
@@ -229,3 +268,13 @@ update-desktop-database -q &> /dev/null
 
 * Wed Oct 12 2005 Aurelien Bompard <gauret[AT]free.fr> 0.5.0-1
 - port to Fedora from Mandriva (release 3)
+
+* Wed Jul 13 2005 Nicolas Lécureuil <neoclust@mandrake.org> 0.5.0-3mdk
+- Fix File section
+
+* Fri May 06 2005 Nicolas Lécureuil <neoclust@mandrake.org> 0.5.0-2mdk
+- Fix BuildRequires 
+- Fix Build For amd64
+
+* Wed Apr 06 2005 Nicolas Lécureuil <neoclust@mandrake.org> 0.5.0-1mdk
+- First release
