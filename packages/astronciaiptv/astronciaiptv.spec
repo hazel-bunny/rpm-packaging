@@ -4,8 +4,8 @@ Version:	0.0.95
 Release:	1%{?dist}
 Group:		Video
 License:	GPLv3
-URL:		https://gitlab.com/astroncia/iptv
-Source0:	%{name}-%{version}.tar.gz
+URL:		https://gitlab.com/muzena/iptv/
+Source0:	https://gitlab.com/muzena/iptv/-/archive/%{version}/iptv-%{version}.tar.bz2
 Requires:	python3
 Requires:	mpv
 Requires:	python3-qt5
