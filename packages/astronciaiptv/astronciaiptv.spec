@@ -30,7 +30,7 @@ IPTV player.
 %{_metainfodir}/astronciaiptv.appdata.xml
 
 %prep
-%setup -q
+%autosetup -n iptv-%{version}
 
 %build
 #nothing
