@@ -1,11 +1,15 @@
-Summary:	IPTV player
 Name:		astronciaiptv
 Version:	0.0.95
 Release:	2%{?dist}
 Group:		Video
 License:	GPLv3
 URL:		https://gitlab.com/muzena/iptv/
+Summary:	IPTV player
+
 Source0:	https://gitlab.com/muzena/iptv/-/archive/%{version}/iptv-%{version}.tar.bz2
+
+BuildRequires:	make
+
 Requires:	python3
 Requires:	mpv
 Requires:	python3-qt5
@@ -15,6 +19,7 @@ Requires:	python3-unidecode
 Requires:	python3-requests
 Requires:	python3-setproctitle
 Requires:	ffmpeg
+
 BuildArch:	noarch
 
 %description
