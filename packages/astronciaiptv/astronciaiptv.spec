@@ -1,7 +1,7 @@
 Summary:	IPTV player
 Name:		astronciaiptv
 Version:	0.0.95
-Release:	1%{?dist}
+Release:	2%{?dist}
 Group:		Video
 License:	GPLv3
 URL:		https://gitlab.com/muzena/iptv/
@@ -36,8 +36,12 @@ IPTV player.
 #nothing
 
 %install
-cp -af usr %{buildroot}
+%make_install INSTALL_ROOT=%{buildroot}
 
 %changelog
+* Fri Jun 23 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0.95-2
+- Update sources
+- Switch to make for installation
+
 * Mon Jun 19 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0.95-1
 - Import from ROSA linux
