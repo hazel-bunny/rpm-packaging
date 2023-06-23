@@ -7,8 +7,7 @@ Summary:        Plasma Mobile minimal web browser
 License:        MIT and GPLv2+ and LGPLv2 and LGPLv2+
 # For a breakdown of the licensing, see PACKAGE-LICENSING
 URL:            https://invent.kde.org/plasma-mobile/%{name}
-Source0:        https://download.kde.org/stable/plasma-mobile/%{version}/%{name}-%{version}.tar.xz
-
+Source0:        https://download.kde.org/stable/release-service/%{version}/src/%{name}-%{version}.tar.xz
 
 %{?qt5_qtwebengine_arches:ExclusiveArch: %{qt5_qtwebengine_arches}}
 
