@@ -63,7 +63,7 @@ Web browser for mobile devices with Plasma integration
 %autosetup -n %{name}-%{version}
 
 %build
-%cmake_kf5
+%cmake_kf5 -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
 %cmake_build
 
 %install
