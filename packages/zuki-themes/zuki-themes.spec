@@ -6,7 +6,7 @@ Group: User Interface/X
 URL: https://github.com/lassekongo83/%{name}
 Summary: Themes for GTK, gnome-shell and more
 
-Source0: %{url}/archive/v%{version}/%{_basename}-%{version}.tar.gz
+Source0: %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildArch: noarch
 
