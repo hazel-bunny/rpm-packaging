@@ -41,7 +41,7 @@ cp -af usr %{buildroot}
 
 %files
 %{_bindir}/%{name}
-%{_libdir}/%{name}
+%{_prefix}/lib/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
