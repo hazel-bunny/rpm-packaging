@@ -12,7 +12,7 @@ Version:    3.0.2%{?git:^git%{date}.%{shortcommit}}
 Release:    1%{?dist}
 License:    GPLv3+
 Group:      Applications/Productivity
-URL:        https://github.com/project%{srcname}/%{srcname}
+URL:        https://github.com/project%{_basename}/%{_basename}
 Summary:    The Linux time tracker
 
 %if ! 0%{?git}
@@ -51,16 +51,16 @@ Requires(post):   GConf2
 Requires(preun):  GConf2
 
 %description
-Project %{srcname} is time tracking for individuals. It helps you to keep track on
+Project %{_basename} is time tracking for individuals. It helps you to keep track on
 how much time you have spent during the day on activities you choose to track. 
 
 Whenever you change from doing one task to other, you change your current
-activity in %{srcname}. After a while you can see how many hours you have spent on
+activity in %{_basename}. After a while you can see how many hours you have spent on
 what. Maybe print it out, or export to some suitable format, if time reporting
 is a request of your employee.
 
 %prep
-%autosetup -n %{srcname}-%{version}
+%autosetup -n %{_basename}-%{commit}
 
 %build
 ./waf configure -vv --prefix=%{_prefix} --datadir=%{_datadir} 
@@ -99,7 +99,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/%{app_id}.GUI.metainfo.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.%{_basename}.gschema.xml
 %{_datadir}/help/C/%{_basename}
-%{_datadir}/locale/*/LC_MESSAGES/%{srcname}.mo
+%{_datadir}/locale/*/LC_MESSAGES/%{_basename}.mo
 
 %changelog
 * Fri Jun 23 2023 Dipta Biswas <dabiswas112@gmail.com> - 3.0.2^git
