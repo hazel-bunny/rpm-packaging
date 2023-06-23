@@ -74,16 +74,6 @@ is a request of your employee.
 %check
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
-%pre
-%gconf_schema_prepare %{name}
-%gconf_schema_obsolete %{name}
-
-%post
-%gconf_schema_upgrade %{name}
-
-%preun
-%gconf_schema_remove %{name}
-
 %files
 %license COPYING
 %doc AUTHORS NEWS.md README.md MAINTAINERS
@@ -100,7 +90,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_datadir}/bash-completion/completions/%{_basename}.bash
 %{_datadir}/metainfo/%{app_id}.GUI.metainfo.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.%{_basename}.gschema.xml
-%{_datadir}/help/C/%{_basename}
+%{_datadir}/help/*/%{_basename}
 %{_datadir}/locale/*/LC_MESSAGES/%{_basename}.mo
 
 %changelog
