@@ -7,6 +7,8 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global date 20230430
 
+%global debug_package %{nil}
+
 Name:       %{_basename}-time-tracker
 Version:    3.0.2%{?git:^git%{date}.%{shortcommit}}
 Release:    1%{?dist}
