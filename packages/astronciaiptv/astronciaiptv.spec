@@ -8,6 +8,8 @@ Summary:        IPTV player with EPG support
 
 Source0:        %{url}/-/archive/%{version}/iptv-%{version}.tar.bz2
 
+BuildRequires:  coreutils
+BuildRequires:  gettext
 BuildRequires:  make
 
 Requires:       python3
