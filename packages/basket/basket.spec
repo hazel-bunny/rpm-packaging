@@ -57,7 +57,7 @@ BuildRequires: cmake(Qt5Gui)
 BuildRequires: cmake(Qt5Test)
 BuildRequires: cmake(Qt5Widgets)
 BuildRequires: cmake(Qt5Xml)
-BuildRequires: kdelibs4support
+BuildRequires: kf5-kdelibs4support
 BuildRequires: shared-mime-info
 BuildRequires: gpgme-devel
 
