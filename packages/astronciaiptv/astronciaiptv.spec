@@ -41,7 +41,7 @@ IPTV player.
 #nothing
 
 %install
-%make_install INSTALL_ROOT=%{buildroot}
+%make_install
 
 %changelog
 * Fri Jun 23 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0.95-2
