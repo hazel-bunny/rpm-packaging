@@ -100,7 +100,7 @@ Requires:       %{name} = %{version}-%{release}
 Basket libraries
 
 %prep
-%autosetup -p1
+%autosetup -n %{name}-%{commit}
 
 %build
 %cmake_kf5
