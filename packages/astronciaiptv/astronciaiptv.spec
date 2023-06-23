@@ -1,47 +1,50 @@
-Name:		astronciaiptv
-Version:	0.0.95
-Release:	2%{?dist}
-Group:		Video
-License:	GPLv3
-URL:		https://gitlab.com/muzena/iptv/
-Summary:	IPTV player
+Name:           astronciaiptv
+Version:        0.0.95
+Release:        2%{?dist}
+Group:          Video
+License:        GPLv3
+URL:            https://gitlab.com/muzena/iptv
+Summary:        IPTV player with EPG support
 
-Source0:	https://gitlab.com/muzena/iptv/-/archive/%{version}/iptv-%{version}.tar.bz2
+Source0:        %{url}/-/archive/%{version}/iptv-%{version}.tar.bz2
 
-BuildRequires:	make
+BuildRequires:  make
 
-Requires:	python3
-Requires:	mpv
-Requires:	python3-qt5
-Requires:	python3-pillow
-Requires:	python3-gobject
-Requires:	python3-unidecode
-Requires:	python3-requests
-Requires:	python3-setproctitle
-Requires:	ffmpeg
+Requires:       python3
+Requires:       mpv
+Requires:       python3-qt5
+Requires:       python3-pillow
+Requires:       python3-gobject
+Requires:       python3-unidecode
+Requires:       python3-requests
+Requires:       python3-setproctitle
+Requires:       ffmpeg
 
-BuildArch:	noarch
+Recommends:     yt-dlp
+
+BuildArch:      noarch
 
 %description
-IPTV player.
-
-%files
-%{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/%{name}
-%{_datadir}/locale/*/*/astronciaiptv.mo
-%{_prefix}/lib/%{name}
-%{_datadir}/icons/hicolor/scalable/apps/astronciaiptv.svg
-%{_metainfodir}/astronciaiptv.appdata.xml
+%summary
 
 %prep
 %autosetup -n iptv-%{version}
+sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/astronciaiptv/astroncia_iptv.py
 
 %build
-#nothing
+%make_build
 
 %install
-%make_install
+cp -af usr %{buildroot}
+
+%files
+%{_bindir}/%{name}
+%{_libdir}/%{name}
+%{_datadir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_metainfodir}/%{name}.appdata.xml
 
 %changelog
 * Fri Jun 23 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0.95-2
