@@ -112,7 +112,7 @@ Basket libraries
 %cmake_install
 
 # Menu
-desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{app_id}.desktop
 
 %find_lang %{name} --with-kde --with-html
 
