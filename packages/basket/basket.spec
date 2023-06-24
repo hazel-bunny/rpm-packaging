@@ -1,5 +1,7 @@
 %define git 1
 
+global app_id org.kde.basket
+
 %global commit e016f3e99a7dec3cc317ecc83fcba30f614ca32d
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global date 20230612
@@ -138,7 +140,7 @@ update-desktop-database -q &> /dev/null
 %doc README.md AUTHORS COPYING
 %{_kf5_bindir}/%{name}
 %{_kf5_datadir}/%{name}/
-%{_kf5_datadir}/applications/%{name}.desktop
+%{_kf5_datadir}/applications/%{app_id}.desktop
 %{_kf5_datadir}/kxmlgui5/%{name}/%{name}ui.rc
 %{_kf5_datadir}/icons/hicolor/16x16/actions/*.png
 %{_kf5_datadir}/icons/hicolor/*/apps/%{name}.png
