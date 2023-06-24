@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+  <id type="desktop">pdfchain.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <name>PDF Chain</name>
+  <project_license>GPL-3.0</project_license>
+  <summary>A graphical tool for manipulating PDF documents</summary>
+  <url type="homepage">http://pdfchain.sourceforge.net</url>
+  <description>
+    <p>PDF Chain is a Graphical User Interface for the PDF Tool Kit.
+It includes features designed to handle PDF files in a easy way.
+Basicaly it can merge, split, add backgrounds or stamps and add attachments.
+There are some tools for extended needs, too.</p>
+    <p>Features:</p>
+    <ul>
+      <li>Concatenate selected pages of various PDF documtents into one</li>
+      <li>Burst a PDF document into single pages</li>
+      <li>Print a background or stamp on each page of a PDF document</li>
+      <li>Attach various files to a PDF document</li>
+      <li>Set permissions on PDF output documents</li>
+      <li>Extract attached files</li>
+      <li>Uncompress / Compress PDFs</li>
+      <li>Dump data fields (ASCII or UTF-8)</li>
+      <li>Dump data (ASCII or UTF-8)</li>
+      <li>Update info (ASCII or UTF-8)</li>
+      <li>Generate FDF</li>
+      <li>Fill forms</li>
+      <li>Flatten PDFs</li>
+      <li>Drop XFA</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image height="563" width="652">http://pdfchain.sourceforge.net/images/screenshots/0.4.0/pdfchain_-_concatenate.png</image>
+      <caption>Concatenate PDF files</caption>
+    </screenshot>
+    <screenshot>
+      <image height="563" width="652">http://pdfchain.sourceforge.net/images/screenshots/0.4.0/pdfchain_-_burst.png</image>
+      <caption>PDF burst</caption>
+    </screenshot>
+    <screenshot>
+      <image height="563" width="652">http://pdfchain.sourceforge.net/images/screenshots/0.4.0/pdfchain_-_tools.png</image>
+      <caption>PDF tools</caption>
+    </screenshot>
+  </screenshots>
+  <update_contact>m_power3@users.sourceforge.net</update_contact>
+</component>

@@ -1,0 +1,27 @@
+--- ./application/pdfchain.desktop.orig	2013-07-02 22:57:38.846243372 +0200
++++ ./application/pdfchain.desktop	2013-07-02 22:57:38.861243086 +0200
+@@ -1,17 +1,14 @@
+ [Desktop Entry]
+-Encoding=UTF-8
+ Name=PDF Chain
+-GenericName=pdfchain
+-Comment=A graphical user interface for the PDF Toolkit (PDFtk)
++GenericName=GUI for the PDF Tool Kit
++GenericName[de]=GUI für das PDF Tool Kit
++Comment=A graphical tool for manipulating PDF documents
++Comment[de]=Ein grafisches Werkzeug zur Manipulation von PDF Dokumenten
+ Exec=pdfchain
+ Icon=pdfchain
+ Type=Application
+-StartupNotify=false
+-Categories=Office;
++Categories=Office;Viewer;
+ MimeType=application/pdf;
+ Terminal=false
+-Comment[de]=Eine grafische Benutzerschnittstelle für das PDF Toolkit (PDFtk)
+-#Comment[en]=
+-Comment[es]=Interfaz del usuario grafica para el PDF Toolkit (PDFtk)
+-#Comment[fr]=
+-Comment[it]=Interfaccia utente grafica per il PDF Toolkit (PDFtk)
++X-KDE-StartupNotify=true
++X-SuSE-translate=true

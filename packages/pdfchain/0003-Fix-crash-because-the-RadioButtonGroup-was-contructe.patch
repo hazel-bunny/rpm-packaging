@@ -1,0 +1,120 @@
+From cc25d6e662d93d82addb67967c346052a7e54b36 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hubert=20Figui=C3=A8re?= <hub@figuiere.net>
+Date: Wed, 9 Mar 2016 14:49:58 -0500
+Subject: [PATCH 3/3] Fix crash because the RadioButtonGroup was contructed
+ AFTER the RadioButton.
+
+---
+ src/window_main_bgst.cc  |  1 -
+ src/window_main_bgst.h   |  8 ++++----
+ src/window_main_burst.cc |  3 ---
+ src/window_main_burst.h  | 10 +++++-----
+ src/window_main_tool.cc  |  1 -
+ src/window_main_tool.h   |  6 +++---
+ 6 files changed, 12 insertions(+), 17 deletions(-)
+
+Index: pdfchain-0.4.4.2/src/window_main_bgst.cc
+===================================================================
+--- pdfchain-0.4.4.2.orig/src/window_main_bgst.cc	2016-03-10 16:50:02.204879217 +0100
++++ pdfchain-0.4.4.2/src/window_main_bgst.cc	2016-03-10 16:51:25.555854265 +0100
+@@ -37,7 +37,6 @@
+ 	mLabel_SourceFile( _("Document:")    , Gtk::ALIGN_END , Gtk::ALIGN_CENTER , false ) ,	// label , xalign , yalign , mnemonic
+ 	mLabel_BgStFile(   _("Layer (PDF):") , Gtk::ALIGN_END , Gtk::ALIGN_CENTER , false ) ,
+ 
+-	mRBGroup_BgSt( mRButton_Background.get_group() ) ,
+ 	mRButton_Background(	mRBGroup_BgSt , _("Background")	, false ) ,	// group , label , mnemonic
+ 	mRButton_Stamp(			mRBGroup_BgSt , _("Stamp")		, false ) ,
+ 
+Index: pdfchain-0.4.4.2/src/window_main_bgst.h
+===================================================================
+--- pdfchain-0.4.4.2.orig/src/window_main_bgst.h	2013-07-04 19:40:30.000000000 +0200
++++ pdfchain-0.4.4.2/src/window_main_bgst.h	2016-03-10 16:50:02.204879217 +0100
+@@ -64,13 +64,13 @@
+ 		Gtk::CheckButton
+ 			mCButton_Multiple;
+ 
+-		Gtk::RadioButton			// Declaration of Gtk::RadioButton before Gtk::RadioButtonGroup!!!
++		Gtk::RadioButtonGroup
++			mRBGroup_BgSt;
++
++		Gtk::RadioButton
+ 			mRButton_Background ,
+ 			mRButton_Stamp;
+ 
+-		Gtk::RadioButtonGroup		// Declaration of Gtk::RadioButtonGroup behind Gtk::RadioButton!!!
+-			mRBGroup_BgSt;
+-
+ 		// Derived Widgets
+ 		cFCButton_Pdf
+ 			mFCButton_SourceFile ,
+Index: pdfchain-0.4.4.2/src/window_main_burst.cc
+===================================================================
+--- pdfchain-0.4.4.2.orig/src/window_main_burst.cc	2016-03-10 16:50:02.204879217 +0100
++++ pdfchain-0.4.4.2/src/window_main_burst.cc	2016-03-10 16:52:07.923334335 +0100
+@@ -62,7 +62,6 @@
+ 	mLabel_Digits(     _("Digits:")   , Gtk::ALIGN_END , Gtk::ALIGN_CENTER , false ),
+ 	mLabel_Suffix(     _("Suffix:")   , Gtk::ALIGN_END , Gtk::ALIGN_CENTER , false ),
+ 
+-	mRBGroup_CounterDigits( mRButton_Auto.get_group() ),
+ 	mRButton_Auto(   mRBGroup_CounterDigits , _("Auto")	   , false ),	// group , label , mnemonic
+ 	mRButton_Manual( mRBGroup_CounterDigits , _("Manual:") , false ),
+ 
+Index: pdfchain-0.4.4.2/src/window_main_burst.h
+===================================================================
+--- pdfchain-0.4.4.2.orig/src/window_main_burst.h	2013-07-04 19:18:21.000000000 +0200
++++ pdfchain-0.4.4.2/src/window_main_burst.h	2016-03-10 16:50:02.204879217 +0100
+@@ -118,13 +118,13 @@
+ 		Gtk::SpinButton					// Declaration of Gtk::SpinButton behind Glib::RefPtr<Gtk::Adjustment>!!!
+ 			mSButton_Digits;
+ 
+-		Gtk::RadioButton				// Declaration of Gtk::RadioButton before Gtk::RadioButtonGroup!!!
++		Gtk::RadioButtonGroup
++			mRBGroup_CounterDigits;
++
++		Gtk::RadioButton
+ 			mRButton_Auto ,
+ 		    mRButton_Manual;
+ 
+-		Gtk::RadioButtonGroup			// Declaration of Gtk::RadioButtonGroup behind Gtk::RadioButton!!!
+-			mRBGroup_CounterDigits;
+-
+ 		Gtk::CheckButton
+ 			mCButton_Extension;
+ 
+Index: pdfchain-0.4.4.2/src/window_main_tool.cc
+===================================================================
+--- pdfchain-0.4.4.2.orig/src/window_main_tool.cc	2016-03-10 16:50:02.204879217 +0100
++++ pdfchain-0.4.4.2/src/window_main_tool.cc	2016-03-10 16:52:41.274925543 +0100
+@@ -50,8 +50,6 @@
+ mCButton_FillForm_Flatten(    _("Flatten")          , false ),
+ mCButton_FillForm_Appearance( _("Need appearances") , false ),
+ 
+-mRBGroup_Tool( mRButton_UnpackFiles.get_group() ),
+-
+ mRButton_Repair(         mRBGroup_Tool , _("Repair docu_ment")                     , true ),	// group , label , mnemonic
+ mRButton_UnpackFiles(    mRBGroup_Tool , _("Un_pack attached files from document") , true ),
+ mRButton_Uncompress(     mRBGroup_Tool , _("_Uncompress document")                 , true ),
+Index: pdfchain-0.4.4.2/src/window_main_tool.h
+===================================================================
+--- pdfchain-0.4.4.2.orig/src/window_main_tool.h	2013-07-02 00:22:33.000000000 +0200
++++ pdfchain-0.4.4.2/src/window_main_tool.h	2016-03-10 16:50:02.204879217 +0100
+@@ -57,6 +57,9 @@
+ 			mLabel_DumpDataFile ,
+ 			mLabel_FdfFile;
+ 
++		Gtk::RadioButtonGroup
++			mRBGroup_Tool;
++
+ 		Gtk::RadioButton
+ 			mRButton_Repair ,
+ 			mRButton_UnpackFiles ,
+@@ -71,9 +74,6 @@
+ 			mRButton_Flatten ,
+ 			mRButton_DropXfa;
+ 
+-		Gtk::RadioButtonGroup
+-			mRBGroup_Tool;
+-
+ 		Gtk::CheckButton
+ 			mCButton_DumpDataFields_Utf8 ,
+ 			mCButton_DumpData_Utf8 ,
