@@ -42,7 +42,7 @@ BuildRequires:  cmake(Qt5WebEngine)
 BuildRequires:  cmake(Qt5WebSockets)
 BuildRequires:  cmake(Qt5Widgets)
 
-BuildRequires:  cargo
+BuildRequires:  cargo-rpm-macros
 BuildRequires:  rust-cxx
 BuildRequires:  rust-cxx-build
 BuildRequires:  corrosion
@@ -63,6 +63,7 @@ Web browser for mobile devices with Plasma integration
 
 %prep
 %autosetup -n %{name}-%{version}
+%cargo_prep
 
 %build
 %cmake_kf5 -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
