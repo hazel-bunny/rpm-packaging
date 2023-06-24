@@ -43,6 +43,8 @@ BuildRequires:  cmake(Qt5WebSockets)
 BuildRequires:  cmake(Qt5Widgets)
 
 BuildRequires:  cargo
+BuildRequires:  rust-cxx
+BuildRequires:  rust-cxx-build
 BuildRequires:  corrosion
 
 Requires:       hicolor-icon-theme
