@@ -50,8 +50,7 @@ BuildRequires:  corrosion
 Requires:       hicolor-icon-theme
 # QML module dependencies
 Requires:       kf5-kirigami2%{?_isa} 
-Requires:       kf5-kirigami2-addonIf docs needed, set a value
-s%{?_isa}
+Requires:       kf5-kirigami2-addons%{?_isa}
 Requires:       kf5-purpose%{?_isa}
 Requires:       qt5-qtfeedback%{?_isa} 
 Requires:       qt5-qtgraphicaleffects%{?_isa}
