@@ -1,6 +1,6 @@
 %define git 1
 
-global app_id org.kde.basket
+%global app_id org.kde.basket
 
 %global commit e016f3e99a7dec3cc317ecc83fcba30f614ca32d
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
