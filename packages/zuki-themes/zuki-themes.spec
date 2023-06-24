@@ -32,6 +32,7 @@ BuildRequires: meson ninja-build sassc
 %{_datadir}/themes/Zukitre-dark
 %{_datadir}/themes/Zukitwo
 %{_datadir}/themes/Zukitwo-dark
+%{_datadir}/themes/Zuki-shell
 
 %changelog
 * Mon Jun 19 2023 Dipta Biswas <dabiswas112@gmail.com> 4.0-1
