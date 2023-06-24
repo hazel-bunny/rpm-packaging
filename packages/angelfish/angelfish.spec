@@ -43,14 +43,15 @@ BuildRequires:  cmake(Qt5WebSockets)
 BuildRequires:  cmake(Qt5Widgets)
 
 BuildRequires:  cargo-rpm-macros
-BuildRequires:  rust-cxx
-BuildRequires:  rust-cxx-build
+BuildRequires:  rust-cxx-devel
+BuildRequires:  rust-cxx-build-devel
 BuildRequires:  corrosion
 
 Requires:       hicolor-icon-theme
 # QML module dependencies
 Requires:       kf5-kirigami2%{?_isa} 
-Requires:       kf5-kirigami2-addons%{?_isa}
+Requires:       kf5-kirigami2-addonIf docs needed, set a value
+s%{?_isa}
 Requires:       kf5-purpose%{?_isa}
 Requires:       qt5-qtfeedback%{?_isa} 
 Requires:       qt5-qtgraphicaleffects%{?_isa}
