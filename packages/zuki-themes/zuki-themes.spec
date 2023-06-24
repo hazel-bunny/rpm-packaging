@@ -21,6 +21,7 @@ BuildRequires: meson ninja-build sassc
 %setup -q -n %{name}-%{version}
 
 %build
+%meson
 %meson_build
 
 %install
