@@ -70,9 +70,20 @@ is a request of your employee.
 
 %install
 ./waf install --destdir=%{buildroot}
+rm -rf %{buildroot}%{_datadir}/glib-2.0/schemas/gschemas.compiled
 
 %check
-desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
+
+%pre
+%gconf_schema_prepare %{name}
+%gconf_schema_obsolete %{name}
+
+%post
+%gconf_schema_upgrade %{name}
+
+%preun
+%gconf_schema_remove %{name}
 
 %files
 %license COPYING
