@@ -136,20 +136,22 @@ gtk-update-icon-cache %{_kf5_iconsdir}/hicolor &>/dev/null || :
 update-desktop-database -q &> /dev/null
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
-%doc README.md AUTHORS COPYING
+%doc README.md AUTHORS
 %{_kf5_bindir}/%{name}
 %{_kf5_datadir}/%{name}/
 %{_kf5_datadir}/applications/%{app_id}.desktop
 %{_kf5_datadir}/kxmlgui5/%{name}/%{name}ui.rc
-%{_kf5_datadir}/icons/hicolor/16x16/actions/*.png
-%{_kf5_datadir}/icons/hicolor/*/apps/%{name}.png
+%{_kf5_datadir}/icons/hicolor/*/actions/likeback_*.png
+%{_kf5_datadir}/icons/hicolor/*/actions/tag_*
+%{_kf5_datadir}/icons/hicolor/*/apps/%{app_id}.png
 %{_kf5_datadir}/kservices5/%{name}*.desktop
+%{_kf5_datadir}/metainfo/%{app_id}.appdata.xml
+%{_kf5_datadir}/mime/packages/%{name}.xml
 
 %files libs
-%defattr(-,root,root,-)
+%{_kf5_libdir}/libLibBasket*
 %{_qt5_plugindir}/%{name}thumbcreator.so
-%{_qt5_plugindir}/kcm_%{name}.so
+%{_qt5_plugindir}/pim/kcms/%{name}/%{name}*.so
 
 %changelog
 * Sun Jun 18 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49^git20230612-1
