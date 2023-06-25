@@ -1,13 +1,16 @@
 Name:    webapp-manager
-Version: 1.3.0
-Release: 2%{?dist}
+Version: 1.3.2
+Release: 1%{?dist}
 License: GPLv3+
 URL:     https://github.com/linuxmint/%{name}
 Summary: Web Application Manager
 
 Source0: %url/archive/%{version}/%{name}-%{version}.tar.gz
 
-BuildArch: noarch
+BuildRequires: gettext
+BuildRequires: make
+BuildRequires: python3-devel
+BuildRequires: python3-rpm-macros
 
 Requires: python3-beautifulsoup4
 Requires: python3-configobj
@@ -17,9 +20,7 @@ Requires: python3-setproctitle
 Requires: python3-tldextract
 Requires: xapps
 
-BuildRequires: gettext
-BuildRequires: make
-BuildRequires: python3-devel
+BuildArch: noarch
 
 %{?python_disable_dependency_generator}
 
@@ -29,6 +30,7 @@ Launch websites as if they were apps.
 %prep
 %autosetup -p1
 sed -i 's,/usr/lib/,${libdir}/,' usr/bin/%{name}
+sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
 
 %build
 %make_build
@@ -55,4 +57,13 @@ cp -r usr/share %{buildroot}%{_datadir}
 %{_sysconfdir}/xdg/menus/applications-merged/webapps.menu
 
 %changelog
-%autochangelog
+* Sun Jun 25 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.2-1
+- Bump version
+- Fix app version in about screen
+
+* Thu Jun 15 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.0-2
+- Bump version
+- Fix app entry in kickoff
+
+* Fri Jun 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.1.5-1
+- Import from github:refi64/webapp-manager-fedora
