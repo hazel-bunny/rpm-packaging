@@ -5,9 +5,9 @@ Epoch:            1
 Release:          1%{?dist}
 Summary:          A GUI for pdftk
 License:          GPLv3+
-URL:              http://sourceforge.net/projects/pdfchain
+URL:              https://sourceforge.net/projects/pdfchain
 
-Source0:          http://downloads.sourceforge.net/pdfchain/%{name}-%{version}.tar.gz
+Source0:          https://downloads.sourceforge.net/pdfchain/%{name}-%{version}.tar.gz
 Source1:          pdfchain.appdata.xml
 # Patch to make desktop file conform to standards
 Patch0:           pdfchain-desktop.patch
