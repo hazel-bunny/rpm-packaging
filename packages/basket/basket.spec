@@ -2,26 +2,22 @@
 
 %global app_id org.kde.basket
 
-%global commit e016f3e99a7dec3cc317ecc83fcba30f614ca32d
+%global commit b6be0a36039b7946431798e735c77c5a3f86b235
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date 20230612
+%global date 20230625
 
 Name:          basket
-%if ! 0%{?git}
-Version:       2.49
-%else
 Version:       2.49%{?git:^git%{date}.%{shortcommit}}
-%endif
 Release:       1%{?dist}
 License:       GPLv2+
 Group:         Applications/Productivity
-URL:           https://apps.kde.org/basket
+URL:           https://apps.kde.org/%{name}
 Summary:       A multi-purpose note-taking application
 
 %if 0%{?git}
-Source0: https://github.com/KDE/basket/archive/%{commit}/%{name}-%{commit}.tar.gz
+Source0: https://github.com/KDE/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
-Source0: https://github.com/KDE/basket/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0: https://github.com/KDE/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 %endif
 
 BuildRequires: cmake
@@ -102,7 +98,11 @@ Requires:       %{name} = %{version}-%{release}
 Basket libraries
 
 %prep
+%if 0%{?git}
 %autosetup -n %{name}-%{commit}
+%else
+%autosetup -n %{name}-%{version}
+%endif
 
 %build
 %cmake_kf5
@@ -145,13 +145,13 @@ update-desktop-database -q &> /dev/null
 %{_kf5_datadir}/icons/hicolor/*/actions/tag_*
 %{_kf5_datadir}/icons/hicolor/*/apps/%{app_id}.png
 %{_kf5_datadir}/kservices5/%{name}*.desktop
-%{_kf5_datadir}/metainfo/%{app_id}.appdata.xml
+%{_kf5_metainfodir}/%{app_id}.appdata.xml
 %{_kf5_datadir}/mime/packages/%{name}.xml
 
 %files libs
 %{_kf5_libdir}/libLibBasket*
-%{_qt5_plugindir}/%{name}thumbcreator.so
-%{_qt5_plugindir}/pim/kcms/%{name}/%{name}*.so
+%{_kf5_qtplugindir}/%{name}thumbcreator.so
+%{_kf5_qtplugindir}/pim/kcms/%{name}/%{name}*.so
 
 %changelog
 * Sun Jun 18 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49^git20230612-1
