@@ -1,16 +1,16 @@
-%global  Rversion 4.2.1
+%global  Rversion 4.2.3
+
+%global app_id org.kde.rkward
 
 Name:           rkward
-Version:        0.7.4
-Release:        5%{?dist}
+Version:        0.7.5
+Release:        0%{?dist}
 Summary:        Graphical frontend for R language
 Summary(fr):    Interface graphique pour le langage R
 
 License:        GPLv2+
-URL:            https://rkward.sourceforge.net/
-Source0:        https://download.kde.org/stable/rkward/%{version}/src/rkward-%{version}.tar.gz
-# Rawhide's kde headers are missing some necessary qt5 includes
-# Patch0:		rkward-0.7.0-qt5fix.patch
+URL:            https://%{name}.kde.org/
+Source0:        https://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  R-devel >= %{Rversion} desktop-file-utils gettext
 BuildRequires:  cmake
@@ -43,7 +43,6 @@ intégration dans les suites bureautiques.
 
 %prep
 %setup -q -n %{name}-%{version}
-# %%patch0 -p1 -b .qt5fix
 
 %build
 %{cmake_kf5}
@@ -64,22 +63,22 @@ intégration dans les suites bureautiques.
 
 %files -f %{name}.lang
 %doc README COPYING TODO AUTHORS
-%doc %{_datadir}/doc/HTML/en/rkward/
+%doc %{_datadir}/doc/HTML/en/%{name}/
 %doc %{_datadir}/doc/HTML/en/rkwardplugins/
-%doc %lang(it) %{_datadir}/doc/HTML/it/rkward/
-%doc %lang(nl) %{_datadir}/doc/HTML/nl/rkward/
-%doc %lang(nl) %{_datadir}/doc/HTML/nl/rkwardplugins/
-%doc %lang(sv) %{_datadir}/doc/HTML/sv/rkward/
-%doc %lang(sv) %{_datadir}/doc/HTML/sv/rkwardplugins/
-%doc %lang(uk) %{_datadir}/doc/HTML/uk/rkward/
-%doc %lang(uk) %{_datadir}/doc/HTML/uk/rkwardplugins/
+%doc %lang(it) %{_datadir}/doc/HTML/it/%{name}/
+%doc %lang(nl) %{_datadir}/doc/HTML/nl/%{name}/
+%doc %lang(nl) %{_datadir}/doc/HTML/nl/%{name}plugins/
+%doc %lang(sv) %{_datadir}/doc/HTML/sv/%{name}/
+%doc %lang(sv) %{_datadir}/doc/HTML/sv/%{name}plugins/
+%doc %lang(uk) %{_datadir}/doc/HTML/uk/%{name}/
+%doc %lang(uk) %{_datadir}/doc/HTML/uk/%{name}plugins/
 # As of 0.7.1, these are no longer part of the base package
 %if 0
 %{_libdir}/R/library/%{name}/
-%{_libdir}/R/library/rkwardtests/
+%{_libdir}/R/library/%{name}tests/
 %endif
-%{_datadir}/applications/org.kde.%{name}.desktop
-# %%{_datadir}/applications/org.kde.%%{name}-open.desktop
+%{_datadir}/applications/%{app_id}.desktop
+# %%{_datadir}/applications/%%{app_id}-open.desktop
 %{_datadir}/icons/hicolor/16x16/apps/%{name}.png
 %{_datadir}/icons/hicolor/22x22/apps/%{name}.png
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
@@ -88,27 +87,28 @@ intégration dans les suites bureautiques.
 %{_datadir}/icons/hicolor/128x128/apps/%{name}.png
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svgz
 %{_datadir}/org.kde.syntax-highlighting/syntax/r*.xml
-%{_datadir}/kservices5/rkward.protocol
+%{_datadir}/kservices5/%{name}.protocol
 %{_datadir}/ktexteditor_snippets/data/RKWardRMd.xml
-%{_datadir}/metainfo/org.kde.rkward.appdata.xml
-%{_datadir}/mime/packages/vnd.rkward.r.xml
-%{_datadir}/mime/packages/vnd.kde.rkward-output.xml
+%{_metainfodir}/%{app_id}.appdata.xml
+%{_datadir}/mime/packages/vnd.%{name}.r.xml
+%{_datadir}/mime/packages/vnd.kde.%{name}-output.xml
 %{_datadir}/mime/packages/vnd.kde.rmarkdown.xml
 # %%{_datadir}/kxmlgui5/%%{name}/
 %{_datadir}/%{name}/
 %{_bindir}/%{name}
-%{_mandir}/man1/rkward.1.gz
-%lang(ca) %{_mandir}/ca/man1/rkward.1.gz
-%lang(de) %{_mandir}/de/man1/rkward.1.gz
-%lang(it) %{_mandir}/it/man1/rkward.1.gz
-%lang(nl) %{_mandir}/nl/man1/rkward.1.gz
-%lang(sv) %{_mandir}/sv/man1/rkward.1.gz
-%lang(uk) %{_mandir}/uk/man1/rkward.1.gz
-%{_libexecdir}/rkward.rbackend
+%{_mandir}/man1/%{name}.1.gz
+%lang(ca) %{_mandir}/ca/man1/%{name}.1.gz
+%lang(de) %{_mandir}/de/man1/%{name}.1.gz
+%lang(it) %{_mandir}/it/man1/%{name}.1.gz
+%lang(nl) %{_mandir}/nl/man1/%{name}.1.gz
+%lang(sv) %{_mandir}/sv/man1/%{name}.1.gz
+%lang(uk) %{_mandir}/uk/man1/%{name}.1.gz
+%{_libexecdir}/%{name}.rbackend
 
 %changelog
-* Mon Jun 26 2023 Dipta Biswas <dabiswas112@gmail.com> - 0.7.4-5
-- Rebuilt for segfault
+* Mon Jun 26 2023 Dipta Biswas <dabiswas112@gmail.com> - 0.7.5-0
+- update to 0.7.5
+- R 4.2.3
 
 * Fri Apr 21 2023 Iñaki Úcar <iucar@fedoraproject.org> - 0.7.4-4
 - R-maint-sig mass rebuild
