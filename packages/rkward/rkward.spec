@@ -88,7 +88,7 @@ intégration dans les suites bureautiques.
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svgz
 %{_datadir}/org.kde.syntax-highlighting/syntax/r*.xml
 %{_datadir}/kservices5/%{name}.protocol
-%{_datadir}/ktexteditor_snippets/data/RKWardRMd.xml
+%{_datadir}/ktexteditor_snippets/data/RKWard*.xml
 %{_metainfodir}/%{app_id}.appdata.xml
 %{_datadir}/mime/packages/vnd.%{name}.r.xml
 %{_datadir}/mime/packages/vnd.kde.%{name}-output.xml
