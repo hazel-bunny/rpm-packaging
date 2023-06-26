@@ -7,8 +7,8 @@ Summary:        Graphical frontend for R language
 Summary(fr):    Interface graphique pour le langage R
 
 License:        GPLv2+
-URL:            http://rkward.sourceforge.net/
-Source0:        http://download.kde.org/stable/rkward/%{version}/src/rkward-%{version}.tar.gz
+URL:            https://rkward.sourceforge.net/
+Source0:        https://download.kde.org/stable/rkward/%{version}/src/rkward-%{version}.tar.gz
 # Rawhide's kde headers are missing some necessary qt5 includes
 # Patch0:		rkward-0.7.0-qt5fix.patch
 
