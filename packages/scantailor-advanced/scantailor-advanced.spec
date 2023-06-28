@@ -1,4 +1,4 @@
-%define git 0
+%global git 0
 
 %global commit 85c3310cec0e6f4dd86333d140fb05d539cffaea
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -6,14 +6,16 @@
 
 %global _basename scantailor
 
+%global __cmake_in_source_build 1
+
 Name:           %{_basename}-advanced
-Version:        1.0.18
+Version:        1.0.18%{?%git:^git%{date}.%{shortcommit}}
 Release:        1%{?dist}
 Summary:        An interactive post-processing tool for scanned pages
 License:        GPLv3+ or LGPLv2.1
 URL:            https://github.com/ScanTailor-Advanced/%{name}
 
-Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -41,7 +43,7 @@ BuildRequires:  glibc-static
 # BuildRequires:  boost-test boost-thread
 # BuildRequires:  cmake(Qt6OpenGLWidgets)
 
-Provides:       scantailor
+Provides:       scantailor = 1.0.18
 Obsoletes:      scantailor < 1.0.18
 
 %description
@@ -58,25 +60,27 @@ ScanTailor Featured and ScanTailor Enhanced versions, brings new ones and fixes.
 %autosetup -p1
 
 %build
-%cmake
-%cmake_build
+mkdir build
+pushd build
+%cmake .. -DEXTRA_LIBS=Xrender -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="/usr"
+popd
+make %{?_smp_mflags} -C build
 
 %install
-%cmake_install
+make install DESTDIR=%{buildroot} -C build
 
 %check
-make tests
-./tests/tests
+cd build
+make test
 
 %files
-%doc COPYING resources/icons/COPYING-icons
-%{_bindir}/scantailor
-%{_bindir}/scantailor-cli
-%{_datadir}/scantailor/
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/scalable/apps/scantailor.svg
+%doc README.md
+%{_bindir}/%{_basename}
+%{_datadir}/%{name}
+%{_datadir}/applications/%{_basename}.desktop
+%{_datadir}/icons/hicolor/scalable/apps/ScanTailor.svg
+%{_datadir}/mime/packages/%{_basename}-project.xml
 
 %changelog
 * Sat Jun 24 2023 Dipta Biswas <dabiswas112@gmail.com> - 1.0.18-1
 - Initial release
-
