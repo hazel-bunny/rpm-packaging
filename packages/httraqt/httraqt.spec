@@ -2,10 +2,10 @@ Name:           httraqt
 Version:        1.4.11
 Release:        1%{?dist}
 License:        GPLv3
-URL:            https://httraqt.sourceforge.net/
+URL:            https://%{name}.sourceforge.net/
 Summary:        HTTrack Qt GUI
 
-Source0:        https://downloads.sourceforge.net/project/httraqt/httraqt-%{version}.tar.gz
+Source0:        https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
@@ -41,7 +41,7 @@ system of "User Agent".
 %cmake_install
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/httraqt.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -58,10 +58,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %files
 %doc README
 %license LICENSE
-%{_bindir}/httraqt
-%{_datadir}/applications/httraqt.desktop
-%{_datadir}/httraqt/
-%{_datadir}/icons/hicolor/*/apps/httraqt.*
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/%{name}
+%{_datadir}/icons/hicolor/*/apps/%{name}.*
 
 %changelog
 * Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 1.4.11-1
