@@ -1,0 +1,42 @@
+diff -ru baloo-5.105.0_orig/src/engine/idutils.h baloo-5.105.0/src/engine/idutils.h
+--- baloo-5.105.0_orig/src/engine/idutils.h	2023-04-01 05:41:44.000000000 +0200
++++ baloo-5.105.0/src/engine/idutils.h	2023-05-11 21:50:33.963319600 +0200
+@@ -13,6 +13,8 @@
+ 
+ #ifdef Q_OS_WIN
+ # include <QFileInfo>
++#else
++# include <sys/statvfs.h>
+ #endif
+ 
+ namespace Baloo {
+@@ -40,10 +42,28 @@
+                              static_cast<quint32>(stBuf.st_ino));
+ }
+ 
++#ifndef Q_OS_WIN
++inline int statWithFsid(const char* path, QT_STATBUF* statBuf)
++{
++    int ret = QT_LSTAT(path, statBuf);
++    if (ret != 0) {
++        return ret;
++    }
++    
++    struct statvfs fsBuf;
++    ret = statvfs(path, &fsBuf);
++    if (ret == 0 && fsBuf.f_fsid != 0) {
++        // Fold FSID into 32 bits, statBufToId would discard anything else
++        statBuf->st_dev = static_cast<quint32>(fsBuf.f_fsid ^ (fsBuf.f_fsid >> 32));
++    }
++    return ret;
++}
++#endif
++
+ inline int filePathToStat(const QByteArray& filePath, QT_STATBUF& statBuf)
+ {
+ #ifndef Q_OS_WIN
+-    return QT_LSTAT(filePath.constData(), &statBuf);
++    return statWithFsid(filePath.constData(), &statBuf);
+ #else
+     const int ret = QT_STAT(filePath.constData(), &statBuf);
+     const QString filePathStr = QString::fromUtf8(filePath);
