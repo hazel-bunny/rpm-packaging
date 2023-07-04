@@ -20,7 +20,7 @@ URL:     https://community.kde.org/Baloo
 
 %global majmin %majmin_ver_kf5
 %global stable %stable_kf5
-Source0:        http://download.kde.org/%{stable}/frameworks/%{majmin}/%{framework}-%{version}.tar.xz
+Source0:        https://download.kde.org/%{stable}/frameworks/%{majmin}/%{framework}-%{version}.tar.xz
 
 Source1:        97-kde-baloo-filewatch-inotify.conf
 # shutdown script to explictly stop baloo_file on logout
