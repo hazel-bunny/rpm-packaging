@@ -1,32 +1,24 @@
-%define git 0
+%define git 1
 
 %global app_id org.kde.basket
 
-%global commit a801db18d2487e5b26b2bec548a0763df70ac8b8
+%global commit b6be0a36039b7946431798e735c77c5a3f86b235
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date 20190228
-
-%global upstreamversion 2.49b
+%global date 20230625
 
 Name:          basket
-Version:       2.49%{?%git:^git%{date}.%{shortcommit}}
+Version:       2.49%{?git:^git%{date}.%{shortcommit}}
 Release:       1%{?dist}
 License:       GPLv2+
 Group:         Applications/Productivity
-URL:           https://invent.kde.org/utilities/%{name}
+URL:           https://apps.kde.org/%{name}
 Summary:       A multi-purpose note-taking application
 
-Source0:       %{url}/-/archive/v%{upstreamversion}/%{name}-v%{upstreamversion}.tar.bz2
-
-# %%if 0%%{?git}
-# Source0: https://github.com/KDE/%%{name}/archive/%%{commit}/%%{name}-%%{commit}.tar.gz
-# %%else
-# Source0: https://github.com/KDE/%%{name}/archive/v%%{version}/%%{name}-%%{version}.tar.gz
-# %%endif
-
-Patch0:        090ac469.patch
-#Patch0:       %%{url}/-/commit/090ac469.patch
-#BuildRoot:    %%{_tmppath}/%%{name}-%%{version}-root-%%(%%{__id_u} -n)
+%if 0%{?git}
+Source0: https://github.com/KDE/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
+%else
+Source0: https://github.com/KDE/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
+%endif
 
 BuildRequires: cmake
 BuildRequires: extra-cmake-modules
@@ -67,7 +59,7 @@ BuildRequires: kf5-kdelibs4support
 BuildRequires: shared-mime-info
 BuildRequires: gpgme-devel
 
-# requirements for %%check
+# requirements for %check
 BuildRequires: desktop-file-utils
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -106,8 +98,11 @@ Requires:       %{name} = %{version}-%{release}
 Basket libraries
 
 %prep
-%setup -q -n %{name}-v%{upstreamversion}
-%patch0 -d %{name}-v%{upstreamversion} -p1
+%if 0%{?git}
+%autosetup -n %{name}-%{commit}
+%else
+%autosetup -n %{name}-%{version}
+%endif
 
 %build
 %cmake_kf5
@@ -116,11 +111,10 @@ Basket libraries
 %install
 %cmake_install
 
-%find_lang %{name} --with-kde --with-html
+# Menu
+desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{app_id}.desktop
 
-%check
-desktop-file-validate \
-        %{buildroot}%{_kf5_datadir}/applications/%{name}.desktop
+%find_lang %{name} --with-kde --with-html
 
 %post libs -p /sbin/ldconfig
 
@@ -155,13 +149,13 @@ update-desktop-database -q &> /dev/null
 %{_kf5_datadir}/mime/packages/%{name}.xml
 
 %files libs
-%{_kf5_libdir}/lib%{name}common*
+%{_kf5_libdir}/libLibBasket*
 %{_kf5_qtplugindir}/%{name}thumbcreator.so
 %{_kf5_qtplugindir}/pim/kcms/%{name}/%{name}*.so
 
 %changelog
-* Sun Jun 18 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-1
-- add patch for libgit2
+* Sun Jun 18 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49^git20230612-1
+- switch to git snapshot
 - refactor spec
 
 * Fri Aug 05 2022 Luigi Toscano <luigi.toscano@tiscali.it> - 2.49-2
@@ -283,7 +277,7 @@ update-desktop-database -q &> /dev/null
 - Fix File section
 
 * Fri May 06 2005 Nicolas Lécureuil <neoclust@mandrake.org> 0.5.0-2mdk
-- Fix BuildRequires
+- Fix BuildRequires 
 - Fix Build For amd64
 
 * Wed Apr 06 2005 Nicolas Lécureuil <neoclust@mandrake.org> 0.5.0-1mdk
