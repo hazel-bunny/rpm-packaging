@@ -1,6 +1,6 @@
 Name:    webapp-manager
 Version: 1.3.2
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 License: GPLv3+
 URL:     https://github.com/linuxmint/%{name}
 Summary: Web Application Manager
@@ -21,8 +21,6 @@ Requires: python3-tldextract
 Requires: xapps
 
 BuildArch: noarch
-
-%{?python_disable_dependency_generator}
 
 %description
 Launch websites as if they were apps.

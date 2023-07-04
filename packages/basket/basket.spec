@@ -10,7 +10,7 @@
 
 Name:          basket
 Version:       2.49%{?%git:^git%{date}.%{shortcommit}}
-Release:       3%{?dist}
+Release:       2.1%{?dist}
 License:       GPLv2+
 Group:         Applications/Productivity
 URL:           https://invent.kde.org/utilities/%{name}
@@ -158,7 +158,7 @@ update-desktop-database -q &> /dev/null
 %{_kf5_qtplugindir}/kcm_%{name}.so
 
 %changelog
-* Tue Jul 4 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-3
+* Tue Jul 4 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-2.1
 - add patch for libgit2
 - refactor spec
 - fix files

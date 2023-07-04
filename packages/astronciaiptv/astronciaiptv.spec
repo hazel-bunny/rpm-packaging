@@ -1,6 +1,6 @@
 Name:           astronciaiptv
 Version:        0.0.95
-Release:        3%{?dist}
+Release:        3.1%{?dist}
 Group:          Video
 License:        GPLv3
 URL:            https://gitlab.com/muzena/iptv
@@ -26,8 +26,6 @@ Requires:       ffmpeg
 Recommends:     yt-dlp
 
 BuildArch:      noarch
-
-%{?python_disable_dependency_generator}
 
 %description
 %summary
