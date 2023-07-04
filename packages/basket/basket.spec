@@ -10,7 +10,7 @@
 
 Name:          basket
 Version:       2.49%{?%git:^git%{date}.%{shortcommit}}
-Release:       1%{?dist}
+Release:       3%{?dist}
 License:       GPLv2+
 Group:         Applications/Productivity
 URL:           https://invent.kde.org/utilities/%{name}
@@ -107,7 +107,7 @@ Basket libraries
 
 %prep
 %setup -q -n %{name}-v%{upstreamversion}
-%patch0 -d %{name}-v%{upstreamversion} -p1
+%patch 0 -p1
 
 %build
 %cmake_kf5
@@ -145,24 +145,23 @@ update-desktop-database -q &> /dev/null
 %doc README.md AUTHORS
 %{_kf5_bindir}/%{name}
 %{_kf5_datadir}/%{name}/
-%{_kf5_datadir}/applications/%{app_id}.desktop
-%{_kf5_datadir}/kxmlgui5/%{name}/%{name}ui.rc
-%{_kf5_datadir}/icons/hicolor/*/actions/likeback_*.png
+%{_kf5_datadir}/applications/%{name}.desktop
+%{_kf5_datadir}/kxmlgui5/%{name}/
+%{_kf5_datadir}/icons/hicolor/*/actions/likeback_*
 %{_kf5_datadir}/icons/hicolor/*/actions/tag_*
-%{_kf5_datadir}/icons/hicolor/*/apps/%{app_id}.png
+%{_kf5_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_kf5_datadir}/kservices5/%{name}*.desktop
-%{_kf5_metainfodir}/%{app_id}.appdata.xml
-%{_kf5_datadir}/mime/packages/%{name}.xml
 
 %files libs
 %{_kf5_libdir}/lib%{name}common*
 %{_kf5_qtplugindir}/%{name}thumbcreator.so
-%{_kf5_qtplugindir}/pim/kcms/%{name}/%{name}*.so
+%{_kf5_qtplugindir}/kcm_%{name}.so
 
 %changelog
-* Sun Jun 18 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-1
+* Tue Jul 4 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-3
 - add patch for libgit2
 - refactor spec
+- fix files
 
 * Fri Aug 05 2022 Luigi Toscano <luigi.toscano@tiscali.it> - 2.49-2
 - adapt to the new cmake, make it compile again
