@@ -18,7 +18,7 @@ License: (LGPLv2 or LGPLv3) and (GPLv2 or GPLv3)
 URL:     https://community.kde.org/Baloo
 #URL:     https://invent.kde.org/frameworks/%%{framework}
 
-%global majmin %{version}
+%global majmin 5.105
 # %%global majmin %%majmin_ver_kf5
 %global stable stable
 # %%global stable %%stable_kf5
@@ -212,7 +212,7 @@ make test ARGS="--output-on-failure --timeout 300" -C %{_target_platform} ||:
 
 
 %changelog
-* Wed Jul 4 2023 Dipta Biswas <dabiswas112@gmail.com> - 5.105.0-1.1
+* Tue Jul 4 2023 Dipta Biswas <dabiswas112@gmail.com> - 5.105.0-1.1
 - Bump release
 
 * Wed May 10 2023 Tomáš Trnka <tomastrnka@gmx.com> - 5.105.0-1.0.1.2T
