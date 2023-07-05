@@ -14,7 +14,7 @@ URL:            https://crates.io/crates/rmp-serde
 Source:         %{crates_source}
 
 BuildRequires:  rust-packaging >= 21
-BuildRequires:  rust-rmpv
+BuildRequires:  rust-rmpv-devel
 
 %global _description %{expand:
 Serde bindings for RMP.}
