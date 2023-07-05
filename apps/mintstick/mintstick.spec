@@ -2,7 +2,7 @@
 
 Name:           mintstick
 Version:        1.5.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 Group:          Applications/System
 License:        GPL
 URL:            https://github.com/linuxmint/%{name}
@@ -30,6 +30,7 @@ Requires:       procps-ng
 Requires:       python3
 Requires:       python3-dbus
 Requires:       python3-gobject
+Requires:       python3-libunity
 Requires:       python3-pyparted
 Requires:       python3-xapp
 Requires:       udisks2
@@ -82,6 +83,9 @@ done
 %{_datadir}/polkit-1/actions/%{app_id}.policy
 
 %changelog
+* Thu Jul 6 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-4
+- Add support for libunity
+
 * Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-3
 - Fix binary
 
