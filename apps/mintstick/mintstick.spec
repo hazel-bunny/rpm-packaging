@@ -2,7 +2,7 @@
 
 Name:           mintstick
 Version:        1.5.6
-Release:        0%{?dist}
+Release:        1%{?dist}
 Group:          Applications/System
 License:        GPL
 URL:            https://github.com/linuxmint/%{name}
@@ -48,19 +48,20 @@ sed -i 's,/usr/lib/,${libdir}/,' %{name}
 %install
 LIBFILES="%{name}.py raw_write.py raw_format.py mountutils.py verify.py"
 
+mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_libdir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/polkit-1/actions
 mkdir -p %{buildroot}%{_datadir}/kde4/apps/solid/actions
 
-cp %{name} %{buildroot}%{_bindir}
-cp mint-iso-verify %{buildroot}%{_bindir}
+cp %{name} %{buildroot}%{_bindir}/
+cp mint-iso-verify %{buildroot}%{_bindir}/
 
 cp -r share/applications %{buildroot}%{_datadir}
 cp -r share/icons %{buildroot}%{_datadir}
 cp -r share/%{name} %{buildroot}%{_datadir}
 cp -r share/nemo %{buildroot}%{_datadir}
-cp share/polkit/%{app_id}.policy %{buildroot}%{_datadir}/polkit-1/actions
-cp share/kde4/%{name}-format_action.desktop %{buildroot}%{_datadir}/kde4/apps/solid/actions
+cp share/polkit/%{app_id}.policy %{buildroot}%{_datadir}/polkit-1/actions/
+cp share/kde4/%{name}-format_action.desktop %{buildroot}%{_datadir}/kde4/apps/solid/actions/
 
 for item in $LIBFILES; do
     cp lib/$item %{buildroot}%{_libdir}/%{name}/
@@ -69,13 +70,14 @@ done
 %files
 %doc README.md COPYING
 %{_bindir}/%{name}
+%{_bindir}/mint-iso-verify
 %{_libdir}/%{name}
 %{_datadir}/%{name}
-%{_datadir}/applications/mintstick*.desktop
-%{_datadir}/icons/hicolor/*/apps/mintstick.png
-%{_datadir}/icons/hicolor/scalable/status/mintstick*.svg
+%{_datadir}/applications/%{name}*.desktop
+%{_datadir}/icons/hicolor/*/apps/%{name}*
+%{_datadir}/icons/hicolor/scalable/status/%{name}*
 %{_datadir}/kde4/apps/solid/actions/%{name}-format_action.desktop
-%{_datadir}/nemo/actions/mintstick*.nemo_action
+%{_datadir}/nemo/actions/%{name}*.nemo_action
 %{_datadir}/polkit-1/actions/%{app_id}.policy
 
 %changelog
