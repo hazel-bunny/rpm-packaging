@@ -50,6 +50,7 @@ LIBFILES="%{name}.py raw_write.py raw_format.py mountutils.py verify.py"
 
 mkdir -p %{buildroot}%{_libdir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/polkit-1/actions
+mkdir -p %{buildroot}%{_datadir}/kde4/apps/solid/actions
 
 cp %{name} %{buildroot}%{_bindir}
 cp mint-iso-verify %{buildroot}%{_bindir}
