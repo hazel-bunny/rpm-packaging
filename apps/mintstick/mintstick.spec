@@ -2,7 +2,7 @@
 
 Name:           mintstick
 Version:        1.5.6
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Group:          Applications/System
 License:        GPL
 URL:            https://github.com/linuxmint/%{name}
@@ -19,9 +19,10 @@ Requires:       coreutils
 Requires:       desktop-file-utils
 Requires:       dosfstools
 Requires:       e2fsprogs
-Requires:       exfat-utils
+Requires:       exfatprogs
 Requires:       glib2
 Requires:       gtk3
+Requires:       libunity
 Requires:       ntfs-3g
 Requires:       parted
 Requires:       polkit
