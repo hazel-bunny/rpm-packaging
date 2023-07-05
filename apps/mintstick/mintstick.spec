@@ -2,7 +2,7 @@
 
 Name:           mintstick
 Version:        1.5.6
-Release:        1.1%{?dist}
+Release:        2%{?dist}
 Group:          Applications/System
 License:        GPL
 URL:            https://github.com/linuxmint/%{name}
@@ -44,6 +44,7 @@ Mintstick is a graphical tool that allows you to format USB sticks and create bo
 sed -i 's,/usr/lib/,${libdir}/,' %{name}
 
 %build
+libdir="%{_libdir}" envsubst '$libdir' <%{name} > %{name}
 %py_byte_compile %{python3} lib/*.py
 
 %install
@@ -82,6 +83,12 @@ done
 %{_datadir}/polkit-1/actions/%{app_id}.policy
 
 %changelog
+* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-2
+- Fix binary
+
+* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-1
+- Fix dependencies for newer Fedora versions
+
 * Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-0
 - Import from alanfla/mintstick
 - Update dependencies and files
