@@ -1,6 +1,6 @@
 Name:    webapp-manager
 Version: 1.3.2
-Release: 1.1%{?dist}
+Release: 2%{?dist}
 License: GPLv3+
 URL:     https://github.com/linuxmint/%{name}
 Summary: Web Application Manager
@@ -25,22 +25,6 @@ BuildArch: noarch
 %description
 Launch websites as if they were apps.
 
-%prep
-%autosetup -p1
-sed -i 's,/usr/lib/,${libdir}/,' usr/bin/%{name}
-sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
-
-%build
-%make_build
-libdir="%{_libdir}" envsubst '$libdir' <usr/bin/%{name} > %{name}
-%py_byte_compile %{python3} usr/lib/%{name}/*.py
-
-%install
-install -Dm 755 %{name} -t %{buildroot}%{_bindir}
-cp -r etc %{buildroot}%{_sysconfdir}
-cp -r usr/lib %{buildroot}%{_libdir}
-cp -r usr/share %{buildroot}%{_datadir}
-
 %files
 %{_bindir}/%{name}
 %{_libdir}/%{name}
@@ -50,11 +34,35 @@ cp -r usr/share %{buildroot}%{_datadir}
 %{_datadir}/glib-2.0/schemas/org.x.%{name}.gschema.xml
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/icons/hicolor/scalable/categories/applications-webapps.svg
-%{_datadir}/locale/
+%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
 %{_datadir}/%{name}/
 %{_sysconfdir}/xdg/menus/applications-merged/webapps.menu
 
+#------------------------------------------------------------------
+
+%prep
+%autosetup -p1
+sed -i 's,/usr/lib/,%{_libdir}/,' usr/bin/%{name}
+sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
+
+%build
+%make_build
+
+%install
+install -Dm 755 usr/bin/%{name} -t %{buildroot}%{_bindir}
+
+cp -r etc %{buildroot}%{_sysconfdir}
+cp -r usr/lib %{buildroot}%{_libdir}
+cp -r usr/share %{buildroot}%{_datadir}
+
+%py_byte_compile %{python3} %{buildroot}%{_libdir}/%{name}/*.py
+
+#------------------------------------------------------------------
+
 %changelog
+* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.2-2
+- Comply to fedora python packaging guidelines
+
 * Sun Jun 25 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.2-1
 - Bump version
 - Fix app version in about screen

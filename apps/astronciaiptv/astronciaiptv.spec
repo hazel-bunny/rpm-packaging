@@ -1,6 +1,6 @@
 Name:           astronciaiptv
 Version:        0.0.95
-Release:        3.1%{?dist}
+Release:        4%{?dist}
 Group:          Video
 License:        GPLv3
 URL:            https://gitlab.com/muzena/iptv
@@ -30,22 +30,6 @@ BuildArch:      noarch
 %description
 %summary
 
-%prep
-%autosetup -n iptv-%{version}
-sed -i 's,/usr/lib/,${libdir}/,' usr/bin/%{name}
-sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/astroncia_iptv.py
-
-%build
-%make_build
-libdir="%{_libdir}" envsubst '$libdir' <usr/bin/%{name} > %{name}
-%py_byte_compile %{python3} usr/lib/%{name}/*/*.py
-%py_byte_compile %{python3} usr/lib/%{name}/*.py
-
-%install
-install -Dm 755 %{name} -t %{buildroot}%{_bindir}
-cp -r usr/lib %{buildroot}%{_libdir}
-cp -r usr/share %{buildroot}%{_datadir}
-
 %files
 %{_bindir}/%{name}
 %{_libdir}/%{name}
@@ -55,7 +39,31 @@ cp -r usr/share %{buildroot}%{_datadir}
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_metainfodir}/%{name}.appdata.xml
 
+#------------------------------------------------------------------
+
+%prep
+%autosetup -n iptv-%{version}
+sed -i 's,/usr/lib/,%{_libdir}/,' usr/bin/%{name}
+sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/astroncia_iptv.py
+
+%build
+%make_build
+
+%install
+install -Dm 755 usr/bin/%{name} -t %{buildroot}%{_bindir}
+
+cp -r usr/lib %{buildroot}%{_libdir}
+cp -r usr/share %{buildroot}%{_datadir}
+
+%py_byte_compile %{python3} usr/lib/%{name}/*/*.py
+%py_byte_compile %{python3} usr/lib/%{name}/*.py
+
+#------------------------------------------------------------------
+
 %changelog
+* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0.95-4
+- Comply to fedora python packaging guidelines
+
 * Sun Jun 25 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0.95-3
 - Tidy up spec
 
