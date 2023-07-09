@@ -9,20 +9,16 @@
 %global upstream_release %{channel}.%{date}.%{shortcommit}
 
 Name: %{_basename}-ng
-Version: 23.06.01%{?%git:^git%{date}.%{shortcommit}}
+Version: 23.06.01
 #https://github.com/xiaoyifang/goldendict-ng/tree/v23.06.01-ChildrenDay.230601.6d3d4053
 #https://github.com/xiaoyifang/goldendict-ng/commit/6d3d4053bb5a081e60d11e2ddcba3dc59e1a777f
-Release: %{channel}.%{date}.%{shortcommit}.%{?dist}
+Release: %{channel}.%{date}.%{shortcommit}%{?dist}
 
 License: GPLv3+
 Summary: A feature-rich dictionary lookup program, supporting multiple dictionary formats
 URL: https://github.com/xiaoyifang/%{name}
 
-%if 0%{?date}
 Source0: %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-%else
-Source0: %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-%endif
 
 BuildRequires: cmake(Qt5Core)
 BuildRequires: cmake(Qt5DBus)
@@ -122,7 +118,7 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 This subpackage provides translations for Goldendict.
 
 %prep
-%autosetup -p1 %{?date:-n %{name}-%{commit}}
+%autosetup -p1 -n %{name}-%{commit}
 rm -rf {qtsingleapplication,maclibs,winlibs}
 sed -e '/qtsingleapplication.pri/d' -i goldendict.pro
 
@@ -162,5 +158,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/%{_basename}/locale/
 
 %changelog
+* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-5
+- Bump to 23.06.01
+
 * Fri Apr 28 2023 Dipta Biswas <dabiswas112@gmail.com> - 23.04.03-alpha.230427.becbe04d
 - Initial Release
