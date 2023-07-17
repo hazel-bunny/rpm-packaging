@@ -6,7 +6,7 @@
 
 Name:     qt6-gtk2-platform-theme
 Version:  0.2%{?date:^git%{date}.%{shortcommit}}
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  GTK+2.0 integration plugins for Qt6
 License:  GPLv3
 URL:      https://github.com/trialuser02/%{_basename}
@@ -44,5 +44,8 @@ Qt6Gtk2 - GTK+2.0 integration plugins for Qt6
 %{_qt6_plugindir}/styles/libqt6gtk2-style.so
 
 %changelog
-* Sat May 6 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520
+* Mon Jul 17 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520-2
+- Rebuild for qt6-qtbase 6.5.1-2
+
+* Sat May 6 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520-1
 - Initial Package.
