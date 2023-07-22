@@ -63,10 +63,10 @@ KTimeTracker tracks time spent on various tasks.
 %install
 %cmake_install
 
-# Menu
-desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{app_id}.desktop
-
 %find_lang %{name} --with-kde --with-html
+
+%check
+desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{app_id}.desktop
 
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
