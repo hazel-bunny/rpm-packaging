@@ -5,7 +5,7 @@ diff -urN a/rmp-serde/tests/round.rs b/rmp-serde/tests/round.rs
  use rmps::{Deserializer, Serializer};
  use rmps::config::{DefaultConfig, SerializerConfig};
  use rmps::decode::ReadReader;
-+use rmpv;
++use ../../rmpv;
  
  #[test]
  fn round_trip_option() {
