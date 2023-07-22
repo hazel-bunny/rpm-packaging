@@ -63,7 +63,7 @@ use the "serde128" feature of the "%{crate}" crate.
 
 %prep
 %setup -q -n %{crate}-%{version_no_tilde}
-%patch 0 -p1
+%patch 0 -p0
 %cargo_prep
 
 %generate_buildrequires
