@@ -62,7 +62,8 @@ use the "serde128" feature of the "%{crate}" crate.
 %ghost %{crate_instdir}/Cargo.toml
 
 %prep
-%autosetup -n %{crate}-%{version_no_tilde} -p1
+%setup -q -n %{crate}-%{version_no_tilde}
+%patch 0 -p1
 %cargo_prep
 
 %generate_buildrequires
