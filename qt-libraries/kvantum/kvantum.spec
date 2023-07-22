@@ -2,7 +2,7 @@
 
 Name:           kvantum
 Version:        1.0.10
-Release:        %autorelease
+Release:        2%{?dist}
 Epoch:          1
 Summary:        SVG-based theme engine for Qt, KDE and LXQt
 
