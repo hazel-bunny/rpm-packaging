@@ -13,6 +13,8 @@ License:        MIT
 URL:            https://crates.io/crates/rmp-serde
 Source:         %{crates_source}
 
+Patch0:         mychanges.patch
+
 BuildRequires:  rust-packaging >= 21
 BuildRequires:  rust-rmpv-devel
 

@@ -1,0 +1,11 @@
+diff -urN a/rmp-serde/tests/round.rs b/rmp-serde/tests/round.rs
+--- a/rmp-serde/tests/round.rs	2021-02-02 21:22:04.000000000 +0600
++++ b/rmp-serde/tests/round.rs	2023-07-22 22:22:19.512195326 +0600
+@@ -8,6 +8,7 @@
+ use rmps::{Deserializer, Serializer};
+ use rmps::config::{DefaultConfig, SerializerConfig};
+ use rmps::decode::ReadReader;
++use rmpv;
+ 
+ #[test]
+ fn round_trip_option() {
