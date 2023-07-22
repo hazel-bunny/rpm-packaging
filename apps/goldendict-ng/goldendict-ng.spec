@@ -5,161 +5,125 @@
 %global date 230601
 
 %global _basename goldendict
-%global channel ChildrenDay
-%global upstream_release %{channel}.%{date}.%{shortcommit}
+%global app_id org.xiaoyifang.GoldenDict_NG
 
-Name: %{_basename}-ng
-Version: 23.06.01
-#https://github.com/xiaoyifang/goldendict-ng/tree/v23.06.01-ChildrenDay.230601.6d3d4053
-#https://github.com/xiaoyifang/goldendict-ng/commit/6d3d4053bb5a081e60d11e2ddcba3dc59e1a777f
-Release: %{channel}.%{date}.%{shortcommit}%{?dist}
+%global forgeurl https://github.com/xiaoyifang/%{_basename}-ng
 
-License: GPLv3+
-Summary: A feature-rich dictionary lookup program, supporting multiple dictionary formats
-URL: https://github.com/xiaoyifang/%{name}
+Version:        23.06.01
+%forgemeta
 
-Source0: %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
+Name:           %{_basename}-ng
+Release:        %autorelease
+Summary:        The Next Generation GoldenDict
 
-BuildRequires: cmake(Qt5Core)
-BuildRequires: cmake(Qt5DBus)
-BuildRequires: cmake(Qt5Gui)
-BuildRequires: cmake(Qt5Help)
-BuildRequires: cmake(Qt5LinguistTools)
-BuildRequires: cmake(Qt5Multimedia)
-BuildRequires: cmake(Qt5Network)
-BuildRequires: qt5-qtspeech-devel
-BuildRequires: cmake(Qt5Svg)
-BuildRequires: cmake(Qt5WebEngine)
-BuildRequires: cmake(Qt5X11Extras)
-BuildRequires: cmake(Qt5Xml)
-BuildRequires: cmake(Qt5XmlPatterns)
+# The program is licensed under the GPL-3.0-or-later, except some files:
+# src/{dictzip.hh,dictzip.c} are under GPL-1.0-or-later license
+# src/dict/{bgl_babylon.hh,bgl_babylon.cc} are under GPL-2.0-or-later license
+# src/dict/{ripemd.hh,ripemd.cc,mdictparser.hh,mdictparser.cc} are under GPL-3.0-only license
+# files of JavaScript libraries:
+# src/scripts/darkreader.js - MIT license
+# src/scripts/{iframeResizer.contentWindow.min.js,iframeResizer.min.js} - MIT license
+# src/scripts/jquery-3.6.0.slim.min.js - MIT license
+License:        GPL-3.0-or-later AND GPL-1.0-or-later AND GPL-2.0-or-later AND GPL-3.0-only AND MIT
+URL:            %{forgeurl}
+Source0:        %{forgesource}
 
-BuildRequires: bzip2-devel
-BuildRequires: eb-devel
-BuildRequires: hunspell-devel
-BuildRequires: libXtst-devel
-BuildRequires: libtiff-devel
-BuildRequires: libvorbis-devel
-BuildRequires: libzstd-devel
-BuildRequires: lzo-devel
-BuildRequires: phonon-qt5-devel
-BuildRequires: qtsingleapplication-qt5-devel
+# https://src.fedoraproject.org/rpms/qt6-qtwebengine/blob/rawhide/f/qt6-qtwebengine.spec#_90
+ExclusiveArch:  aarch64 x86_64
 
-BuildRequires: ffmpeg-devel
-#Comment out the previous line and uncomment the next line for avoiding RPMFusion
-#BuildRequires: libavutil-free-devel
-#BuildRequires: libavformat-free-devel
+BuildRequires:  gcc-c++
+BuildRequires:  cmake
+BuildRequires:  ninja-build
 
-BuildRequires: desktop-file-utils
-BuildRequires: gcc
-BuildRequires: gcc-c++
-BuildRequires: libappstream-glib
-BuildRequires: make
+BuildRequires:  cmake(Qt6Core)
+BuildRequires:  cmake(Qt6Concurrent)
+BuildRequires:  cmake(Qt6Core5Compat)
+BuildRequires:  cmake(Qt6LinguistTools)
+BuildRequires:  cmake(Qt6Multimedia)
+BuildRequires:  cmake(Qt6WebEngineWidgets)
+BuildRequires:  cmake(Qt6Widgets)
+BuildRequires:  cmake(Qt6Svg)
+BuildRequires:  cmake(Qt6Xml)
+BuildRequires:  cmake(Qt6TextToSpeech)
 
-BuildRequires: git
-BuildRequires: libxkbcommon-devel
-BuildRequires: opencc-devel
-BuildRequires: pkg-config
-BuildRequires: xapian-core-devel
-BuildRequires: xz-devel
-BuildRequires: xz-lzma-compat
-BuildRequires: zlib-devel
+BuildRequires:  pkgconfig(libzstd)
+BuildRequires:  pkgconfig(opencc)
+BuildRequires:  pkgconfig(vorbis)
+BuildRequires:  pkgconfig(zlib)
+BuildRequires:  pkgconfig(hunspell)
+BuildRequires:  pkgconfig(lzo2)
+BuildRequires:  pkgconfig(bzip2)
+BuildRequires:  pkgconfig(xtst)
+BuildRequires:  pkgconfig(xkbcommon)
+BuildRequires:  pkgconfig(xapian-core)
+BuildRequires:  pkgconfig(libzim)
+BuildRequires:  pkgconfig(fmt)
+BuildRequires:  pkgconfig(tomlplusplus)
+# ffmpeg
+BuildRequires:  pkgconfig(libavcodec)
+BuildRequires:  pkgconfig(libavformat)
+BuildRequires:  pkgconfig(libavutil)
+BuildRequires:  pkgconfig(libswresample)
+# xz-devel
+BuildRequires:  pkgconfig(liblzma)
+BuildRequires:  eb-devel
 
-Requires: eb
-Requires: ffmpeg
-Requires: hunspell
-Requires: libvorbis
-Requires: libXtst
-Requires: lzo
-Requires: opencc
-Requires: qt5-qtbase%{?_isa}
-Requires: qt5-qtmultimedia%{?_isa}
-Requires: qt5-qtspeech%{?_isa}
-Requires: qt5-qtsvg%{?_isa}
-Requires: qt5-qttools%{?_isa}
-Requires: qt5-qtwebengine%{?_isa}
-Requires: xapian-core
-Requires: xz
-Requires: zlib
+BuildRequires:  desktop-file-utils
+BuildRequires:  libappstream-glib
 
-Recommends: %{name}-docs = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:       bundled(qtsingleapplication)
+Provides:       bundled(js-darkreader)
+Provides:       bundled(js-iframe-resizer)
+Provides:       bundled(js-jquery)
 
-Provides:  %{_basename}-%{version}
-
-Obsoletes: %{_basename} < 2
+Conflicts:      %{_basename}
 
 %description
 Feature-rich dictionary lookup program.
-    * Support of multiple dictionary file formats:
-      * Babylon .BGL files
-      * StarDict .ifo/.dict/.idx/.syn dictionaries
-      * Dictd .index/.dict(.dz) dictionary files
-      * ABBYY Lingvo .dsl source files
-      * ABBYY Lingvo .lsa/.dat audio archives
-    * Support for Wikipedia, Wiktionary or any other MediaWiki-based sites
-    * Scan popup functionality. A small window pops up with translation of a
-      word chosen from antoher application.
-    * Full-text search.
-    * And much more...
-
-#%package docs
-#Summary: Documentation for %{name}
-#Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-#BuildArch: noarch
-
-#%description docs
-#Contain doc files of %{name}.
-
-%package lang
-Summary:  Translations for package %{name}
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-
-%description lang
-This subpackage provides translations for Goldendict.
+* Support of multiple dictionary file formats:
+  * Babylon .BGL files
+  * StarDict .ifo/.dict/.idx/.syn dictionaries
+  * Dictd .index/.dict(.dz) dictionary files
+  * ABBYY Lingvo .dsl source files
+  * ABBYY Lingvo .lsa/.dat audio archives
+* Support for Wikipedia, Wiktionary or any other MediaWiki-based sites
+* Scan popup functionality. A small window pops up with translation of a word
+  chosen from antoher application.
+* Full-text search.
+* And much more...
 
 %prep
-%autosetup -p1 -n %{name}-%{commit}
-rm -rf {qtsingleapplication,maclibs,winlibs}
-sed -e '/qtsingleapplication.pri/d' -i goldendict.pro
+%forgeautosetup -p1
+
+# remove unneeded third-party libraries
+rm -r thirdparty/{fmt,qwebengine_ts,tomlplusplus}
+rm -r winlibs
 
 %build
-%qmake_qt5 PREFIX=%{_prefix} CONFIG+=qtsingleapplication CONFIG+=use_xapian CONFIG+=use_iconv CONFIG+=zim_support goldendict.pro
-%if 0%{?date}
-echo "%{version}-%{channel}.%{date}.%{shortcommit}" > version.txt
-%else
-echo "%{version}" > version.txt
-%endif
-%make_build
+%cmake \
+    -GNinja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DUSE_SYSTEM_FMT=ON \
+    -DUSE_SYSTEM_TOML=ON \
+%cmake_build
 
 %install
-%make_install INSTALL_ROOT=%{buildroot}
-
-#%clean
-#rm -rf %{buildroot}%{_datadir}/app-install
+%cmake_install
 
 %check
-appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.metainfo.xml
-desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 
 %files
 %license LICENSE.txt
 %doc README.md
 %{_bindir}/%{_basename}
-%dir %{_datadir}/%{_basename}
-#%{_datadir}/%{_basename}/locale
-%{_datadir}/applications/*.desktop
+%{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/pixmaps/%{_basename}.png
-%{_metainfodir}/*.metainfo.xml
-
-#%files docs
-#%{_datadir}/doc/%{name}/help
-
-%files lang
-%{_datadir}/%{_basename}/locale/
+%{_metainfodir}/%{app_id}.metainfo.xml
+%dir %{_datadir}/%{_basename}
+%dir %{_datadir}/%{_basename}/locale
+%{_datadir}/%{_basename}/locale/*.qm
 
 %changelog
-* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-5
-- Bump to 23.06.01
-
-* Fri Apr 28 2023 Dipta Biswas <dabiswas112@gmail.com> - 23.04.03-alpha.230427.becbe04d
-- Initial Release
+%autochangelog
