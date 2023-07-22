@@ -19,6 +19,7 @@ BuildRequires:  desktop-file-utils
 
 #Qt4
 BuildRequires:  pkgconfig(Qt)
+BuildRequires:  kdelibs-devel
 
 #Qt5
 BuildRequires:  pkgconfig(Qt5Core)
@@ -27,6 +28,8 @@ BuildRequires:  pkgconfig(Qt5Widgets)
 BuildRequires:  pkgconfig(Qt5Designer)
 BuildRequires:  pkgconfig(Qt5Svg)
 BuildRequires:  pkgconfig(Qt5X11Extras)
+BuildRequires:  qt5-rpm-macros
+BuildRequires:  kf5-rpm-macros
 
 #Qt6
 BuildRequires:  pkgconfig(Qt6Core)
@@ -34,6 +37,7 @@ BuildRequires:  pkgconfig(Qt6Gui)
 BuildRequires:  pkgconfig(Qt6Widgets)
 BuildRequires:  pkgconfig(Qt6Designer)
 BuildRequires:  pkgconfig(Qt6Svg)
+BuildRequires:  qt6-rpm-macros
 
 #KF5
 BuildRequires:  cmake(KF5WindowSystem)
@@ -88,6 +92,7 @@ This package contains Kvantum manager.
 %files manager
 %{_bindir}/kvantummanager
 %{_bindir}/kvantumpreview
+%{_datadir}/applications/kvantummanager.desktop
 %dir %{_datadir}/kvantumpreview
 %dir %{_datadir}/kvantumpreview/translations
 %dir %{_datadir}/kvantummanager
@@ -114,8 +119,6 @@ This package contains the data needed Kvantum.
 %license Kvantum/COPYING
 %doc Kvantum/ChangeLog Kvantum/NEWS Kvantum/README.md
 %{_datadir}/Kvantum/
-%{_datadir}/applications/kvantummanager.desktop
-%{_datadir}/color-schemes/Kv*.colors
 %{_datadir}/icons/hicolor/scalable/apps/kvantum.svg
 
 #-----------------------------------------------------------------------------
@@ -137,6 +140,7 @@ This package contains the Qt4 style.
 
 %files -n qt4-style-kvantum
 %{_qt4_plugindir}/styles/libkvantum.so
+%{_datadir}/kde4/apps/color-schemes/Kv*.colors
 
 #-----------------------------------------------------------------------------
 
@@ -157,6 +161,7 @@ This package contains the Qt5 style.
 
 %files -n qt5-style-kvantum
 %{_qt5_plugindir}/styles/libkvantum.so
+%{_datadir}/color-schemes/Kv*.colors
 
 #-----------------------------------------------------------------------------
 
