@@ -65,6 +65,10 @@ Web browser for mobile devices with Plasma integration
 %autosetup -n %{name}-%{version}
 %cargo_prep
 
+%generate_buildrequires
+pushd src/rs/adblock
+%cargo_generate_buildrequires
+
 %build
 %cmake_kf5 -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
 %cmake_build
