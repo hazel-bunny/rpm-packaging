@@ -1,0 +1,13 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 54d7275..7ebb173 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -37,7 +37,7 @@ futures-util = "0.3"
+ num_cpus = "1.13"
+ regex = "1.4"
+ feedly_api = "0.4"
+-news-flash = { git = "https://gitlab.com/news-flash/news_flash.git" }
++news-flash = "1.2.1"
+ open = "2.0"
+ clap = "2.33"
+ diffus = { version = "0.10", features = [ "derive" ] }
