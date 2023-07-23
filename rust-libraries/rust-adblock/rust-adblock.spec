@@ -5,7 +5,7 @@
 %global crate adblock
 
 Name:           rust-adblock
-Version:        0.7.10
+Version:        0.7.16
 Release:        %autorelease
 Summary:        Native Rust module for Adblock Plus syntax
 
