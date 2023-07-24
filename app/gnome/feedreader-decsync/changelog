@@ -1,80 +1,9 @@
-Name:           feedreader
-Version:        2.11.0
-Release:        %autorelease
-Summary:        RSS desktop client
+* Mon Jul 24 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.12.0-1
+- Update to 2.12.0
+- Switch to 39aldo39's fork
+- Change package name to feedreader-decsync
+- Update decsync plugin
 
-# Some of the source files are GPLv3+ and some are LGPLv3+, which makes the
-# combined work GPLv3+.
-License:        GPLv3+
-URL:            https://github.com/jangernert/FeedReader
-Source0:        https://github.com/jangernert/FeedReader/archive/v%{version}%{?pre:-%{pre}}/FeedReader-%{version}%{?pre:-%{pre}}.tar.gz
-
-BuildRequires:  gettext
-BuildRequires:  meson
-BuildRequires:  pkgconfig(gee-0.8)
-BuildRequires:  pkgconfig(goa-1.0)
-BuildRequires:  pkgconfig(gstreamer-1.0)
-BuildRequires:  pkgconfig(gstreamer-pbutils-1.0)
-BuildRequires:  pkgconfig(gtk+-3.0)
-BuildRequires:  pkgconfig(gumbo)
-BuildRequires:  pkgconfig(json-glib-1.0)
-BuildRequires:  pkgconfig(libcurl)
-BuildRequires:  pkgconfig(libnotify)
-BuildRequires:  pkgconfig(libpeas-1.0)
-BuildRequires:  pkgconfig(libsecret-1)
-BuildRequires:  pkgconfig(libsoup-2.4)
-BuildRequires:  pkgconfig(libxml-2.0)
-BuildRequires:  pkgconfig(rest-0.7)
-BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  pkgconfig(webkit2gtk-4.0)
-BuildRequires:  vala
-BuildRequires:  /usr/bin/appstream-util
-BuildRequires:  /usr/bin/desktop-file-validate
-
-Requires:       dbus
-Requires:       hicolor-icon-theme
-
-%description
-FeedReader is a modern desktop application designed to complement existing
-web-based RSS accounts. It combines all the advantages of web based services
-like synchronization across all your devices with everything you expect from a
-modern desktop application.
-
-
-%prep
-%autosetup -p1 -n FeedReader-%{version}%{?pre:-%{pre}}
-
-
-%build
-%meson
-%meson_build
-
-
-%install
-%meson_install
-
-%find_lang feedreader
-
-
-%check
-appstream-util validate-relax --nonet $RPM_BUILD_ROOT%{_datadir}/metainfo/org.gnome.FeedReader.appdata.xml
-desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/org.gnome.FeedReader.desktop
-
-
-%files -f feedreader.lang
-%license LICENSE
-%{_bindir}/feedreader
-%{_libdir}/feedreader/
-%{_libdir}/libFeedReader.so
-%{_datadir}/feedreader/
-%{_datadir}/applications/org.gnome.FeedReader.desktop
-%{_datadir}/glib-2.0/schemas/org.gnome.feedreader*.gschema.xml
-%{_datadir}/icons/hicolor/*/apps/org.gnome.FeedReader.svg
-%{_datadir}/icons/hicolor/scalable/apps/org.gnome.FeedReader-symbolic.svg
-%{_datadir}/metainfo/org.gnome.FeedReader.appdata.xml
-
-
-%changelog
 * Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.11.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
