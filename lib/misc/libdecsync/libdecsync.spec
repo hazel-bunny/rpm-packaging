@@ -1,7 +1,6 @@
 %global forgeurl https://github.com/39aldo39/libdecsync
-
 %global commit a512d924345a33c52a3f7f2719ed001777ca6350
-
+%global date 20220914
 %forgemeta
 
 Name:    libdecsync
@@ -45,6 +44,8 @@ applications supporting DecSync
 %forgeautosetup -p1
 
 %build
+mkdir -p build/bin/linuxX64/releaseShared
+touch build/bin/linuxX64/releaseShared/decsync.pc
 %make_build
 
 %install
