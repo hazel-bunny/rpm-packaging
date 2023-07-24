@@ -1,6 +1,6 @@
 Name:           feedreader
 Version:        2.11.0
-Release:        4%{?dist}
+Release:        %autorelease
 Summary:        RSS desktop client
 
 # Some of the source files are GPLv3+ and some are LGPLv3+, which makes the

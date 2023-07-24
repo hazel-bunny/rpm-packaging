@@ -4,7 +4,7 @@
 
 Name:           rkward
 Version:        0.7.5
-Release:        0%{?dist}
+Release:        %autorelease
 Summary:        Graphical frontend for R language
 Summary(fr):    Interface graphique pour le langage R
 

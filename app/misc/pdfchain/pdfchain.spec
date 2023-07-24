@@ -2,7 +2,7 @@ Name:             pdfchain
 Version:          0.4.4.2
 # Need epoch since upstream changed versioning style
 Epoch:            1
-Release:          1%{?dist}
+Release:          %autorelease
 Summary:          A GUI for pdftk
 License:          GPLv3+
 URL:              https://sourceforge.net/projects/pdfchain

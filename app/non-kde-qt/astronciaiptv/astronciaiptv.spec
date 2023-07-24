@@ -1,6 +1,6 @@
 Name:           astronciaiptv
 Version:        0.0.95
-Release:        4%{?dist}
+Release:        %autorelease
 Group:          Video
 License:        GPLv3
 URL:            https://gitlab.com/muzena/iptv

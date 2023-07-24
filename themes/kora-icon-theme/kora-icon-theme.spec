@@ -2,7 +2,7 @@
 
 Name:               %{_basename}-icon-theme
 Version:            1.5.7
-Release:            1%{?dist}
+Release:            %autorelease
 License:            GPL-3.0
 URL:                https://github.com/bikass/%{_basename}
 Summary:            Kora icon theme for GNU/Linux os

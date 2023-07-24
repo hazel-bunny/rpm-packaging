@@ -10,7 +10,7 @@
 
 Name:           %{_basename}-advanced
 Version:        1.0.18%{?%git:^git%{date}.%{shortcommit}}
-Release:        1%{?dist}
+Release:        %autorelease
 Summary:        An interactive post-processing tool for scanned pages
 License:        GPLv3+ or LGPLv2.1
 URL:            https://github.com/ScanTailor-Advanced/%{name}

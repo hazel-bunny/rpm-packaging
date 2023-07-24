@@ -10,7 +10,7 @@
 
 Name:          basket
 Version:       2.49%{?%git:^git%{date}.%{shortcommit}}
-Release:       2.1%{?dist}
+Release:       %autorelease
 License:       GPLv2+
 Group:         Applications/Productivity
 URL:           https://invent.kde.org/utilities/%{name}

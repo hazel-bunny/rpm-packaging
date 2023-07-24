@@ -6,7 +6,7 @@
 
 Name:     qt6-gtk2-platform-theme
 Version:  0.2%{?date:^git%{date}.%{shortcommit}}
-Release:  2%{?dist}
+Release:  %autorelease
 Summary:  GTK+2.0 integration plugins for Qt6
 License:  GPLv3
 URL:      https://github.com/trialuser02/%{_basename}

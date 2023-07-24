@@ -12,7 +12,7 @@ Version:    0.8.5
 %else
 Version:    0.8.5%{?date:^git%{date}.%{shortcommit}}
 %endif
-Release:    1%{?dist}
+Release:    %autorelease
 License:    GPLv3+
 Group:      Applications/Productivity
 URL:        https://wiki.gnome.org/Apps/OCRFeeder

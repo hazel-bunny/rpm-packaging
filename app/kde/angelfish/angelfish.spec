@@ -1,7 +1,7 @@
 Name:           angelfish
-Version:        23.04.2
+Version:        23.04.3
 Epoch:          1
-Release:        1%{?dist}
+Release:        %autorelease
 Summary:        Plasma Mobile minimal web browser
 
 License:        MIT and GPLv2+ and LGPLv2 and LGPLv2+
@@ -66,7 +66,7 @@ Web browser for mobile devices with Plasma integration
 %cargo_prep
 
 %generate_buildrequires
-pushd src/rs/adblock
+cd src/rs/adblock
 %cargo_generate_buildrequires
 
 %build

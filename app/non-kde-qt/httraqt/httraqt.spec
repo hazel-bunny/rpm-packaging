@@ -1,6 +1,6 @@
 Name:           httraqt
 Version:        1.4.11
-Release:        1%{?dist}
+Release:        %autorelease
 License:        GPLv3
 URL:            https://%{name}.sourceforge.net/
 Summary:        HTTrack Qt GUI

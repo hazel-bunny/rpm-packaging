@@ -2,7 +2,7 @@
 
 Name:           ktimetracker
 Version:        5.0.1
-Release:        1
+Release:        %autorelease
 License:        GPLv2
 Group:          Productivity/Other
 URL:            https://apps.kde.org/%{name}

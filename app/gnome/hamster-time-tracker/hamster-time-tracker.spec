@@ -11,7 +11,7 @@
 
 Name:       %{_basename}-time-tracker
 Version:    3.0.2%{?git:^git%{date}.%{shortcommit}}
-Release:    1%{?dist}
+Release:    %autorelease
 License:    GPLv3+
 Group:      Applications/Productivity
 URL:        https://github.com/project%{_basename}/%{_basename}

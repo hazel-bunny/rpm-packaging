@@ -1,6 +1,6 @@
 Name: zuki-themes
 Version: 4.0
-Release: 1%{?dist}
+Release: %autorelease
 License: GPLv3
 Group: User Interface/X
 URL: https://github.com/lassekongo83/%{name}

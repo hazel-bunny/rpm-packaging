@@ -1,8 +1,8 @@
-%define git 0
+# %%define git 0
 
-%global commit 6d3d4053bb5a081e60d11e2ddcba3dc59e1a777f
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date 230601
+# %%global commit 6d3d4053bb5a081e60d11e2ddcba3dc59e1a777f
+# %%global shortcommit %(c=%{commit}; echo ${c:0:7})
+# %%global date 230601
 
 %global _basename goldendict
 %global app_id org.xiaoyifang.GoldenDict_NG

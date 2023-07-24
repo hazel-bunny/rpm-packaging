@@ -8,7 +8,7 @@
 
 Name:           mintstick
 Version:        1.5.6%{?%git:^git%{date}.%{shortcommit}}
-Release:        5%{?dist}
+Release:        %autorelease
 Group:          Applications/System
 License:        GPL
 URL:            https://github.com/linuxmint/%{name}

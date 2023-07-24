@@ -9,7 +9,7 @@
 
 Name:       gimp
 Version:    2.99.16
-Release:    1%{?dist}
+Release:    %autorelease
 Summary:    GNU Image Manipulation Program
 
 License:    GPLv3+ and GPLv3

@@ -6,7 +6,7 @@
 
 Name:           warpinator
 Version:        1.6.3
-Release:        0
+Release:        %autorelease
 License:        GPLv3
 URL:            https://github.com/linuxmint/%{name}
 Summary:        Share files across the LAN
