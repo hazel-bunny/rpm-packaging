@@ -13,9 +13,8 @@ URL:     %{forgeurl}
 Source:  %{forgesource}
 
 BuildRequires:  make
-BuildRequires:  java-1.8.0-openjdk-headless
+BuildRequires:  java-17-openjdk-headless
 BuildRequires:  ncurses-compat-libs
-BuildRequires:  gradle-bin
 
 %description
 libdecsync is a multiplatform library for synchronizing using DecSync
