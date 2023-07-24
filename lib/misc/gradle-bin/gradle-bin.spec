@@ -26,7 +26,7 @@ is closely integrated with development tools and continuous integration servers
 including Eclipse, IntelliJ, and Jenkins.
 
 %prep
-%autosetup -p1
+%autosetup -n %{_basename}-%{version}
 
 %build
 #nothing
