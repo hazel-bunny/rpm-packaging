@@ -50,7 +50,7 @@ mv __init__.py.new libdecsync/__init__.py
 mkdir -p %{buildroot}%{python3_sitelib}%{libdir}
 ln -sv %{libdir}/libdecsync.so %{buildroot}%{python3_sitelib}%{libdir}/libdecsync.so
 # not necessary for every package, but for those who it is, it'd generate conflict with others otherwise
-# rm -rf %{buildroot}%{python3_sitelib}/tests/"
+rm -rf %{buildroot}%{python3_sitelib}/tests/"
 
 %check
 %pyproject_check_import
