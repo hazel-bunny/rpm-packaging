@@ -11,6 +11,8 @@ Source:         %{pypi_source libdecsync}
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
+BuildRequires:  libxcrypt-compat
+BuildRequires:  libdecsync-devel
 
 
 # Fill in the actual package description to submit package to Fedora
