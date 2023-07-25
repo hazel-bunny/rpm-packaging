@@ -230,10 +230,10 @@ use the "unsync-regex-caching" feature of the "%{crate}" crate.
 %install
 %cargo_install
 
-# %if %{with check}
-# %check
-# %cargo_test
-# %endif
+%if %{with check}
+%check
+%cargo_test --no-run
+%endif
 
 %changelog
 %autochangelog
