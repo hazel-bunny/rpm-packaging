@@ -30,7 +30,7 @@ Summary:        %{summary}
 
 %prep
 %autosetup -p1 -n libdecsync-%{version}
-# find "%{libdir}" -delete
+find "%{_libdir}" -delete
 cat "libdecsync/__init__.py" | tr $'\n' $'\r' | sed 's#os_name = platform.system().*not supported")#libpath = resource_filename(__name__, "libs/libdecsync.so")#' | tr $'\r' $'\n' > __init__.py.new
 mv __init__.py.new libdecsync/__init__.py
 
@@ -47,10 +47,10 @@ mv __init__.py.new libdecsync/__init__.py
 # For official Fedora packages, including files with '*' +auto is not allowed
 # Replace it with a list of relevant Python modules/globs and list extra files in %%files
 %pyproject_save_files '*' +auto
-mkdir -p "%{buildroot}%{python3_sitelib}%{libdir}"
-ln -sv "%{libdir}/libdecsync.so" "%{buildroot}%{python3_sitelib}%{libdir}/libdecsync.so"
+mkdir -p %{buildroot}%{python3_sitelib}%{_libdir}
+ln -sv %{_libdir}/libdecsync.so" "%{buildroot}%{python3_sitelib}%{_libdir}/libdecsync.so"
 # not necessary for every package, but for those who it is, it'd generate conflict with others otherwise
-rm -rf %{buildroot}%{python3_sitelib}/tests/"
+# rm -rf %{buildroot}%{python3_sitelib}/tests/"
 
 %check
 %pyproject_check_import
