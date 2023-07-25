@@ -1,6 +1,7 @@
 %global forgeurl https://github.com/39aldo39/libdecsync
 %global commit a512d924345a33c52a3f7f2719ed001777ca6350
 %global date 20220914
+%global debug_package %{nil}
 %forgemeta
 
 Name:    libdecsync
