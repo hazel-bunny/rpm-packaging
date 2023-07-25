@@ -10,6 +10,7 @@ Summary: Library for DecSync
 License: GPLv2+
 URL:     %{forgeurl}
 Source:  %{forgesource}
+Patch:   fix-libdir.patch
 
 BuildRequires:  make
 BuildRequires:  java-17-openjdk-headless
@@ -21,7 +22,7 @@ libdecsync is a multiplatform library for synchronizing using DecSync
 %files
 %license LICENSE.txt
 %doc README.md
-%_libdir/libdecsync.so
+%_libdir/%{name}.so
 %_datadir/pkgconfig/decsync.pc
 
 #-----------------------------------------------------------------------
@@ -35,8 +36,8 @@ This package includes the header files you will need to compile
 applications supporting DecSync
 
 %files devel
-%_includedir/libdecsync.h
-%_includedir/libdecsync_api.h
+%_includedir/%{name}.h
+%_includedir/%{name}_api.h
 
 #-----------------------------------------------------------------------
 

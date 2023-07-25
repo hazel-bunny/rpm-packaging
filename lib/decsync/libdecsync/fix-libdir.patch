@@ -1,0 +1,23 @@
+diff -urN libdecsync-a512d924345a33c52a3f7f2719ed001777ca6350-orig/Makefile libdecsync-a512d924345a33c52a3f7f2719ed001777ca6350/Makefile
+--- libdecsync-a512d924345a33c52a3f7f2719ed001777ca6350-orig/Makefile	2022-09-14 19:05:19.000000000 +0600
++++ libdecsync-a512d924345a33c52a3f7f2719ed001777ca6350/Makefile	2023-07-25 11:59:08.726518432 +0600
+@@ -43,8 +43,8 @@
+ 	$(INSTALL) -d $(DESTDIR)$(prefix)/include
+ 	$(INSTALL) -m 644 $(BUILD_DIR)/libdecsync_api.h $(DESTDIR)$(prefix)/include
+ 	$(INSTALL) -m 644 src/linuxMain/libdecsync.h $(DESTDIR)$(prefix)/include
+-	$(INSTALL) -d $(DESTDIR)$(prefix)/lib
+-	$(INSTALL) -m 644 $(BUILD_DIR)/libdecsync.so $(DESTDIR)$(prefix)/lib
++	$(INSTALL) -d $(DESTDIR)$(prefix)/lib64
++	$(INSTALL) -m 644 $(BUILD_DIR)/libdecsync.so $(DESTDIR)$(prefix)/lib64
+ 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/pkgconfig
+ 	$(INSTALL) -m 644 $(BUILD_DIR)/decsync.pc $(DESTDIR)$(prefix)/share/pkgconfig
+ 
+@@ -52,7 +52,7 @@
+ uninstall:
+ 	$(RM) $(DESTDIR)$(prefix)/include/libdecsync_api.h
+ 	$(RM) $(DESTDIR)$(prefix)/include/libdecsync.h
+-	$(RM) $(DESTDIR)$(prefix)/lib/libdecsync.so
++	$(RM) $(DESTDIR)$(prefix)/lib64/libdecsync.so
+ 	$(RM) $(DESTDIR)$(prefix)/share/pkgconfig/decsync.pc
+ 
+ .PHONY: clean
