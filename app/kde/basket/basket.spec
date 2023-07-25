@@ -1,5 +1,6 @@
 %global app_id org.kde.basket
-%global forgeurl https://invent.kde.org/utilities/basket
+# %%global forgeurl https://invent.kde.org/utilities/basket
+%global forgeurl https://github.com/KDE/basket
 %global tag v2.49b
 # %%global commit a801db18d2487e5b26b2bec548a0763df70ac8b8
 # %%global date 20190228
