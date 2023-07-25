@@ -1,30 +1,21 @@
-%define git 0
-
 %global app_id org.gnome.OCRFeeder
 
-%global commit edd666ac6f04720f3a8ec1bd9f082308d282491d
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date 20220315
+%global forgeurl https://gitlab.gnome.org/GNOME/ocrfeeder
+%global tag 0.8.5
+# %%global commit edd666ac6f04720f3a8ec1bd9f082308d282491d
+# %%global date 20220315
+%forgemeta
 
 Name:       ocrfeeder
-%if ! 0%{?git}
-Version:    0.8.5
-%else
-Version:    0.8.5%{?date:^git%{date}.%{shortcommit}}
-%endif
+Version:    %{tag}
 Release:    %autorelease
 License:    GPLv3+
 Group:      Applications/Productivity
-URL:        https://wiki.gnome.org/Apps/OCRFeeder
 Summary:    Document layout analysis and optical character recognition system
+URL:        %{forgeurl}
+Source:     %{forgesource}
 
 BuildArch:  noarch
-
-%if ! 0%{?git}
-Source0: https://gitlab.gnome.org/GNOME/%{name}/-/archive/%{version}/%{name}-%{version}.tar.bz2
-%else
-Source0: https://gitlab.gnome.org/GNOME/%{name}/-/archive/%{commit}/%{name}-%{commit}.tar.bz2
-%endif
 
 BuildRequires:  intltool
 BuildRequires:  gnome-doc-utils
@@ -102,11 +93,7 @@ set paragraph styles, clean the input images, import PDFs,
 save and load the project, export everything to multiple formats, etc.
 
 %prep
-%if ! 0%{?git}
-%setup -q -n "%{name}-%{version}"
-%else
-%setup -q -n "%{name}-%{commit}"
-%endif
+%forgeautosetup
 
 %build
 ./autogen.sh
@@ -130,29 +117,26 @@ done
 if [[ ! -f "%{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{app_id}.svg" ]]; then
   %{__install} -p -D -m 0644 "${icon_in}" "%{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{app_id}.svg"
 fi
-# fix appdata dir
-%if "%{dir_metainfo}" != "metainfo"
-[[ -d "%{buildroot}%{_metainfodir}" || ! -d "%{buildroot}%{_datadir}/metainfo" ]] || %{__mv} "%{buildroot}%{_datadir}/metainfo" "%{buildroot}%{_metainfodir}"
-%endif
+
 %find_lang "%{name}" --with-gnome
 
 %check
-/usr/bin/desktop-file-validate "%{buildroot}/%{_datadir}/applications/%{app_id}.desktop"
-/usr/bin/appstream-util validate-relax --nonet "%{buildroot}%{_metainfodir}/%{app_id}.appdata.xml"
+desktop-file-validate "%{buildroot}/%{_datadir}/applications/%{app_id}.desktop"
+appstream-util validate-relax --nonet "%{buildroot}%{_metainfodir}/%{app_id}.appdata.xml"
 
 %post
-/bin/touch --no-create "%{_datadir}/icons/hicolor" &> /dev/null || :
-/usr/bin/update-desktop-database &> /dev/null || :
+touch --no-create "%{_datadir}/icons/hicolor" &> /dev/null || :
+update-desktop-database &> /dev/null || :
 
 %postun
-/usr/bin/update-desktop-database &> /dev/null || :
+update-desktop-database &> /dev/null || :
 if [[ "${1}" -eq "0" ]]; then
-  /bin/touch --no-create "%{_datadir}/icons/hicolor" &> /dev/null || :
-  /usr/bin/gtk-update-icon-cache "%{_datadir}/icons/hicolor" &> /dev/null || :
+  touch --no-create "%{_datadir}/icons/hicolor" &> /dev/null || :
+  gtk-update-icon-cache "%{_datadir}/icons/hicolor" &> /dev/null || :
 fi
 
 %posttrans
-/usr/bin/gtk-update-icon-cache "%{_datadir}/icons/hicolor" &> /dev/null || :
+gtk-update-icon-cache "%{_datadir}/icons/hicolor" &> /dev/null || :
 
 %files -f "%{name}.lang"
 %doc AUTHORS NEWS README TRANSLATORS
@@ -167,23 +151,4 @@ fi
 %{python3_sitelib}/%{name}/
 
 %changelog
-* Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 0.8.5-1
-- Update to version 0.8.5
-- Update spec for python3
-- Remove patches and use upstream source
-
-* Sun Feb 09 2020 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-4.20200107git1160f3d
-- Fix PDF import
-
-* Thu Jan 23 2020 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-3.20200107git1160f3d
-- Update to the latest Python2-based version with built-in odfpy
-
-* Tue Feb 05 2019 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-2.20181218git51483c4
-- Update patches
-  https://gitlab.gnome.org/GNOME/ocrfeeder/merge_requests/1
-
-* Wed Jan 23 2019 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-1.20181218git51483c4
-- Update to the latest version
-
-* Wed Jan 23 2019 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-1
-- Initial packaging
+%autochangelog

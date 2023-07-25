@@ -2,7 +2,7 @@
 %bcond_with heif
 
 # disable LTO (breaks gimp-2.99.15 build on F37)
-%global _lto_cflags %nil
+# %%global _lto_cflags %%nil
 
 %global lib_api_version 2.99
 %global gettext_version 30
@@ -109,11 +109,13 @@ BuildRequires:  vala
 BuildRequires:  xdg-utils
 BuildRequires:  xorg-x11-server-Xvfb
 BuildRequires:  gi-docgen
+
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:       %{name}-data = %{version}-%{release}
 Requires:       hicolor-icon-theme
 Requires:       xdg-utils
 Requires:       lua-lgi-compat
+
 Recommends:     darktable
 Recommends:     ghostscript
 Recommends:     gjs
@@ -122,14 +124,17 @@ Recommends:     python3-gobject
 Recommends:     rawtherapee
 Recommends:     mypaint-brushes
 
+Provides:       %{name} = %{version}
+
+Obsoletes:      %{name} < %{version}
+
 %description
-GIMP (GNU Image Manipulation Program) is a powerful image composition and
-editing program, which can be extremely useful for creating logos and other
-graphics for web pages. GIMP has many of the tools and filters you would expect
-to find in similar commercial offerings, and some interesting extras as well.
-GIMP provides a large image manipulation toolbox, including channel operations
-and layers, effects, sub-pixel imaging and anti-aliasing, and conversions, all
-with multi-level undo.
+GIMP (GNU Image Manipulation Program) is a powerful image composition and editing
+program, which can be extremely useful for creating logos and other graphics for
+web pages. GIMP has many of the tools and filters you would expect to find in similar
+commercial offerings, and some interesting extras as well. GIMP provides a large
+image manipulation toolbox, including channel operations and layers, effects, sub-pixel
+imaging and anti-aliasing, and conversions, all with multi-level undo.
 
 %package data
 Summary:        GIMP data files
@@ -156,9 +161,8 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Requires:       %{name}-devel-tools = %{version}-%{release}
 
 %description devel
-The %{name}-devel package contains the static libraries and header files
-for writing GNU Image Manipulation Program (GIMP) plug-ins and
-extensions.
+The %{name}-devel package contains the static libraries and header files for writing
+GNU Image Manipulation Program (GIMP) plug-ins and extensions.
 
 %package devel-doc
 Summary:        GIMP plugin and extension development documentation
@@ -167,8 +171,8 @@ Requires:       %{name}-devel = %{version}-%{release}
 BuildArch:      noarch
 
 %description devel-doc
-The %{name}-devel-doc package contains documentation to
-build GNU Image Manipulation Program (GIMP) plug-ins and extensions.
+The %{name}-devel-doc package contains documentation to build GNU Image
+Manipulation Program (GIMP) plug-ins and extensions.
 
 %package devel-tools
 Summary:        GIMP plugin and extension development tools
@@ -208,48 +212,9 @@ cat gimp%{gettext_version}.lang gimp%{gettext_version}-std-plug-ins.lang gimp%{g
 # Build the master filelists generated from the above mess.
 cat gimp-plugin-files gimp-all.lang > gimp.files
 
-# Remove unversioned man pages
-rm -f %{buildroot}%{_mandir}/man1/gimp.1*
-rm -f %{buildroot}%{_mandir}/man1/gimp-console.1*
-rm -f %{buildroot}%{_mandir}/man5/gimprc.5*
-rm -f %{buildroot}%{_mandir}/man1/gimptool.1*
-
-# Remove unversioned metainfo (conflict with GIMP)
-rm -f %{buildroot}%{_datadir}/metainfo/*.appdata.xml
-
-# Remove unversioned symlinks
-rm -f %{buildroot}%{_bindir}/gimp
-rm -f %{buildroot}%{_bindir}/gimp-console
-rm -f %{buildroot}%{_bindir}/gimp-test-clipboard
-rm -f %{buildroot}%{_bindir}/gimptool
-rm -f %{buildroot}%{_libexecdir}/gimp-debug-tool
-
 # desktop file -- mention version/unstable, use custom icon
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
-    --set-name="GIMP %major.%minor" \
-    --set-icon="gimp-%major.%minor" \
     %{buildroot}%{_datadir}/applications/gimp.desktop
-mv -f %{buildroot}%{_datadir}/applications/gimp.desktop \
-    %{buildroot}%{_datadir}/applications/gimp-%major.%minor.desktop
-
-# icons -- overlay major.minor version
-pushd %{buildroot}%{_datadir}/icons/hicolor
-for srcicon in */apps/gimp.png; do
-    geo=${srcicon%%%%/*}
-    dim=${geo%%x*}
-    ps=$((5+$dim/6))
-    sw=$(($dim/50+1))
-    o=$(($dim/26+1))
-    destdir="%{buildroot}%{_datadir}/icons/hicolor/$geo/apps"
-    desticon="$destdir/gimp-%{major}.%{minor}.png"
-    mkdir -p "$destdir"
-    convert "$srcicon" \
-        -gravity northeast -pointsize $ps -strokewidth $sw \
-        -stroke black -annotate +$o+$(($o+$ps)) %{major}.%{minor} \
-        -stroke none -fill white -annotate +$o+$(($o+$ps)) %{major}.%{minor} \
-        "$desticon"
-done
-popd
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
@@ -290,7 +255,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 # %%{_datadir}/metainfo/*.appdata.xml
 
 %{_datadir}/icons/hicolor/*/apps/gimp.png
-%{_datadir}/icons/hicolor/*/apps/gimp-%{lib_api_version}.png
 
 %{_datadir}/icons/hicolor/scalable/apps/gimp.svg
 

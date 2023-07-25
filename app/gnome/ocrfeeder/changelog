@@ -1,0 +1,23 @@
+* Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 0.8.5-2
+- Switch to forge macros
+
+* Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 0.8.5-1
+- Update to version 0.8.5
+- Update spec for python3
+- Remove patches and use upstream source
+
+* Sun Feb 09 2020 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-4.20200107git1160f3d
+- Fix PDF import
+
+* Thu Jan 23 2020 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-3.20200107git1160f3d
+- Update to the latest Python2-based version with built-in odfpy
+
+* Tue Feb 05 2019 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-2.20181218git51483c4
+- Update patches
+  https://gitlab.gnome.org/GNOME/ocrfeeder/merge_requests/1
+
+* Wed Jan 23 2019 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-1.20181218git51483c4
+- Update to the latest version
+
+* Wed Jan 23 2019 Tomasz Tomasik <scx.mail@gmail.com> 0.8.1-1
+- Initial packaging
