@@ -1,0 +1,26 @@
+--- adblock-0.7.16/Cargo.toml	1970-01-01T00:00:00+00:00
++++ adblock-0.7.16/Cargo.toml	2022-09-29T11:20:20.059987+00:00
+@@ -37,24 +37,2 @@
+
+-[lib]
+-bench = false
+-
+-[[bench]]
+-name = "bench_regex"
+-harness = false
+-
+-[[bench]]
+-name = "bench_matching"
+-harness = false
+-
+-[[bench]]
+-name = "bench_url"
+-harness = false
+-
+-[[bench]]
+-name = "bench_rules"
+-harness = false
+-
+-[[bench]]
+-name = "bench_redirect_performance"
+-harness = false

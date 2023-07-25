@@ -13,6 +13,8 @@ License:        MPL-2.0
 URL:            https://crates.io/crates/adblock
 Source:         %{crates_source}
 
+Patch:          adblock-disable-benchmarks.diff
+
 BuildRequires:  rust-packaging >= 21
 
 %global _description %{expand:
