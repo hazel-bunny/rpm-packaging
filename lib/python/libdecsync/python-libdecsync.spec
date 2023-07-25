@@ -30,11 +30,11 @@ Summary:        %{summary}
 
 %prep
 %autosetup -p1 -n libdecsync-%{version}
-find "${_libPath}" -delete
+find "%{libdir}" -delete
 cat "libdecsync/__init__.py" | tr $'\n' $'\r' \
 | sed 's#os_name = platform.system().*not supported")#libpath = resource_filename(__name__, "libs/libdecsync.so")#' \
-| tr $'\r' $'\n' > "${srcdir}/__init__.py.new"
-mv "${srcdir}/__init__.py.new" 'libdecsync/__init__.py'
+| tr $'\r' $'\n' > __init__.py.new
+mv /__init__.py.new libdecsync/__init__.py
 
 %generate_buildrequires
 %pyproject_buildrequires
