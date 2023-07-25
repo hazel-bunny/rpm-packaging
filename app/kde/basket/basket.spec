@@ -94,7 +94,7 @@ Requires:       %{name} = %{version}-%{release}
 Basket libraries
 
 %prep
-%forgeautosetup -n %{name}-%{tag} -p1
+%forgeautosetup -p1
 
 %build
 %cmake_kf5
