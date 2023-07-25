@@ -1,8 +1,8 @@
 %global _basename gradle
 %global debug_package %{nil}
 
-Name:           %{_basename}-bin
-Version:        7.6.2
+Name:           %{_basename}8-bin
+Version:        8.2.1
 Release:        %autorelease
 Summary:        Gradle Build System
 
@@ -12,8 +12,14 @@ URL:            https://%{_basename}.org/
 Source0:        https://services.%{_basename}.org/distributions/%{_basename}-%{version}-bin.zip
 
 BuildArch:      noarch
+
 BuildRequires:  unzip
+
 Requires:       java
+
+Provides:       %{_basename} = %{version}
+
+Conflicts:      gradle7-bin
 
 %description
 Gradle is a build tool with a focus on build automation and support for multi-
@@ -47,5 +53,5 @@ rm -rf %{buildroot}/opt/%{_basename}/init.d
 %{_bindir}/%{_basename}
 
 %changelog
-* Mon Jul 24 2023 Dipta Biswas <dab@gmail.com> 6.3-1
+* Tue Jul 25 2023 Dipta Biswas <dabiswas112@gmail.com> 8.2.1-1
 - Initial version.
