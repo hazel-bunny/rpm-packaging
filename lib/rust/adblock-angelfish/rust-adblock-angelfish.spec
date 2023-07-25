@@ -88,7 +88,7 @@ use the "object-pooling" feature of the "%{crate}" crate.
 
 %if %{with check}
 %check
-%cargo_test -f embedded-domain-resolver,full-regex-handling,object-pooling --no-run
+%cargo_test -f embedded-domain-resolver,full-regex-handling,object-pooling
 %endif
 
 %changelog
