@@ -1,0 +1,46 @@
+Reversal of 0d8d12f216828419582c6f7789a61d7cc2f6a974 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miroslav=20Bend=C3=ADk?= <miroslav.bendik@gmail.com>
+Date: Sun, 2 Jul 2023 06:18:14 +0200
+Subject: Reversal of [PATCH] fix: Returned original margins
+
+---
+ src/sk_layout.cpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/sk_layout.cpp b/src/sk_layout.cpp
+index 7a03841..2bbcd35 100644
+--- a/src/sk_layout.cpp
++++ b/src/sk_layout.cpp
+@@ -208,7 +208,7 @@ int SkulptureStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
+         case PM_ToolBarExtensionExtent: return 12;
+ 
+         case PM_SpinBoxSliderHeight: return 2;
+-
++/*
+         case PM_DefaultTopLevelMargin: {
+             if (d->dialogMargins >= 0) {
+                 return d->dialogMargins;
+@@ -226,7 +226,7 @@ int SkulptureStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
+                 return d->verticalSpacing;
+             }
+             return ((fontHeight(option, widget) * 3) >> 3);
+-        }
++        }*/
+ 
+         case PM_ToolBarIconSize:
+             return QCommonStyle::pixelMetric(metric, option, widget);
+@@ -280,11 +280,11 @@ int SkulptureStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
+         case PM_LayoutTopMargin:
+         case PM_LayoutRightMargin:
+         case PM_LayoutBottomMargin: {
+-            PixelMetric metric = QStyle::PM_DefaultChildMargin;
++           /* PixelMetric metric = QStyle::PM_DefaultChildMargin;
+             if ((option && (option->state & QStyle::State_Window)) || (widget && widget->isWindow())) {
+                 metric = QStyle::PM_DefaultTopLevelMargin;
+-            }
+-            return pixelMetric(metric, option, widget);
++            }*/
++            return 10;//pixelMetric(metric, option, widget);
+         }
+ 
+         case PM_LayoutHorizontalSpacing:

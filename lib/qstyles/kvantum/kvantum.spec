@@ -1,17 +1,19 @@
-%global _vpath_srcdir Kvantum
+%global _basename Kvantum
+
+%global _vpath_srcdir %{_basename}
 
 Name:           kvantum
 Version:        1.0.10
 Release:        %autorelease
 Epoch:          1
 Summary:        SVG-based theme engine for Qt, KDE and LXQt
-
-License:        GPL-3.0-only
-URL:            https://github.com/tsujan/Kvantum
-Source0:        %url/archive/V%{version}/%{name}-%{version}.tar.gz
+License:        GPLv3
+URL:            https://github.com/tsujan/%{_basename}
+Source:         %url/archive/V%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
+BuildRequires:  extra-cmake-modules
 BuildRequires:  make
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xext)
@@ -29,6 +31,10 @@ BuildRequires:  pkgconfig(Qt5Designer)
 BuildRequires:  pkgconfig(Qt5Svg)
 BuildRequires:  pkgconfig(Qt5X11Extras)
 BuildRequires:  qt5-rpm-macros
+
+#KF5
+BuildRequires:  cmake(KF5WindowSystem)
+BuildRequires:  kde-filesystem
 BuildRequires:  kf5-rpm-macros
 
 #Qt6
@@ -39,16 +45,12 @@ BuildRequires:  pkgconfig(Qt6Designer)
 BuildRequires:  pkgconfig(Qt6Svg)
 BuildRequires:  qt6-rpm-macros
 
-#KF5
-BuildRequires:  cmake(KF5WindowSystem)
-BuildRequires:  kde-filesystem
-
 Requires:       %{name}-data
 Requires:       %{name}-manager
 
-Requires:       qt4-style-%{name}
-Requires:       qt5-style-%{name}
-Requires:       qt6-style-%{name}
+Requires:       (qt4-style-%{name} if qt)
+Requires:       (qt5-style-%{name} if qt5-qtbase)
+Requires:       (qt6-style-%{name} if qt6-qtbase)
 
 Requires:       hicolor-icon-theme
 
@@ -73,13 +75,13 @@ installation and can be selected and activated by using Kvantum Manager.
 #-----------------------------------------------------------------------------
 
 %package manager
-Summary:    SVG-based theme engine for Qt, KDE and LXQt
+Summary:    Application for using and tweaking Kvantum themes
 
 Requires:   kvantum-data
 Requires:   qt5-style-kvantum
 
-Suggests:   (qt4-style-kvantum if qt)
-Suggests:   (qt6-style-kvantum if qt6-qtbase)
+Recommends: (qt4-style-kvantum if qt)
+Recommends: (qt6-style-kvantum if qt6-qtbase)
 
 Enhances:   kvantum
 
@@ -101,11 +103,9 @@ This package contains Kvantum manager.
 #-----------------------------------------------------------------------------
 
 %package data
-Summary:    SVG-based theme engine for Qt, KDE and LXQt
+Summary:    Common data for Kvantum
 
 BuildArch:  noarch
-
-Requires:   qt5-style-kvantum
 
 Enhances:   kvantum
 
@@ -113,18 +113,40 @@ Enhances:   kvantum
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
 elegance, usability and practicality.
 
-This package contains the data needed Kvantum.
+This package contains the data needed by Kvantum.
 
 %files data -f %{name}.lang
 %license Kvantum/COPYING
-%doc Kvantum/ChangeLog Kvantum/NEWS Kvantum/README.md
+%doc Kvantum/ChangeLog
+%doc Kvantum/NEWS
+%doc Kvantum/README.md
+%doc Kvantum/doc/*
 %{_datadir}/Kvantum/
 %{_datadir}/icons/hicolor/scalable/apps/kvantum.svg
 
 #-----------------------------------------------------------------------------
 
+%package    color-schemes
+Summary:    Color schemes provided by Kvantum
+
+BuildArch:  noarch
+
+Enhances:   kvantum
+
+%description color-schemes
+Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
+elegance, usability and practicality.
+
+This package contains the KDE color schemes provided by Kvantum.
+
+%files color-schemes
+%{_kde4_appsdir}/color-schemes/Kv*.colors
+%{_kf5_datadir}/color-schemes/Kv*.colors
+
+#-----------------------------------------------------------------------------
+
 %package -n qt4-style-kvantum
-Summary:    SVG-based theme engine for Qt, KDE and LXQt
+Summary:    SVG-based theme engine for Qt4, KDE and LXQt
 
 Requires:   kvantum-data
 
@@ -140,12 +162,11 @@ This package contains the Qt4 style.
 
 %files -n qt4-style-kvantum
 %{_qt4_plugindir}/styles/libkvantum.so
-%{_datadir}/kde4/apps/color-schemes/Kv*.colors
 
 #-----------------------------------------------------------------------------
 
 %package -n qt5-style-kvantum
-Summary:    SVG-based theme engine for Qt, KDE and LXQt
+Summary:    SVG-based theme engine for Qt5, KDE and LXQt
 
 Requires:   kvantum-data
 
@@ -161,12 +182,11 @@ This package contains the Qt5 style.
 
 %files -n qt5-style-kvantum
 %{_qt5_plugindir}/styles/libkvantum.so
-%{_datadir}/color-schemes/Kv*.colors
 
 #-----------------------------------------------------------------------------
 
 %package -n qt6-style-kvantum
-Summary:    SVG-based theme engine for Qt, KDE and LXQt
+Summary:    SVG-based theme engine for Qt6, KDE and LXQt
 
 Requires:   kvantum-data
 
@@ -219,6 +239,9 @@ This package contains the Qt6 style.
 %global _vpath_builddir %{_vpath_srcdir}/%{_target_platform}-qt6
 %cmake_install
 %undefine _vpath_builddir
+
+mkdir -p %{buildroot}%{_datadir}/doc
+cp -r Kvantum/doc %{buildroot}%{_datadir}/doc/kvantum-data
 
 # desktop-file-validate doesn't recognize LXQt
 sed -i "s|LXQt|X-LXQt|" %{buildroot}%{_datadir}/applications/kvantummanager.desktop

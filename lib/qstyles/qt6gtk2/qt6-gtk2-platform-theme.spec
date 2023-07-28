@@ -1,21 +1,18 @@
 %global _basename qt6gtk2
-
+%global forgeurl https://github.com/trialuser02/%{_basename}
 %global commit 2a21a8ad59a76e6928fae1699c830ca24fb2461c
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
+# %%global shortcommit %%(c=%%{commit}; echo ${c:0:7})
 %global date 20220520
+%forgemeta
 
 Name:     qt6-gtk2-platform-theme
-Version:  0.2%{?date:^git%{date}.%{shortcommit}}
+Version:  0.2
 Release:  %autorelease
 Summary:  GTK+2.0 integration plugins for Qt6
-License:  GPLv3
-URL:      https://github.com/trialuser02/%{_basename}
+License:  GPLv2
 
-%if 0%{?date}
-Source0: %{url}/archive/%{commit}/%{_basename}-%{commit}.tar.gz
-%else
-Source0: %{url}/archive/v%{version}/%{_basename}-%{version}.tar.gz
-%endif
+URL:      %{forgeurl}
+Source:   %{forgesource}
 
 BuildRequires: make
 
@@ -40,10 +37,16 @@ Qt6Gtk2 - GTK+2.0 integration plugins for Qt6
 %make_install INSTALL_ROOT=%{buildroot}
 
 %files
+%license COPYING
+%doc README.md ChangeLog AUTHORS
 %{_qt6_plugindir}/platformthemes/libqt6gtk2.so
 %{_qt6_plugindir}/styles/libqt6gtk2-style.so
 
 %changelog
+* Thu Jul 27 2023 Dipta Biswas <dabiswas112@gmail.com> 0.2-1.20220520git2a21a8ad
+- Fix license
+- Add docs
+
 * Mon Jul 17 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520-2
 - Rebuild for qt6-qtbase 6.5.1-2
 
