@@ -1,5 +1,5 @@
 %global _basename iaora-style
-%global forgeurl https://bitbucket.org/Caig/%{_basename}/commits/6ebc4dfa57108354a3f145d3fbea5efd0dc4315b
+%global forgeurl https://bitbucket.org/Caig/%{_basename}
 %global commit 6ebc4dfa57108354a3f145d3fbea5efd0dc4315b
 # %%global shortcommit %%(c=%%{commit}; echo ${c:0:7})
 %global date 20180406
