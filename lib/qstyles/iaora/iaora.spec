@@ -37,6 +37,7 @@ It includes the original KDE color schemes too
 
 %package     common
 Summary:     Common files for IaOra widget style
+Enhances:    iaora
 
 %description common
 %{summary}
@@ -50,6 +51,7 @@ Summary:     Common files for IaOra widget style
 %package     color-schemes
 Summary:     KDE color schemes from Mandriva's IaOra widget style
 Requires:    iaora-common
+Enhances:    iaora
 
 %description color-schemes
 The old Mandriva's IaOra widget style ported to Qt5 (no KDE dependencies)
@@ -63,6 +65,7 @@ This package contains the original KDE color schemes
 %package -n  qt5-style-iaora
 Summary:     Mandriva's IaOra widget style ported to Qt5
 Requires:    iaora-common
+Enhances:    iaora
 
 %description -n qt5-style-iaora
 %{summary}
