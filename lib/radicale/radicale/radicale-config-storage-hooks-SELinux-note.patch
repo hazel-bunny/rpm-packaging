@@ -1,0 +1,10 @@
+--- Radicale-3.0.6/config.orig	2021-11-20 07:11:17.884076653 +0100
++++ Radicale-3.0.6/config	2021-11-20 07:11:24.497058662 +0100
+@@ -94,6 +94,7 @@
+ 
+ # Command that is run after changes to storage
+ # Example: ([ -d .git ] || git init) && git add -A && (git diff --cached --quiet || git commit -m "Changes by "%(user)s)
++# Note: storage hooks configuration is currently not supported by packaged SELinux policy and requires a local custom policy extension (RHBZ#1928899)
+ #hook =
+ 
+ 

@@ -91,7 +91,7 @@ elegance, usability and practicality.
 
 This package contains Kvantum manager.
 
-%files manager
+%files manager -f %{name}.lang
 %{_bindir}/kvantummanager
 %{_bindir}/kvantumpreview
 %{_datadir}/applications/kvantummanager.desktop
@@ -115,7 +115,7 @@ elegance, usability and practicality.
 
 This package contains the data needed by Kvantum.
 
-%files data -f %{name}.lang
+%files data
 %license Kvantum/COPYING
 %doc Kvantum/ChangeLog
 %doc Kvantum/NEWS

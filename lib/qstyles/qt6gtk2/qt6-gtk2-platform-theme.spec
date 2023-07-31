@@ -27,7 +27,7 @@ BuildRequires: libX11-devel
 Qt6Gtk2 - GTK+2.0 integration plugins for Qt6
 
 %prep
-%setup -qn %{_basename}-%{commit}
+%forgeautosetup
 
 %build
 %qmake_qt6 PREFIX=%{_prefix}
@@ -46,6 +46,7 @@ Qt6Gtk2 - GTK+2.0 integration plugins for Qt6
 * Thu Jul 27 2023 Dipta Biswas <dabiswas112@gmail.com> 0.2-1.20220520git2a21a8ad
 - Fix license
 - Add docs
+- Rebuild for qt6-qtbase 6.5.2-1
 
 * Mon Jul 17 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520-2
 - Rebuild for qt6-qtbase 6.5.1-2

@@ -1,6 +1,6 @@
-%global forgeurl https://github.com/mireq/skulpture
-%global commit 0cbe7aad8fb882a14ef832f927cbe82aeebb038c
-%global date 20230702
+%global forgeurl https://github.com/atolstoy/skulpture
+%global commit 725af7dd8cf7d573c36da698321760a1dfc84491
+%global date 20230729
 %forgemeta
 
 Name:     skulpture
@@ -11,7 +11,7 @@ Summary:  A classic style for Qt5 and Qt6 apps
 
 URL:      %{forgeurl}
 Source:   %{forgesource}
-Patch:    reverse-0d8d12f2.patch
+#Patch:   reverse-0d8d12f2.patch
 
 BuildRequires: cmake
 BuildRequires: extra-cmake-modules
@@ -39,9 +39,8 @@ BuildRequires: cmake(Qt6Gui)
 BuildRequires: qt6-rpm-macros
 
 Requires:      skulpture-common
-Requires:      skulpture-color-schemes
 Requires:      (qt5-style-skulpture if qt5-qtbase)
-Requires:      (skulpture-config if qt5-qtbase)
+Requires:      (kde-style-skulpture if qt5-qtbase)
 Requires:      (qt6-style-skulpture if qt6-qtbase)
 
 %description
@@ -70,28 +69,18 @@ Summary:     Common files for skulpture widget style
 
 #-------------------------------------------------------------------------------
 
-%package     color-schemes
-Summary:     KDE color schemes from skulpture widget style
-Requires:    skulpture-common
+%package -n     kde-style-skulpture
+Summary:        Tool to use the skulpture widget style with KDE Plasma
+Requires:       skulpture-common
+Requires:       qt5-style-skulpture
 
-%description color-schemes
-%{summary}
+%description -n kde-style-skulpture
+This package contains the kstyle, color scheme and configuration tool for
+using the skulpture qstyle with KDE Plasma
 
-%files       color-schemes
+%files -n       kde-style-skulpture
 %{_datadir}/color-schemes/Skulpture*.colors
-
-#-------------------------------------------------------------------------------
-
-%package     config
-Summary:     GUI configuration tool for skulpture widget style
-Requires:    skulpture-common
-Requires:    qt5-style-skulpture
-
-%description config
-%{summary}
-
-%files       config
-%{_qt5_plugindir}/kstyle_skulpture_config.so
+%{_datadir}/kstyle/themes/skulpture.themerc
 %{_datadir}/kxmlgui5/skulpture
 
 #-------------------------------------------------------------------------------
@@ -106,6 +95,7 @@ Recommends:     skulpture-config
 
 %files -n       qt5-style-skulpture
 %{_qt5_plugindir}/styles/skulpture.so
+%{_qt5_plugindir}/kstyle_skulpture_config.so
 
 #-------------------------------------------------------------------------------
 

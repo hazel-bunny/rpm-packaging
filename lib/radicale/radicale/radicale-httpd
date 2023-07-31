@@ -1,0 +1,32 @@
+# For more information, visit:
+# http://radicale.org/user_documentation/#idapache-and-mod-wsgi
+
+# WARNING: To use this correctly, you will need to set:
+#    "setsebool -P httpd_can_read_write_radicale=1"
+
+#<VirtualHost *:80>
+#    ServerName cal.localhost
+
+#    WSGIDaemonProcess radicale user=radicale group=radicale threads=1 umask=0027
+#    WSGIScriptAlias / /usr/share/radicale/radicale.wsgi
+
+#    <Location />
+#        WSGIProcessGroup radicale
+#        WSGIApplicationGroup %{GLOBAL}
+#        AllowOverride None
+#
+#        ## You may want to use apache's authentication
+#        AuthBasicProvider file
+#        AuthType Basic
+#        AuthName "Enter your credentials"
+#        AuthUserFile /path/to/httpdfile/
+#        AuthGroupFile /dev/null
+#        Require valid-user
+#        <IfModule rewrite_module>
+#            RewriteEngine On
+#            RewriteCond %{REMOTE_USER}%{PATH_INFO} !^([^/]+/)\1
+#            RewriteRule .* - [Forbidden]
+#        </IfModule>
+#
+#    </Location>
+#</VirtualHost>
