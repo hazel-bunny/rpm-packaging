@@ -11,6 +11,7 @@ Source:         %{pypi_source radicale_storage_decsync}
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
+BuildRequires:  libdecsync-devel
 
 
 # Fill in the actual package description to submit package to Fedora
