@@ -11,12 +11,13 @@ Source:         %{pypi_source radicale_storage_decsync}
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
+BuildRequires:  libxcrypt-compat
 BuildRequires:  libdecsync-devel
 
 
 # Fill in the actual package description to submit package to Fedora
 %global _description %{expand:
-This is package 'radicale_storage_decsync' generated automatically by pyp2spec.}
+Radicale DecSync is an Radicale storage plugin which adds synchronization of contacts and calendars using DecSync. This allows you to use DecSync on any CalDAV/CardDAV compatible client like Thunderbird.}
 
 
 %description %_description
