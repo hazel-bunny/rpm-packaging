@@ -65,7 +65,7 @@ The %{name}-doc package contains documentation for %{name}.
 
 
 %prep
-%forgesetup -q
+%forgesetup
 
 %patch1 -p1 -b .no_static
 %patch2 -p1 -b .cxxflags
