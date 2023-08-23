@@ -1,20 +1,17 @@
+%global forgeurl https://gitlab.com/accounts-sso/signond
 %global commit 5b34c5bbc45eedf55bf553675595b3fcb5c156a8
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global date 20220309
+Version:        8.61
 %global tag VERSION_%{version}
+%forgemeta
 
 Name:           signon
-Version:        8.61
 Release:        %autorelease
 Summary:        Accounts framework for Linux and POSIX based platforms
 
 License:        LGPLv2
-URL:            https://gitlab.com/accounts-sso/signond
-
-%if 0%{?tag:1}
-Source0:        https://gitlab.com/accounts-sso/signond/repository/archive.tar.gz?ref=%{tag}#/%{name}-%{version}.tar.gz
-%else
-Source0:        https://gitlab.com/accounts-sso/signond/repository/archive.tar.gz?ref=%{commit}#/%{name}-%{shortcommit}.tar.gz
-%endif
+URL:            %forgeurl
+Source0:        %forgesource
 
 # cmake config files still define SIGNONQT_LIBRARIES_STATIC, but meh, anyone who
 # tries to use that deserves what they get
@@ -68,7 +65,7 @@ The %{name}-doc package contains documentation for %{name}.
 
 
 %prep
-%setup -q -n signond-%{tag}-%{commit}
+%forgesetup -q
 
 %patch1 -p1 -b .no_static
 %patch2 -p1 -b .cxxflags
