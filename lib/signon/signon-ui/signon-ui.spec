@@ -56,6 +56,8 @@ export PATH=%{_qt5_bindir}:$PATH
 
 %install
 %make_install
+# Own directory where others can install provider-specific configuration
+mkdir -p %{buildroot}/%{_sysconfdir}/signon-ui/webkit-options.d
 
 %changelog
 %autochangelog
