@@ -41,6 +41,7 @@ developing applications that use %{name}.
 %doc README TODO NOTES
 %license COPYING
 %{_bindir}/signon-ui
+%{_datadir}/applications/signon-ui.desktop
 %{_datadir}/dbus-1/services/*.service
 %{_sysconfdir}/signon-ui
 
@@ -52,10 +53,10 @@ sed -e 's|src \\|src|' -e '/tests/d' -i signon-ui.pro
 %build
 export PATH=%{_qt5_bindir}:$PATH
 %{qmake_qt5} QMF_INSTALL_ROOT=%{_prefix} CONFIG+=release signon-ui.pro
-%make_build
+make %{?_smp_mflags}
 
 %install
-%make_install
+make install INSTALL_ROOT=%{buildroot}
 # Own directory where others can install provider-specific configuration
 mkdir -p %{buildroot}/%{_sysconfdir}/signon-ui/webkit-options.d
 
