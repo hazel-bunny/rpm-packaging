@@ -1,16 +1,20 @@
+%global forgeurl https://gitlab.com/accounts-sso/signon-ui
+%global commit 4368bb77d9d1abc2978af514225ba4a42c29a646
+%global date 20171022
+%forgemeta
+
 Name:           signon-ui
 Version:        0.17+15.10.20150810
 Release:        %autorelease
-Summary:        Online Accounts Sign-on Ui
-
+Summary:        Online Accounts Sign-on UI
 License:        GPLv3
-URL:            https://gitlab.com/accounts-sso/signon-ui
+URL:            %{forgeurl}
 
-Source0:        https://gitlab.com/accounts-sso/signon-ui/-/archive/%{version}-0ubuntu1/signon-ui-%{version}-0ubuntu1.tar.gz
+Source0:        %{forgesource}
+Patch0:         fake-user-agent.patch
 
 BuildRequires:  make
 BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtwebkit-devel
 BuildRequires:  libaccounts-qt5-devel
 BuildRequires:  signon-devel
 BuildRequires:  libproxy-devel
@@ -33,31 +37,25 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
-
-%prep
-%setup -q -n signon-ui-%{version}-0ubuntu1
-
-
-%build
-export PATH=%{_qt5_bindir}:$PATH
-%{qmake_qt5} QMF_INSTALL_ROOT=%{_prefix} \
-    CONFIG+=release signon-ui.pro
-
-make %{?_smp_mflags}
-
-
-%install
-make install INSTALL_ROOT=%{buildroot}
-
-# Own directory where others can install provider-specific configuration
-mkdir -p %{buildroot}/%{_sysconfdir}/signon-ui/webkit-options.d
-
 %files
 %doc README TODO NOTES
 %license COPYING
 %{_bindir}/signon-ui
 %{_datadir}/dbus-1/services/*.service
 %{_sysconfdir}/signon-ui
+
+%prep
+%forgeautosetup -p1
+# Do not install tests
+sed -e 's|src \\|src|' -e '/tests/d' -i signon-ui.pro
+
+%build
+export PATH=%{_qt5_bindir}:$PATH
+%{qmake_qt5} QMF_INSTALL_ROOT=%{_prefix} CONFIG+=release signon-ui.pro
+%make_build
+
+%install
+%make_install
 
 %changelog
 %autochangelog
