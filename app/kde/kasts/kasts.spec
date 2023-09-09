@@ -1,7 +1,7 @@
 %global kf5_min_version 5.88.0
 
 Name:           kasts
-Version:        23.04.3
+Version:        23.08.0
 Release:        %autorelease
 Epoch:          1
 License:        GPLv2 and GPLv2+ and GPLv3+ and BSD and LGPLv3+
@@ -88,8 +88,11 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf5_metainfodir}/org.kde.%{
 
 
 %changelog
-* Sun Jul 09 2023 Dipta Biswas <marcdeop@fedoraproject.org> - 1:23.04.3-1
+* Sat Sep 09 2023 Dipta Biswas <dabiswas112@gmail.com> - 1:23.08.0-1
 - Add support for vlc & gstreamer
+
+* Sat Aug 26 2023 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 23.08.0-1
+- 23.08.0
 
 * Sat Jul 08 2023 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 23.04.3-1
 - 23.04.3
