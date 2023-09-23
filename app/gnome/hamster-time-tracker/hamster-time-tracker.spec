@@ -56,7 +56,7 @@ what. Maybe print it out, or export to some suitable format, if time reporting
 is a request of your employee.
 
 %prep
-%forgeautosetup -n %{_basename}-%{commit}
+%setup -qn %{_basename}-%{commit}
 
 %build
 ./waf configure -vv --prefix=%{_prefix} --datadir=%{_datadir} 
