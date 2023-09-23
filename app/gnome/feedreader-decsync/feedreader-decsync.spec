@@ -52,7 +52,7 @@ like synchronization across all your devices with everything you expect from a
 modern desktop application.
 
 %prep
-%forgesetup -n FeedReader-%{version}
+%setup -qn FeedReader-%{version}
 
 %build
 %meson
