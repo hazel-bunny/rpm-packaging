@@ -5,6 +5,7 @@
 Name:    gradle-autowrap
 Version: 1.1.1
 Release: %autorelease
+License: Unlicense
 Summary: Gradle Wrapper
 URL:     %{forgeurl}
 Source:  %{forgesource}
