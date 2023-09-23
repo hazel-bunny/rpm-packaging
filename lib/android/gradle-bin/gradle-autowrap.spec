@@ -34,7 +34,7 @@ install -Dm 444 UNLICENSE %{buildroot}%{datadir}/licenses/%{name}/UNLICENSE
 %files
 %license UNLICENSE
 %doc README.md
-%{prefix}/local/bin/gradle
+%{_prefix}/local/bin/gradle
 
 %changelog
 %autochangelog
