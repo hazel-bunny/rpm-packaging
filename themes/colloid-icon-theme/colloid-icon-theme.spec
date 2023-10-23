@@ -13,6 +13,8 @@ Summary:        Colloid icon theme for linux desktops
 URL:            %{forgeurl}
 Source0:        %{forgesource}
 
+BuildRequires:  gtk-update-icon-cache
+
 BuildArch:      noarch
 
 %description
