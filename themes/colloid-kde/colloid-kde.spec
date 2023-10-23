@@ -35,10 +35,9 @@ mkdir -p %{buildroot}%{_datadir}
 %{_datadir}/aurorae/themes/Colloid*
 %{_datadir}/color-schemes/Colloid*
 %{_datadir}/plasma/desktoptheme/Colloid*
-%{_datadir}/plasma/look-and-feel/Colloid*
+%{_datadir}/plasma/look-and-feel/com.github.vinceliuice.Colloid*
 %{_datadir}/Kvantum/Colloid*
 %{_datadir}/wallpapers/Colloid*
-%{_datadir}/latte/Colloid*
 
 %changelog
 * Mon Oct 23 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0-1.20230812
