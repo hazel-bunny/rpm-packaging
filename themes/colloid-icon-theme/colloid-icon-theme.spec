@@ -28,7 +28,7 @@ BuildArch:      noarch
 
 %install
 mkdir -p %{buildroot}%{_datadir}/icons
-./install.sh -d %{buildroot}%{_datadir}/icons -t all -s all -d %{buildroot}%{_iconsdir}
+./install.sh -d %{buildroot}%{_datadir}/icons -t all -s all
 
 %files
 %{_datadir}/icons/Colloid*
