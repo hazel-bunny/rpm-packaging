@@ -24,7 +24,6 @@ BuildRequires: sassc
 %{summary}
 
 %files
-%{_datadir}/themes/Colloid
 %{_datadir}/themes/Colloid-*
 
 #------------------------------------------------------------------
