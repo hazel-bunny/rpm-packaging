@@ -1,7 +1,7 @@
 %global _basename kora
 
 Name:               %{_basename}-icon-theme
-Version:            1.5.7
+Version:            1.5.8
 Release:            %autorelease
 License:            GPL-3.0
 URL:                https://github.com/bikass/%{_basename}
@@ -11,9 +11,7 @@ Source0:            %{url}/archive/v%{version}/%{_basename}-%{version}.tar.gz
 
 BuildArch:          noarch
 
-BuildRequires:      fdupes
-
-Requires(post):     gtk-update-icon-cache
+Requires:           gtk-update-icon-cache
 
 %description
 Kora is an SVG icon theme with lots of new icons for GNU/Linux operating systems.
@@ -31,7 +29,6 @@ kora-pgrey - theme with grey folder colors (depends on Kora)
 # Nothing to do here
 
 %install
-%fdupes %{buildroot}
 # Delete useless files from source folder
 rm -f "%{_basename}/create-new-icon-theme.cache.sh"
 rm -f "%{_basename}/icon-theme.cache"
