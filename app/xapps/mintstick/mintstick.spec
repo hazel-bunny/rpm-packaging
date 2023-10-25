@@ -1,20 +1,18 @@
-%define git 0
+%global forgeurl https://github.com/linuxmint/mintstick
+%global commit 750c6bb8b41dd70630bb7790643407acd7992378
+%global date 20230328
+%forgemeta
 
 %global app_id com.linuxmint.mintstick
 
-%global commit 750c6bb8b41dd70630bb7790643407acd7992378
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date 20230328
-
 Name:           mintstick
-Version:        1.5.6%{?%git:^git%{date}.%{shortcommit}}
+Version:        1.5.6
 Release:        %autorelease
+Epoch:          1
 Group:          Applications/System
 License:        GPL
-URL:            https://github.com/linuxmint/%{name}
-Summary:        Format USB sticks and create bootable USB sticks
-
-Source:         %{url}/archive/%{commit}/%{_basename}-%{commit}.tar.gz
+URL:            %{forgeurl}
+Source:         %{forgesource}
 
 BuildArch:      noarch
 
@@ -63,9 +61,9 @@ Mintstick is a graphical tool that allows you to format USB sticks and create bo
 #------------------------------------------------------------------
 
 %package -n nemo-extension-%{name}
-Summary:	Integration of Mintstick with Nemo file manager
-Group:		Graphical desktop/Cinnamon
-Requires:	nemo
+Summary:        Integration of Mintstick with Nemo file manager
+Group:          Graphical desktop/Cinnamon
+Requires:       nemo
 
 %description -n nemo-extension-%{name}
 Integration of Mintstick with Nemo file manager
@@ -76,7 +74,7 @@ Integration of Mintstick with Nemo file manager
 #------------------------------------------------------------------
 
 %prep
-%setup -q -n %{name}
+%forgeautosetup -p1
 sed -i 's,/usr/lib/,%{_libdir}/,' %{name}
 
 %build
@@ -104,22 +102,4 @@ cp share/kde4/%{name}-format_action.desktop %{buildroot}%{_datadir}/kde4/apps/so
 #------------------------------------------------------------------
 
 %changelog
-* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-5
-- Mark libunity as recommended, not required
-- Comply to fedora python packaging guidelines
-
-* Thu Jul 6 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-4
-- Add support for libunity
-
-* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-3
-- Fix binary
-
-* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-2
-- Update dependencies and files
-
-* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-1
-- Import from alanfla/mintstick
-- Refactor spec
-
-* Fri Nov 13 2020 builder
-- Build initial package rpm.
+%autochangelog

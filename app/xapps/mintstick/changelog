@@ -1,0 +1,22 @@
+* Sun Oct 1 2023 Dipta Biswas <dabiswas112@gmail.com> 1:1.5.6-6
+- Fix fetching source
+
+* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-5
+- Mark libunity as recommended, not required
+- Comply to fedora python packaging guidelines
+
+* Thu Jul 6 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-4
+- Add support for libunity
+
+* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-3
+- Fix binary
+
+* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-2
+- Update dependencies and files
+
+* Wed Jul 5 2023 Dipta Biswas <dabiswas112@gmail.com> 1.5.6-1
+- Import from alanfla/mintstick
+- Refactor spec
+
+* Fri Nov 13 2020 builder
+- Build initial package rpm.
