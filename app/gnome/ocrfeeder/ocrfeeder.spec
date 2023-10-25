@@ -26,7 +26,7 @@ BuildRequires:  gnome-common
 # for GooCanvas-2.0.typelib
 BuildRequires:  goocanvas2
 # for Gtk-3.0.typelib
-BuildRequires:  gtk3
+BuildRequires:  gtk3-devel
 # for GtkSpell-3.0.typelib
 BuildRequires:  gtkspell3
 BuildRequires:  python3-devel
