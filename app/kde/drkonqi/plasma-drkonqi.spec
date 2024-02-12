@@ -4,7 +4,7 @@
 
 Name:    plasma-drkonqi
 Summary: DrKonqi crash handler for KF5/Plasma5
-Version: 5.27.9
+Version: 5.27.10
 Release: %autorelease
 Epoch:   1
 
