@@ -1,6 +1,6 @@
 %global forgeurl https://github.com/10110111/k4oxygen
-%global commit b46683b3e524dc5316c2774baf6029eddc58b9e0
-%global date 20230729
+%global commit d6190f579c34148b32fd8ecd64d9bbb270a6900a
+%global date 20230916
 %forgemeta
 
 Name:    k4oxygen
