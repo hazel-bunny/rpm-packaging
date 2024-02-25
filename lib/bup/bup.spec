@@ -77,8 +77,7 @@ sed -i 's|/lib/bup|/%{_lib}/bup|' %{buildroot}%{_bindir}/bup
 %{_bindir}/%{name}
 %{_datadir}/doc/bup
 %{_libdir}/%{name}/
-%{_mandir}/man1/%{name}.1*
-%{_mandir}/man1/%{name}-*.1*
+%{_mandir}/man1/%{name}*
 
 
 %changelog
