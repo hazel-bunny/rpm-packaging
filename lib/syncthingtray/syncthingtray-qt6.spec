@@ -42,36 +42,19 @@
 
 Name:           %{reponame}-%{cfg}
 Version:        1.4.13
-Release:        1
+Release:        %autorelease
 Summary:        Tray application for Syncthing
 License:        GPL-2.0-or-later
 Group:          System/Packages
 URL:            https://github.com/Martchus/%{reponame}
 Source:         https://github.com/Martchus/%{reponame}/archive/v%{version}/%{reponame}-%{version}.tar.gz
+
 BuildRequires:  cmake >= 3.17
-%if 0%{?fedora}
-%else
-BuildRequires:  ninja
-%endif
 BuildRequires:  cppunit-devel >= 1.14.0
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-BuildRequires:  gcc9-c++
-%else
 BuildRequires:  gcc-c++
-%endif
 BuildRequires:  c++utilities-devel
-%if 0%{?fedora}
 BuildRequires:  boost-devel > 1.75
-%else
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-BuildRequires:  libboost_filesystem1_75_0-devel
-BuildRequires:  libboost_headers1_75_0-devel
-BuildRequires:  libboost_system1_75_0-devel
-%else
-BuildRequires:  boost-devel > 1.75
-BuildRequires:  libboost_filesystem-devel > 1.75
-%endif
-%endif
+
 BuildRequires:  cmake(Qt6Concurrent)
 BuildRequires:  cmake(Qt6Core)
 BuildRequires:  cmake(Qt6DBus)
@@ -93,10 +76,6 @@ BuildRequires:  cmake(KF6IO)
 BuildRequires:  cmake(Plasma)
 BuildRequires:  cmake(Qt6Quick)
 BuildRequires:  cmake(Qt6QuickControls2)
-%endif
-%if 0%{?fedora_version}
-%else
-BuildRequires:  update-desktop-files
 %endif
 BuildRequires:  pkgconfig
 BuildRequires:  qtforkawesome-%{cfg}-devel
@@ -190,14 +169,6 @@ KIO plugin to show Syncthing actions in Dolphin context menu
 %setup -q -n %{reponame}-%{version}
 
 %build
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-export CC=gcc-9
-export CXX=g++-9
-%endif
-%if 0%{?fedora}
-%else
-%define __builder ninja
-%endif
 %cmake \
   -DCONFIGURATION_NAME:STRING="%{cfg}" \
   -DCONFIGURATION_DISPLAY_NAME="Qt 6" \
@@ -219,42 +190,17 @@ export CXX=g++-9
   -DQT_PLUGIN_DIR=%{_qt6_pluginsdir} \
   -DWEBVIEW_PROVIDER:STRING=%{webview_provider} \
   -DJS_PROVIDER:STRING=qml
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-make %{?_smp_mflags}
-%else
 %cmake_build
-%endif
 
 %check
 export QT_QPA_PLATFORM=offscreen
 export SYNCTHING_TEST_TIMEOUT_FACTOR=10
 export SYNCTHINGTRAY_WIZARD_SETUP_DETECTION_TIMEOUT=5000
-%if 0%{?fedora}
-%if 0%{?fedora_version} < 33
-make %{?_smp_mflags} check
-%else
 export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}/connector:$PWD/%{__cmake_builddir}/testhelper:$LD_LIBRARY_PATH"
 %cmake_build --target check
-%endif
-%else
-%if 0%{?sle_version} && 0%{?sle_version} <= 120400
-%else
-cd "%{__builddir}"
-export LD_LIBRARY_PATH="$PWD/connector:$PWD/testhelper:$LD_LIBRARY_PATH"
-%cmake_build check
-%endif
-%endif
 
 %install
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-DESTDIR=%{buildroot} make %{?_smp_mflags} install
-%else
 %cmake_install
-%if 0%{?fedora}
-%else
-%suse_update_desktop_file -r %{name} Network FileTransfer
-%endif
-%endif
 
 # remove devel files for plugins
 %if "%{disable_kde_integrations}" == "OFF"
