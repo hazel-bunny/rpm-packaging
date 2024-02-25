@@ -6,6 +6,7 @@ Summary: Very efficient backup system based on the git packfile format
 License: LGPLv2 and BSD and Python
 URL: https://bup.github.io/
 Source0: https://github.com/bup/bup/archive/%{version}.tar.gz
+Patch0: py312.patch
 
 BuildRequires:  gcc
 BuildRequires:  sed
@@ -45,7 +46,7 @@ Requires:       python3-tornado
 
 
 %prep
-%autosetup
+%autosetup -p1
 
 %build
 make %{?_smp_mflags} CFLAGS="${CFLAGS:-%optflags}" PYTHON=%{__python3}
