@@ -1,12 +1,16 @@
+%global forgeurl https://github.com/bup/bup
+%global commit a2584f274aaae6f1428193763eed64282619fe08
+%global date 20240121
+%forgemeta
+
 Name: bup
 Version: 0.33.3
 Release: %autorelease
 Summary: Very efficient backup system based on the git packfile format
 
 License: LGPLv2 and BSD and Python
-URL: https://bup.github.io/
-Source0: https://github.com/bup/bup/archive/%{version}.tar.gz
-Patch0: py312.patch
+URL:	 %{forgeurl}
+Source:  %{forgesource}
 
 BuildRequires:  gcc
 BuildRequires:  sed
@@ -46,7 +50,7 @@ Requires:       python3-tornado
 
 
 %prep
-%autosetup -p1
+%forgeautosetup
 
 %build
 make %{?_smp_mflags} CFLAGS="${CFLAGS:-%optflags}" PYTHON=%{__python3}
