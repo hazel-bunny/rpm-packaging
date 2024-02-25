@@ -18,7 +18,7 @@ BuildRequires:  libappstream-glib
 # libnotify is required for notify-send
 Requires:       aria2 libnotify python3-pyside6 python3-requests
 Requires:       python3-setproctitle sound-theme-freedesktop python3-psutil
-Requires:       pulseaudio-utils yt-dlp
+Requires:       pulseaudio-utils yt-dlp qt6-qtsvg
 
 %description
 Persepolis is a download manager and a GUI for aria2 powered by Python.
