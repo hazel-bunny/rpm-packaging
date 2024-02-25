@@ -23,11 +23,6 @@
 %define cfg qt6
 %define soname 1
 
-# define _libqt5_plugindir macro for Fedora
-%if 0%{?fedora_version}
-%define _qt6_pluginsdir %{_libdir}/qt6/plugins
-%endif
-
 Name:           %{reponame}-%{cfg}
 Version:        0.1.0
 Release:        %autorelease
@@ -112,7 +107,7 @@ Qt icon engine plugin for %{reponame}-%{cfg}
   -DCONFIGURATION_PACKAGE_SUFFIX_QTUTILITIES:STRING="-%{cfg}" \
   -DQT_PACKAGE_PREFIX:STRING='Qt6' \
   -DBUILTIN_TRANSLATIONS:BOOL=ON \
-  -DQT_PLUGIN_DIR=%{_qt6_pluginsdir} \
+  -DQT_PLUGIN_DIR=%{_qt6_plugindir} \
   -DFORK_AWESOME_FONT_FILE="%{_builddir}/%{reponame_forkawesome}-%{version_forkawesome}/fonts/forkawesome-webfont.ttf" \
   -DFORK_AWESOME_ICON_DEFINITIONS="%{_builddir}/%{reponame_forkawesome}-%{version_forkawesome}/src/icons/icons.yml"
 %cmake_build
@@ -154,8 +149,8 @@ export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 %{_libdir}/libqtquickforkawesome-%{cfg}.so
 
 %files -n qtforkawesomeiconengine-%{cfg}
-%dir %{_qt6_pluginsdir}/iconengines
-%{_qt6_pluginsdir}/iconengines/lib%{reponame}iconengine-%{cfg}.so
+%dir %{_qt6_plugindir}/iconengines
+%{_qt6_plugindir}/iconengines/lib%{reponame}iconengine-%{cfg}.so
 
 %changelog
 * Fri Feb 16 2024 Marius Kittler <marius.kittler@suse.com>
