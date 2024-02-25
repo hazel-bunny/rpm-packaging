@@ -30,7 +30,7 @@
 
 Name:           %{reponame}-%{cfg}
 Version:        0.1.0
-Release:        2.1
+Release:        1
 Summary:        Library that bundles ForkAwesome for use within Qt applications
 License:        GPL-2.0-or-later
 Group:          System/Packages
