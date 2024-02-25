@@ -23,7 +23,7 @@
 
 Name:           %{reponame}-%{cfg}
 Version:        6.13.4
-Release:        1.1
+Release:        1
 Summary:        Common Qt related C++ classes and routines such as dialogs, widgets and models
 License:        GPL-2.0-or-later
 Group:          System/Packages
