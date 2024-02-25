@@ -66,8 +66,7 @@ BuildRequires:  cmake(Qt6WebEngineWidgets)
 %if "%{disable_kde_integrations}" == "OFF"
 BuildRequires:  kf6-extra-cmake-modules
 BuildRequires:  cmake(KF6Config)
-BuildRequires:  cmake(KF6ConfigCore)
-BuildRequires:  cmake(KF6IO)
+BuildRequires:  cmake(KF6KIO)
 BuildRequires:  cmake(Plasma)
 BuildRequires:  cmake(Qt6Quick)
 BuildRequires:  cmake(Qt6QuickControls2)
