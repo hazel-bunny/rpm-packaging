@@ -14,6 +14,7 @@ Source:         %{forgesource}
 
 BuildRequires:  cmake
 BuildRequires:  extra-cmake-modules
+BuildRequires:  kf6-rpm-macros
 
 BuildRequires:  cmake(Qt6Core)
 BuildRequires:  cmake(Qt6Widgets)
