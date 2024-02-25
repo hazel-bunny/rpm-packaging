@@ -22,23 +22,16 @@
 
 Name:           %{reponame}
 Version:        5.24.6
-Release:        1
+Release:        %autorelease
 Summary:        Common C++ classes and routines
 License:        GPL-2.0-or-later
 Group:          Development/Libraries/C and C++
 URL:            https://github.com/Martchus/cpp-utilities
 Source:         https://github.com/Martchus/cpp-utilities/archive/v%{version}/cpp-utilities-%{version}.tar.gz
+
 BuildRequires:  cmake >= 3.17
-%if 0%{?fedora}
-%else
-BuildRequires:  ninja
-%endif
 BuildRequires:  cppunit-devel >= 1.14.0
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-BuildRequires:  gcc9-c++
-%else
 BuildRequires:  gcc-c++
-%endif
 BuildRequires:  pkgconfig
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -68,46 +61,15 @@ Development files for %{reponame}
 %setup -q -n cpp-utilities-%{version}
 
 %build
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-export CC=gcc-9
-export CXX=g++-9
-%endif
-%if 0%{?fedora}
-%else
-%define __builder ninja
-%endif
-%cmake \
-  -DBUILD_SHARED_LIBS:BOOL=ON
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-make %{?_smp_mflags}
-%else
+%cmake -DBUILD_SHARED_LIBS:BOOL=ON
 %cmake_build
-%endif
 
 %check
-%if 0%{?fedora}
-%if 0%{?fedora_version} < 33
-make %{?_smp_mflags} check
-%else
 export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 %cmake_build --target check
-%endif
-%else
-%if (0%{?sle_version} == 150200 || 0%{?sle_version} == 150300) && 0%{?is_opensuse}
-# FIXME: fix tests under Leap 15.2 which fail at some point with "1/1 Test #1: ...........***Exception: SegFault  0.02 sec"
-%else
-cd "%{__builddir}"
-export LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH"
-%cmake_build check
-%endif
-%endif
 
 %install
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-DESTDIR=%{buildroot} make %{?_smp_mflags} install
-%else
 %cmake_install
-%endif
 
 %post -n lib%{reponame}%{soname} -p /sbin/ldconfig
 %postun -n lib%{reponame}%{soname} -p /sbin/ldconfig
@@ -126,8 +88,6 @@ DESTDIR=%{buildroot} make %{?_smp_mflags} install
 %changelog
 * Fri Feb 16 2024 Marius Kittler <marius.kittler@suse.com>
 - Update to 5.24.6
-* Fri Feb 16 2024 Marius Kittler <marius.kittler@suse.com>
-- Update to 5.24.7
 * Mon Dec 11 2023 Marius Kittler <marius.kittler@suse.com>
 - Update to 5.24.4
 * Tue Dec  5 2023 Marius Kittler <marius.kittler@suse.com>
