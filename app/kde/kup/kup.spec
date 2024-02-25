@@ -11,7 +11,7 @@ Summary:        Backup scheduler for the Plasma desktop
 License:        GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-KDE-Accepted-GPL
 URL:            %{forgeurl}
 Source:         %{forgesource}
-Patch:          fix_deprecated.patch
+#Patch:          fix_deprecated.patch
 
 BuildRequires:  cmake
 BuildRequires:  extra-cmake-modules
@@ -50,6 +50,7 @@ Kup can help you remember to keep up-to-date backups of your personal files. It 
 %forgeautosetup -p1
 
 %build
+export QT_SELECT=qt6
 %cmake_kf6
 %cmake_build
 
