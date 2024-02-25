@@ -30,23 +30,16 @@
 
 Name:           %{reponame}-%{cfg}
 Version:        0.1.0
-Release:        1
+Release:        %autorelease
 Summary:        Library that bundles ForkAwesome for use within Qt applications
 License:        GPL-2.0-or-later
 Group:          System/Packages
 URL:            https://github.com/Martchus/%{reponame}
 Source0:        https://github.com/Martchus/%{reponame}/archive/v%{version}/%{reponame}-%{version}.tar.gz
 Source1:        https://github.com/ForkAwesome/%{reponame_forkawesome}/archive/refs/tags/%{version_forkawesome}.tar.gz
+
 BuildRequires:  cmake >= 3.17
-%if 0%{?fedora}
-%else
-BuildRequires:  ninja
-%endif
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-BuildRequires:  gcc9-c++
-%else
 BuildRequires:  gcc-c++
-%endif
 BuildRequires:  c++utilities-devel
 BuildRequires:  perl-YAML-LibYAML
 BuildRequires:  pkgconfig
@@ -111,14 +104,6 @@ Qt icon engine plugin for %{reponame}-%{cfg}
 %setup -q -n %{reponame}-%{version}
 
 %build
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-export CC=gcc-9
-export CXX=g++-9
-%endif
-%if 0%{?fedora}
-%else
-%define __builder ninja
-%endif
 %cmake \
   -DBUILD_SHARED_LIBS:BOOL=ON \
   -DCONFIGURATION_NAME:STRING="%{cfg}" \
@@ -128,39 +113,17 @@ export CXX=g++-9
   -DQT_PACKAGE_PREFIX:STRING='Qt6' \
   -DBUILTIN_TRANSLATIONS:BOOL=ON \
   -DQT_PLUGIN_DIR=%{_qt6_pluginsdir} \
-%if 0%{?suse_version} > 1500
-  -DFORK_AWESOME_FONT_FILE="%{_builddir}/%{reponame_forkawesome}-%{version_forkawesome}/fonts/forkawesome-webfont.woff2" \
-%else
   -DFORK_AWESOME_FONT_FILE="%{_builddir}/%{reponame_forkawesome}-%{version_forkawesome}/fonts/forkawesome-webfont.ttf" \
-%endif
   -DFORK_AWESOME_ICON_DEFINITIONS="%{_builddir}/%{reponame_forkawesome}-%{version_forkawesome}/src/icons/icons.yml"
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-make %{?_smp_mflags}
-%else
 %cmake_build
-%endif
 
 %check
 export QT_QPA_PLATFORM=offscreen
-%if 0%{?fedora}
-%if 0%{?fedora_version} < 33
-make %{?_smp_mflags} check
-%else
 export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 %cmake_build --target check
-%endif
-%else
-cd "%{__builddir}"
-export LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH"
-%cmake_build check
-%endif
 
 %install
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-DESTDIR=%{buildroot} make %{?_smp_mflags} install
-%else
 %cmake_install
-%endif
 
 %post -n lib%{reponame}-%{cfg}%{soname} -p /sbin/ldconfig
 %postun -n lib%{reponame}-%{cfg}%{soname} -p /sbin/ldconfig
