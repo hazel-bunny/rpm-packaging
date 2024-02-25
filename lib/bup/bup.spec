@@ -81,6 +81,9 @@ sed -i 's|/lib/bup|/%{_lib}/bup|' %{buildroot}%{_bindir}/bup
 
 
 %changelog
+* Sun Feb 25 2024 Dipta Biswas <dabiswas112@gmail.com> 0.33.3-1.git
+- Switch to git snapshot for gcc 14
+
 * Sun Feb 25 2024 Dipta Biswas <dabiswas112@gmail.com> 0.33.3-1
 - Update to 0.33.3
 
