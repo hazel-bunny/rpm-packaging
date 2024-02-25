@@ -31,11 +31,6 @@
 # disable KDE integrations for now
 %define disable_kde_integrations OFF
 
-# define _qt6_pluginsdir macro for Fedora
-%if 0%{?fedora_version}
-%define _qt6_pluginsdir %{_libdir}/qt6/plugins
-%endif
-
 # avoid dependency to qt5qmlimport(martchus.syncthingplasmoid.0) >= 6
 %global __requires_exclude (martchus.syncthingplasmoid.0)
 %global __provides_exclude (martchus.syncthingplasmoid.0)
@@ -187,7 +182,7 @@ KIO plugin to show Syncthing actions in Dolphin context menu
   -DBUILD_SHARED_LIBS:BOOL=ON \
   -DNO_PLASMOID:BOOL=%{disable_kde_integrations} \
   -DNO_FILE_ITEM_ACTION_PLUGIN:BOOL=%{disable_kde_integrations} \
-  -DQT_PLUGIN_DIR=%{_qt6_pluginsdir} \
+  -DQT_PLUGIN_DIR=%{_qt6_plugindir} \
   -DWEBVIEW_PROVIDER:STRING=%{webview_provider} \
   -DJS_PROVIDER:STRING=qml
 %cmake_build
@@ -287,13 +282,13 @@ rm -r %{buildroot}/%{_datadir}/syncthingplasmoid-%{cfg}
 
 %if "%{disable_kde_integrations}" == "OFF"
 %files -n syncthingfileitemaction-%{cfg}
-%dir %{_qt6_pluginsdir}/kf6/kfileitemaction
-%{_qt6_pluginsdir}/kf6/kfileitemaction/libsyncthingfileitemaction-%{cfg}.so
+%dir %{_qt6_plugindir}/kf6/kfileitemaction
+%{_qt6_plugindir}/kf6/kfileitemaction/libsyncthingfileitemaction-%{cfg}.so
 %{_datadir}/metainfo/syncthingfileitemaction-%{cfg}.appdata.xml
 
 %files -n syncthingplasmoid-%{cfg}
-%dir %{_qt6_pluginsdir}/plasma/applets
-%{_qt6_pluginsdir}/plasma/applets/martchus.syncthingplasmoid-%{cfg}.so
+%dir %{_qt6_plugindir}/plasma/applets
+%{_qt6_plugindir}/plasma/applets/martchus.syncthingplasmoid-%{cfg}.so
 %{_datadir}/metainfo/syncthingplasmoid-%{cfg}.appdata.xml
 %dir %{_datadir}/plasma
 %dir %{_datadir}/plasma/plasmoids
