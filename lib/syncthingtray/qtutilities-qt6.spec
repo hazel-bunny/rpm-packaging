@@ -29,16 +29,9 @@ License:        GPL-2.0-or-later
 Group:          System/Packages
 URL:            https://github.com/Martchus/%{reponame}
 Source:         https://github.com/Martchus/%{reponame}/archive/v%{version}/%{reponame}-%{version}.tar.gz
+
 BuildRequires:  cmake >= 3.17
-%if 0%{?fedora}
-%else
-BuildRequires:  ninja
-%endif
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-BuildRequires:  gcc9-c++
-%else
 BuildRequires:  gcc-c++
-%endif
 BuildRequires:  c++utilities-devel
 BuildRequires:  pkgconfig
 BuildRequires:  cmake(Qt6Core)
@@ -71,14 +64,6 @@ Development files for %{reponame}
 %setup -q -n %{reponame}-%{version}
 
 %build
-%if 0%{?sle_version} && 0%{?sle_version} < 160000
-export CC=gcc-9
-export CXX=g++-9
-%endif
-%if 0%{?fedora}
-%else
-%define __builder ninja
-%endif
 %cmake \
   -DBUILD_SHARED_LIBS:BOOL=ON \
   -DCONFIGURATION_NAME:STRING="%{cfg}" \
@@ -86,33 +71,15 @@ export CXX=g++-9
   -DCONFIGURATION_TARGET_SUFFIX:STRING="%{cfg}" \
   -DQT_PACKAGE_PREFIX:STRING='Qt6' \
   -DBUILTIN_TRANSLATIONS:BOOL=ON
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-make %{?_smp_mflags}
-%else
 %cmake_build
-%endif
 
 %check
 export QT_QPA_PLATFORM=offscreen
-%if 0%{?fedora}
-%if 0%{?fedora_version} < 33
-make %{?_smp_mflags} check
-%else
 export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 %cmake_build --target check
-%endif
-%else
-cd "%{__builddir}"
-export LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH"
-%cmake_build check
-%endif
 
 %install
-%if 0%{?fedora} && 0%{?fedora_version} < 33
-DESTDIR=%{buildroot} make %{?_smp_mflags} install
-%else
 %cmake_install
-%endif
 
 %post -n lib%{reponame}-%{cfg}%{soname} -p /sbin/ldconfig
 %postun -n lib%{reponame}-%{cfg}%{soname} -p /sbin/ldconfig
