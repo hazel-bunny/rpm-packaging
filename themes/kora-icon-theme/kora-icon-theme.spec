@@ -1,7 +1,7 @@
 %global _basename kora
 
 Name:               %{_basename}-icon-theme
-Version:            1.5.8
+Version:            1.6.0
 Release:            %autorelease
 License:            GPL-3.0
 URL:                https://github.com/bikass/%{_basename}
