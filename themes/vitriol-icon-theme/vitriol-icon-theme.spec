@@ -38,7 +38,7 @@ Requires: system-logos
 # upstream name
 Provides:       breeze-icons = %{version}-%{release}
 Provides:       kf6-breeze-icons = %{version}-%{release}
-Replaces:       breeze-icon-theme
+Obsoletes:      breeze-icon-theme
 
 %description
 %{summary}.
