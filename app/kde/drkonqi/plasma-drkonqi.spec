@@ -77,7 +77,7 @@ install -p -D -m755 src/doc/examples/installdbgsymbols_fedora.sh \
     %{buildroot}%{_libexecdir}/installdbgsymbols.sh
 
 %find_lang all --with-html --with-qt --all-name
-grep drkonqi5.mo all.lang > plasma-drkonqi.lang
+grep drkonqi.mo all.lang > plasma-drkonqi.lang
 
 %post
 %systemd_user_post drkonqi-sentry-postman.service
