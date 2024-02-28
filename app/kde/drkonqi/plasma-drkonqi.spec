@@ -21,33 +21,47 @@ Source0:        https://download.kde.org/%{stable}/plasma/%{version}/%{base_name
 # dnf debuginfo-install
 Patch52:        drkonqi-installdbgsymbols.patch
 
+BuildRequires:  cmake
 BuildRequires:  extra-cmake-modules
 BuildRequires:  kf6-rpm-macros
-BuildRequires:  qt6-qtbase-devel
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  desktop-file-utils
+
+BuildRequires:  cmake(Qt6Core)
+BuildRequires:  cmake(Qt6Widgets)
+BuildRequires:  cmake(Qt6Test)
+BuildRequires:  cmake(Qt6DBus)
+BuildRequires:  cmake(Qt6Concurrent)
+BuildRequires:  cmake(Qt6Quick)
  
 BuildRequires:  cmake(KF6CoreAddons)
+BuildRequires:  cmake(KF6Config)
+BuildRequires:  cmake(KF6ConfigWidgets)
+BuildRequires:  cmake(KF6Crash)
 BuildRequires:  cmake(KF6Declarative)
 BuildRequires:  cmake(KF6I18n)
-BuildRequires:  cmake(KF6Notifications)
-BuildRequires:  cmake(KF6Service)
-BuildRequires:  cmake(KF6ConfigWidgets)
+BuildRequires:  cmake(KF6IdleTime)
 BuildRequires:  cmake(KF6JobWidgets)
 BuildRequires:  cmake(KF6KIO)
-BuildRequires:  cmake(KF6Crash)
-BuildRequires:  cmake(KF6Wallet)
-BuildRequires:  cmake(KF6WindowSystem)
-BuildRequires:  cmake(KF6IdleTime)
+BuildRequires:  cmake(KF6Notifications)
+BuildRequires:  cmake(KF6Service)
 BuildRequires:  cmake(KF6StatusNotifierItem)
 BuildRequires:  cmake(KF6SyntaxHighlighting)
+BuildRequires:  cmake(KF6Wallet)
+BuildRequires:  cmake(KF6WidgetsAddons)
+BuildRequires:  cmake(KF6WindowSystem)
+
 BuildRequires:  cmake(PolkitQt6-1)
+
 BuildRequires:  systemd-devel
 BuildRequires:  git-core
  
 Requires:       kf6-kirigami
 Requires:       kf6-kitemmodels
 Requires:       kf6-kcmutils
+Requires:       konsole
+Requires:       polkit
+Requires:       (dnf-command(debuginfo-install) if dnf)
 Requires:       python3-psutil
 Requires:       python3-pygdbmi
 Requires:       python3-sentry-sdk
@@ -56,9 +70,6 @@ Requires:       systemd-udev
 # retired from plasma-workspace
 Obsoletes: plasma-workspace-drkonqi < 5.10.95
 Provides: plasma-workspace-drkonqi = %{version}-%{release}
- 
-Requires: (dnf-command(debuginfo-install) if dnf)
-Requires: konsoleRequires: polkit
 
 %description
 %{summary}
