@@ -1,6 +1,6 @@
 %global forgeurl https://github.com/10110111/k4oxygen
-%global commit d6190f579c34148b32fd8ecd64d9bbb270a6900a
-%global date 20230916
+%global commit fb8a0405d2fd1f07143deffc5182e67800aa5b56
+%global date 20240222
 %forgemeta
 
 Name:    k4oxygen
@@ -14,6 +14,14 @@ Source:  %{forgesource}
 BuildRequires: cmake
 BuildRequires: pkgconfig(xcb)
 BuildRequires: pkgconfig(x11)
+
+#Qt6
+BuildRequires: cmake(Qt6Core)
+BuildRequires: cmake(Qt6Widgets)
+BuildRequires: cmake(Qt6Gui)
+BuildRequires: cmake(Qt6DBus)
+BuildRequires: qt6-qtbase-private-devel
+BuildRequires: qt6-rpm-macros
 
 #Qt5
 BuildRequires: cmake(Qt5Core)
@@ -94,19 +102,19 @@ This package contains the Qt5 style.
 
 #-----------------------------------------------------------------------------
 
-# %%package -n qt6-style-k4oxygen
-# Summary:    Variant of KDE4 Oxygen widget theme for Qt6
-# Enhances:   k4oxygen
-# Requires:   k4oxygen-common
-#
-# %%description -n qt6-style-k4oxygen
-# K4Oxygen is a variant of KDE4 Oxygen widget theme, released from KDE
-# dependencies and supported for Qt4, Qt5, and Qt6.
-#
-# This package contains the Qt6 style.
-#
-# %%files -n qt6-style-k4oxygen
-# %%{_qt6_plugindir}/styles/k4oxygen.so
+%package -n qt6-style-k4oxygen
+Summary:    Variant of KDE4 Oxygen widget theme for Qt6
+Enhances:   k4oxygen
+Requires:   k4oxygen-common
+
+%description -n qt6-style-k4oxygen
+K4Oxygen is a variant of KDE4 Oxygen widget theme, released from KDE
+dependencies and supported for Qt4, Qt5, and Qt6.
+
+This package contains the Qt6 style.
+
+%files -n qt6-style-k4oxygen
+%{_qt6_plugindir}/styles/k4oxygen.so
 
 #-----------------------------------------------------------------------------
 
@@ -126,11 +134,11 @@ This package contains the Qt5 style.
 %cmake_build
 %undefine _vpath_builddir
 
-# Build for Qt 6
-# %%global _vpath_builddir %%{_target_platform}-qt6
-# %%cmake -DQT_VERSION=6 -B %%{_vpath_builddir}
-# %%cmake_build
-# %%undefine _vpath_builddir
+Build for Qt 6
+%global _vpath_builddir %%{_target_platform}-qt6
+%cmake -DQT_VERSION=6 -B %%{_vpath_builddir}
+%cmake_build
+%undefine _vpath_builddir
 
 %install
 %global _vpath_builddir %{_target_platform}-qt4
@@ -141,9 +149,9 @@ This package contains the Qt5 style.
 %cmake_install
 %undefine _vpath_builddir
 
-# %%global _vpath_builddir %%{_target_platform}-qt6
-# %%cmake_install
-# %%undefine _vpath_builddir
+%global _vpath_builddir %%{_target_platform}-qt6
+%cmake_install
+%undefine _vpath_builddir
 
 %changelog
 %autochangelog
