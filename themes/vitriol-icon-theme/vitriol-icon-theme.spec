@@ -36,9 +36,10 @@ Requires: hicolor-icon-theme
 Requires: system-logos
 
 # upstream name
+Provides:       breeze-icon-theme = %{version}-%{release}
 Provides:       breeze-icons = %{version}-%{release}
 Provides:       kf6-breeze-icons = %{version}-%{release}
-Obsoletes:      breeze-icon-theme <= %{version}-%{release}
+Obsoletes:      breeze-icon-theme < %{version}-%{release}
 
 %description
 %{summary}.
