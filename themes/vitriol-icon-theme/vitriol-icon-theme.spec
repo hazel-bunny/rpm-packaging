@@ -38,7 +38,7 @@ Requires: system-logos
 # upstream name
 Provides:       breeze-icons = %{version}-%{release}
 Provides:       kf6-breeze-icons = %{version}-%{release}
-Obsoletes:      breeze-icon-theme
+Obsoletes:      breeze-icon-theme <= %{version}-%{release}
 
 %description
 %{summary}.
@@ -60,7 +60,7 @@ developing applications that use %{name}.
 
 
 %prep
-%forgeautosetup -n %{framework}-%{version} -p1
+%forgeautosetup
 
 # Fix FTI for -devel package
 sed -e 's|\${KDE_INSTALL_CMAKEPACKAGEDIR}|%{_datadir}/cmake|g' -i CMakeLists.txt
