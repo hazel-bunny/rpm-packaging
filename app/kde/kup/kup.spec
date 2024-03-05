@@ -1,6 +1,6 @@
 %global forgeurl https://github.com/KDE/kup
-%global commit c6f78df2223133bd6fa270194f007004e46b0653
-%global date 20240206
+%global commit fe60786834f82e8b7d5ccc3e226beefe10b17967
+%global date 20240203
 %forgemeta
 
 Name:           kup
@@ -11,7 +11,6 @@ Summary:        Backup scheduler for the Plasma desktop
 License:        GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-KDE-Accepted-GPL
 URL:            %{forgeurl}
 Source:         %{forgesource}
-#Patch:          fix_deprecated.patch
 
 BuildRequires:  cmake
 BuildRequires:  extra-cmake-modules
@@ -37,6 +36,10 @@ BuildRequires:  cmake(Plasma)
 BuildRequires:  cmake(Plasma5Support)
 
 BuildRequires:  pkgconfig(libgit2)
+BuildRequires:  pkgconfig(openssl)
+
+Requires:       rsync
+Requires:       bup
 
 %description
 Kup can help you remember to keep up-to-date backups of your personal files. It provides:
@@ -50,16 +53,15 @@ Kup can help you remember to keep up-to-date backups of your personal files. It 
 %forgeautosetup -p1
 
 %build
-export QT_SELECT=qt6
-%cmake_kf6
+%cmake_kf6 -DBUILD_TESTING=OFF -DQT_MAJOR_VERSION=6
 %cmake_build
 
 %install
 %cmake_install
-%find_lang kup
+%find_lang %{name}
 
 
-%files -f kup.lang
+%files -f %{name}.lang
 %license LICENSES/*
 /etc/xdg/autostart/kup-daemon.desktop
 %{_bindir}/kup-daemon
@@ -79,7 +81,6 @@ export QT_SELECT=qt6
 %{_datadir}/metainfo/org.kde.kupapplet.appdata.xml
 %{_datadir}/plasma/plasmoids/org.kde.kupapplet/contents/ui/FullRepresentation.qml
 %{_datadir}/plasma/plasmoids/org.kde.kupapplet/contents/ui/Main.qml
-%{_datadir}/plasma/plasmoids/org.kde.kupapplet/metadata.desktop
 %{_datadir}/plasma/plasmoids/org.kde.kupapplet/metadata.json
 %{_datadir}/plasma/services/kupdaemonservice.operations
 %{_datadir}/plasma/services/kupservice.operations
