@@ -1,11 +1,17 @@
 Name:    webapp-manager
 Version: 1.3.2
+
+%global forgeurl https://github.com/linuxmint/%{name}
+%global tag %{version}
+%global date 20231203
+%forgemeta
+
 Release: %autorelease
 License: GPLv3+
-URL:     https://github.com/linuxmint/%{name}
 Summary: Web Application Manager
 
-Source0: %url/archive/%{version}/%{name}-%{version}.tar.gz
+URL:     %{forgeurl}
+Source:  %{forgesource}
 
 BuildRequires: gettext
 BuildRequires: make
@@ -60,6 +66,9 @@ cp -r usr/share %{buildroot}%{_datadir}
 #------------------------------------------------------------------
 
 %changelog
+* Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 1.3.4-1
+- Update to 1.3.4
+
 * Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.2-2
 - Comply to fedora python packaging guidelines
 
