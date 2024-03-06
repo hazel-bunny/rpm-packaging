@@ -1,3 +1,4 @@
+%global app_id org.kde.kup
 %global forgeurl https://github.com/KDE/kup
 %global commit fe60786834f82e8b7d5ccc3e226beefe10b17967
 %global date 20240203
@@ -67,21 +68,22 @@ Kup can help you remember to keep up-to-date backups of your personal files. It 
 %{_bindir}/kup-daemon
 %{_bindir}/kup-filedigger
 %{_bindir}/kup-purger
-%{_libdir}/libkdeinit6_kup-daemon.so
-%{_qt6_plugindir}/kcm_kup.so
-%{_qt6_plugindir}/kio_bup.so
+# %%{_libdir}/libkdeinit6_kup-daemon.so
+%{_qt6_plugindir}/plasma/kcms/systemsettings_qwidgets/kcm_kup.so
+%{_qt6_plugindir}/kf6/kio/kio_bup.so
 %{_qt6_plugindir}/plasma/dataengine/plasma_engine_kup.so
+%{_datadir}/applications/kcm_kup.desktop
 %{_datadir}/icons/hicolor/scalable/apps/kup.svg
 %{_datadir}/knotifications6/kupdaemon.notifyrc
-%{_datadir}/kservices6/bup.protocol
-%{_datadir}/kservices6/kcm_kup.desktop
-%{_datadir}/kservices6/plasma-applet-org.kde.kupapplet.desktop
-%{_datadir}/kservices6/plasma-dataengine-kup.desktop
-%{_datadir}/metainfo/org.kde.kup.appdata.xml
-%{_datadir}/metainfo/org.kde.kupapplet.appdata.xml
-%{_datadir}/plasma/plasmoids/org.kde.kupapplet/contents/ui/FullRepresentation.qml
-%{_datadir}/plasma/plasmoids/org.kde.kupapplet/contents/ui/Main.qml
-%{_datadir}/plasma/plasmoids/org.kde.kupapplet/metadata.json
+# %%{_datadir}/kservices6/bup.protocol
+# %%{_datadir}/kservices6/kcm_kup.desktop
+# %%{_datadir}/kservices6/plasma-applet-%%{app_id}applet.desktop
+# %%{_datadir}/kservices6/plasma-dataengine-kup.desktop
+%{_datadir}/metainfo/%{app_id}.appdata.xml
+%{_datadir}/metainfo/%{app_id}applet.appdata.xml
+%{_datadir}/plasma/plasmoids/%{app_id}applet/contents/ui/FullRepresentation.qml
+%{_datadir}/plasma/plasmoids/%{app_id}applet/contents/ui/main.qml
+%{_datadir}/plasma/plasmoids/%{app_id}applet/metadata.json
 %{_datadir}/plasma/services/kupdaemonservice.operations
 %{_datadir}/plasma/services/kupservice.operations
 %{_datadir}/qlogging-categories6/kup.categories
