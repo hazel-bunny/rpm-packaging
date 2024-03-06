@@ -77,6 +77,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 %{_libdir}/lib%{name}diff.so.1.4.0
 %{_libdir}/lib%{name}gui.so.0
 %{_libdir}/lib%{name}gui.so.1.4.0
+%{_libdir}/lib%{name}widgets.so.0
+%{_libdir}/lib%{name}widgets.so.1.4.0
 %{_qt6_plugindir}/dolphin/vcs/%{name}dolphinplugin.so
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
