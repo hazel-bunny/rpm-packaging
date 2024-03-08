@@ -1,5 +1,5 @@
 %global forgeurl https://github.com/moodyhunter/applet-window-buttons6
-%global date 20240221
+%global date 20240308
 %global tag v0.12.0
 %forgemeta
 
