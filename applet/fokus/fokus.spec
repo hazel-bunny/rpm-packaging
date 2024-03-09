@@ -5,25 +5,16 @@
 %forgemeta
 
 Name:          fokus-plasmoid
-Version:       1.5.5
+Version:       2.0.1
 Release:       %autorelease
 Summary:       Simple pomodoro de plasmoid
 License:       GPLv3
 URL:           %{forgeurl}
 Source:        %{forgesource}
 
-BuildRequires: cmake
-BuildRequires: extra-cmake-modules
-
-BuildRequires: cmake(Qt6Core)
-BuildRequires: cmake(Qt6Core5Compat)
-BuildRequires: cmake(Qt6Gui)
-BuildRequires: cmake(Qt6Multimedia)
-BuildRequires: cmake(Qt6Quick)
-BuildRequires: cmake(Qt6QuickControls2)
-BuildRequires: cmake(KF6Kirigami2)
-BuildRequires: cmake(Plasma)
-BuildRequires: cmake(Plasma5Support)
+Requires:      kf6-kirigami2
+Requires:      libplasma
+Requires:      plasma5support
 
 %description
 Fokus is simple pomodoro kde plasmoid.
@@ -31,7 +22,7 @@ Fokus is simple pomodoro kde plasmoid.
 %files
 %license LICENSE
 %doc README.md
-%{_datadir}/plasma/plasmoids/fokus
+%dir %{_datadir}/plasma/plasmoids/com.dv.fokus
 
 %prep
 %forgeautosetup
@@ -40,8 +31,8 @@ Fokus is simple pomodoro kde plasmoid.
 #nothing
 
 %install
-mkdir -p %{buildroot}%{_datadir}/plasma/plasmoids/fokus/
-cp -r package/* %{buildroot}%{_datadir}/plasma/plasmoids/fokus/
+mkdir -p %{buildroot}%{_datadir}/plasma/plasmoids/com.dv.fokus/
+cp -r package/* %{buildroot}%{_datadir}/plasma/plasmoids/com.dv.fokus/
 
 %changelog
 %autochangelog
