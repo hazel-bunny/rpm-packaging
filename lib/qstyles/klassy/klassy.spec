@@ -98,7 +98,7 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 %{_kf6_qtplugindir}/kstyle_config/klassystyleconfig.so
 %{_kf6_qtplugindir}/org.kde.kdecoration2/org.kde.klassy.so
 %{_kf6_qtplugindir}/org.kde.kdecoration2.kcm/kcm_klassydecoration.so
-%dir %{_kf6_qtplugindir}/plasma/kcms/klassy/presets
+%{_kf6_qtplugindir}/plasma/kcms/klassy/presets
 
 %{_kf6_datadir}/applications/kcm_klassydecoration.desktop
 %{_kf6_datadir}/applications/klassystyleconfig.desktop
@@ -106,9 +106,9 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 
 %{_kf6_datadir}/color-schemes/Klassy*.colors
 
-%dir %{_datadir}/icons/hicolor
-%dir %{_datadir}/icons/klassy
-%dir %{_datadir}/icons/klassy-dark
+%{_datadir}/icons/hicolor
+%{_datadir}/icons/klassy
+%{_datadir}/icons/klassy-dark
 
 %{_kf6_datadir}/kstyle/themes/klassy.themerc
 
