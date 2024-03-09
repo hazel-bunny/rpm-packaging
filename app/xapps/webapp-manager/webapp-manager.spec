@@ -1,11 +1,11 @@
 Name:    webapp-manager
-Version: 1.3.2
 
 %global forgeurl https://github.com/linuxmint/%{name}
-%global tag %{version}
+%global tag 1.3.4
 %global date 20231203
 %forgemeta
 
+Version: %{tag}
 Release: %autorelease
 License: GPLv3+
 Summary: Web Application Manager
