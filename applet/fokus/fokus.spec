@@ -22,7 +22,7 @@ Fokus is simple pomodoro kde plasmoid.
 %files
 %license LICENSE
 %doc README.md
-%dir %{_datadir}/plasma/plasmoids/com.dv.fokus
+%{_datadir}/plasma/plasmoids/com.dv.fokus
 
 %prep
 %forgeautosetup
