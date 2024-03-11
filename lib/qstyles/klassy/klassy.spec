@@ -1,6 +1,6 @@
 %global forgeurl https://github.com/paulmcauley/klassy
-%global commit 14713a510b0b89b084b9c0b3713ad35f15b9e8f2
-%global date 20240308
+%global commit f14a2a4a6d561523ca70c38d5d0b758ef6326052
+%global date 20240311
 %forgemeta
 
 Name:           klassy
