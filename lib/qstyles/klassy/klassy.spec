@@ -1,10 +1,11 @@
-%global forgeurl https://github.com/paulmcauley/klassy
-%global commit 72a4adcd62637aaf07591c0bbc9f385def5ce257
-%global date 20240312
+Name:           klassy
+
+%global forgeurl https://github.com/paulmcauley/%{name}
+%global tag 6.0.breeze6.0.2
+%global date 20240314
 %forgemeta
 
-Name:           klassy
-Version:        5.101.breeze6.0.80
+Version:        %{tag}
 Release:        %autorelease
 Summary:        Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop.
 License:        GPL-2.0-or-later
@@ -16,7 +17,7 @@ Obsoletes:      classikstyles <= %{version}
 Obsoletes:      classik <= %{version}
 
 BuildRequires:  cmake >= 3.16
-BuildRequires:  extra-cmake-modules >= 5.98.0
+BuildRequires:  extra-cmake-modules >= 5.102.0
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  kf5-filesystem
@@ -87,7 +88,7 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 %files
 %license LICENSES/*.txt
 
-%{_bindir}/klassy-settings
+%{_bindir}/%{name}-settings
 
 %{_libdir}/libklassycommon5.so.*
 %{_libdir}/libklassycommon6.so.*
@@ -98,7 +99,7 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 %{_kf6_qtplugindir}/kstyle_config/klassystyleconfig.so
 %{_kf6_qtplugindir}/org.kde.kdecoration2/org.kde.klassy.so
 %{_kf6_qtplugindir}/org.kde.kdecoration2.kcm/kcm_klassydecoration.so
-%{_kf6_qtplugindir}/plasma/kcms/klassy/presets
+%{_kf6_qtplugindir}/plasma/kcms/%{name}/presets
 
 %{_kf6_datadir}/applications/kcm_klassydecoration.desktop
 %{_kf6_datadir}/applications/klassystyleconfig.desktop
@@ -107,10 +108,10 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 %{_kf6_datadir}/color-schemes/Klassy*.colors
 
 %{_datadir}/icons/hicolor
-%{_datadir}/icons/klassy
-%{_datadir}/icons/klassy-dark
+%{_datadir}/icons/%{name}
+%{_datadir}/icons/%{name}-dark
 
-%{_kf6_datadir}/kstyle/themes/klassy.themerc
+%{_kf6_datadir}/kstyle/themes/%{name}.themerc
 
 %{_kf6_datadir}/plasma/layout-templates/org.kde.klassy*
 %{_kf6_datadir}/plasma/look-and-feel/org.kde.klassy*
