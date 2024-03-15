@@ -90,6 +90,8 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 
 %{_bindir}/%{name}-settings
 
+%{_libdir}/cmake/Klassy/
+
 %{_libdir}/libklassycommon5.so.*
 %{_libdir}/libklassycommon6.so.*
 
@@ -99,7 +101,7 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 %{_kf6_qtplugindir}/kstyle_config/klassystyleconfig.so
 %{_kf6_qtplugindir}/org.kde.kdecoration2/org.kde.klassy.so
 %{_kf6_qtplugindir}/org.kde.kdecoration2.kcm/kcm_klassydecoration.so
-%{_kf6_qtplugindir}/plasma/kcms/%{name}/presets
+%{_kf6_qtplugindir}/org.kde.kdecoration2.kcm/klassydecoration/presets/
 
 %{_kf6_datadir}/applications/kcm_klassydecoration.desktop
 %{_kf6_datadir}/applications/klassystyleconfig.desktop
@@ -107,16 +109,14 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 
 %{_kf6_datadir}/color-schemes/Klassy*.colors
 
-%{_datadir}/icons/hicolor
-%{_datadir}/icons/%{name}
-%{_datadir}/icons/%{name}-dark
+%{_datadir}/icons/hicolor/
+%{_datadir}/icons/%{name}/
+%{_datadir}/icons/%{name}-dark/
 
 %{_kf6_datadir}/kstyle/themes/%{name}.themerc
 
-%{_kf6_datadir}/plasma/layout-templates/org.kde.klassy*
+%{_kf6_datadir}/plasma/layout-templates/org.kde.klassy.*
 %{_kf6_datadir}/plasma/look-and-feel/org.kde.klassy*
-
-%{_libdir}/cmake/Klassy/
 
 %changelog
 %autochangelog
