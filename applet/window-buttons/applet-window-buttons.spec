@@ -1,6 +1,6 @@
 %global forgeurl https://github.com/moodyhunter/applet-window-buttons6
 %global date 20240308
-%global tag v0.12.0
+%global commit a7b95da32717b90a1d9478db429d6fa8a6c4605f
 %forgemeta
 
 %global orig_name org.kde.windowbuttons
@@ -41,7 +41,7 @@ BuildRequires:  cmake(KDecoration2)
 Provides:       applet-window-buttons6 = %{version}-%{release}
 
 %description
-This is a Plasma 5 applet that shows the current window appmenu in
+This is a Plasma 6 applet that shows the current window appmenu in
 one's panels. This plasmoid is coming from Latte land, but it can also
 support Plasma panels.
 
@@ -71,7 +71,10 @@ desktop-file-validate %{buildroot}%{_datadir}/plasma/plasmoids/%{orig_name}/meta
 
 
 %changelog
-* Fri Mar 8 2024 Alessandro Astone <ales.astone@gmail.com> - 0.12.0-1
+* Fri Mar 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.12.0-1.git
+- Switch to a git snapshot to fix metadata.json
+
+* Fri Mar 8 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.12.0-1
 - Update to version 0.12.0
 
 * Wed Feb 21 2024 Alessandro Astone <ales.astone@gmail.com> - 0.11.1^20240221.3047ed7-1
