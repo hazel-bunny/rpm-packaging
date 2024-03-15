@@ -1,11 +1,11 @@
 %global debug_package %{nil}
 %global forgeurl https://gitlab.com/divinae/focus-plasmoid
-%global commit ce21d7b1581b252ec6057151041d902ad6c63077
-%global date 20231229
+%global commit 27129140956645d8ab17eb2ca847cdb7d97d7496
+%global date 20240315
 %forgemeta
 
 Name:          fokus-plasmoid
-Version:       2.0.1
+Version:       2.1.0
 Release:       %autorelease
 Summary:       Simple pomodoro de plasmoid
 License:       GPLv3
