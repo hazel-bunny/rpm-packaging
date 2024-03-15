@@ -4,11 +4,11 @@ Name:    kde-classic-wallpapers
 Version: 1.0
 
 %global forgeurl https://github.com/MartinF99/%{name}
-%global commit c04778741803f07c35d7b271fb7de07c68ceb815
-%global date 20230926
+%global commit 6d92f60a8a8ad2fa6bfffc9d93f19b06844460ef
+%global date 20240314
 %forgemeta
 
-Release: 2%{?dist}
+Release: %autorelease
 Summary: An archive of all classic kde wallpapers
 License: GPL-3.0
 URL:     %{forgeurl}
@@ -16,8 +16,8 @@ Source:  %{forgesource}
 
 BuildRequires: cmake
 BuildRequires: extra-cmake-modules
-BuildRequires: qt5-qtbase-devel
-BuildRequires: kf5-kcoreaddons
+# BuildRequires: qt5-qtbase-devel
+# BuildRequires: kf5-kcoreaddons
 
 %description
 %summary
@@ -26,15 +26,15 @@ BuildRequires: kf5-kcoreaddons
 %forgeautosetup
 
 %build
-%cmake -DQT_MAJOR_VERSION=5
+%cmake -DQT_MAJOR_VERSION=6
 %cmake_build
 
 %install
 %cmake_install
 
-for f in "%{buildroot}%{_datadir}/wallpapers/"*; do
-  desktoptojson -i "${f}""/metadata.desktop" -o "${f}""/metadata.json"
-done
+# for f in "%{buildroot}%{_datadir}/wallpapers/"*; do
+#  desktoptojson -i "${f}""/metadata.desktop" -o "${f}""/metadata.json"
+# done
 
 %check
 
