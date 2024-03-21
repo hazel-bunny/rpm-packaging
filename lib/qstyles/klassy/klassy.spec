@@ -6,7 +6,7 @@ Name:           klassy
 %forgemeta
 
 Version:        %{tag}
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop.
 License:        GPL-2.0-or-later
 Group:          System/GUI/KDE
