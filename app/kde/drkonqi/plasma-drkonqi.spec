@@ -1,21 +1,14 @@
 %global base_name drkonqi
 
-Name:    plasma-drkonqi
+Name:    plasma-%{base_name}
 Summary: DrKonqi crash handler for KF6/Plasma6
-Version: 6.0.0
+Version: 6.0.2
 Release: %autorelease
 Epoch:   1
 
 License: GPLv2+
 URL:     https://invent.kde.org/plasma/%{base_name}
-
-%global revision %(echo %{version} | cut -d. -f3)
-%if %{revision} >= 50
-%global stable unstable
-%else
-%global stable stable
-%endif
-Source0:        https://download.kde.org/%{stable}/plasma/%{version}/%{base_name}-%{version}.tar.xz
+Source0: https://download.kde.org/stable/plasma/%{version}/%{base_name}-%{version}.tar.xz
 
 ## upstreamable Patches
 # dnf debuginfo-install
@@ -68,8 +61,8 @@ Requires:       python3-sentry-sdk
 Requires:       systemd-udev
 
 # retired from plasma-workspace
-Obsoletes: plasma-workspace-drkonqi < 5.10.95
-Provides: plasma-workspace-drkonqi = %{version}-%{release}
+Obsoletes: plasma-workspace-%{base_name} < 5.10.95
+Provides: plasma-workspace-%{base_name} = %{version}-%{release}
 
 %description
 %{summary}
@@ -104,31 +97,37 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/org.kde.{drkonqi.cor
 
 %files -f plasma-drkonqi.lang
 %license LICENSES/*
+
 %{_bindir}/drkonqi-coredump-gui
+%{_bindir}/drkonqi-sentry-data
+
 %{_libexecdir}/drkonqi
 %{_libexecdir}/installdbgsymbols.sh
 %{_libexecdir}/drkonqi-coredump-cleanup
 %{_libexecdir}/drkonqi-coredump-launcher
 %{_libexecdir}/drkonqi-coredump-processor
+%{_libexecdir}/drkonqi-sentry-postman
+%{_kf6_libexecdir}/drkonqi-polkit-helper
+
+%{_kf6_qtplugindir}/drkonqi/KDECoredumpNotifierTruck.so
+
 %{_kf6_datadir}/drkonqi/
 %{_kf6_datadir}/applications/org.kde.drkonqi.coredump.gui.desktop
 %{_kf6_datadir}/applications/org.kde.drkonqi.desktop
 %{_kf6_datadir}/qlogging-categories6/drkonqi.categories
-%{_userunitdir}/drkonqi-coredump-*
-%{_unitdir}/drkonqi-coredump-processor@.service
-%{_qt6_plugindir}/drkonqi/KDECoredumpNotifierTruck.so
-%{_bindir}/drkonqi-sentry-data
-%{_unitdir}/systemd-coredump@.service.wants/drkonqi-coredump-processor@.service
-%{_userunitdir}/default.target.wants/*
-%{_userunitdir}/drkonqi-sentry-postman.*
-%{_userunitdir}/plasma-core.target.wants/drkonqi-*
-%{_userunitdir}/sockets.target.wants/drkonqi-coredump-launcher.socket
-%{_userunitdir}/timers.target.wants/drkonqi-*
-%{_libexecdir}/drkonqi-sentry-postman
-%{_kf6_libexecdir}/drkonqi-polkit-helper
 %{_kf6_datadir}/dbus-1/system-services/org.kde.drkonqi.service
 %{_kf6_datadir}/dbus-1/system.d/org.kde.drkonqi.conf
 %{_kf6_datadir}/polkit-1/actions/org.kde.drkonqi.policy
+
+%{_userunitdir}/drkonqi-coredump-*
+%{_userunitdir}/drkonqi-sentry-postman.*
+%{_userunitdir}/default.target.wants/*
+%{_userunitdir}/plasma-core.target.wants/drkonqi-*
+%{_userunitdir}/sockets.target.wants/drkonqi-coredump-launcher.socket
+%{_userunitdir}/timers.target.wants/drkonqi-*
+
+%{_unitdir}/drkonqi-coredump-processor@.service
+%{_unitdir}/systemd-coredump@.service.wants/drkonqi-coredump-processor@.service
 
 %changelog
 %autochangelog
