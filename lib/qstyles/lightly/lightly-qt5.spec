@@ -11,7 +11,7 @@
 
 Name:           %{_style}-qt%{_qt_major_version}
 Version:        0.43
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        A modern style for qt applications
 License:        GPL-2.0-or-later
 Group:          System/GUI/KDE
@@ -77,8 +77,11 @@ Obsoletes:      %{_style} <= %{version}
 %install
 %cmake_install
 
-rm -rf %{buildroot}%{_datadir}/color-schemes/%{style}.colors
-rm -rf %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{_style}-settings.svgz
+# Remove files present in lightly-qt6
+rm -rf %{buildroot}%{_datadir}/color-schemes
+rm -rf %{buildroot}%{_datadir}/icons
+rm -rf %{buildroot}%{_datadir}/kstyle
+rm -rf %{buildroot}%{_libdir}/cmake/%{style}
 
 %files
 %license COPYING
@@ -86,7 +89,6 @@ rm -rf %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{_style}-settings.sv
 
 %{_bindir}/lightly-settings%{_qt_major_version}
 
-%{_libdir}/cmake/%{style}/
 %{_libdir}/kconf_update_bin/kde4%{_style}
 %{_libdir}/lib%{_style}common%{_qt_major_version}.so.*
 
@@ -95,7 +97,6 @@ rm -rf %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{_style}-settings.sv
 
 %{_datadir}/kconf_update/kde4%{_style}.upd
 %{_datadir}/kservices%{_qt_major_version}/%{_style}styleconfig.desktop
-%{_datadir}/kstyle/themes/%{_style}.themerc
 
 %changelog
 %autochangelog
