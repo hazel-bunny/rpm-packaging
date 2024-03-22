@@ -1,7 +1,7 @@
 %global kf6_min_version 5.240.0
 
 Name:           kasts
-Version:        24.02.0
+Version:        24.02.1
 Release:        %autorelease
 Epoch:          1
 License:        GPLv2 and GPLv2+ and GPLv3+ and BSD and LGPLv3+
@@ -85,7 +85,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 
 
 %changelog
-* Mon Feb 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 1:24.02.0-1
+* Fri Mar 22 2024 Dipta Biswas <dabiswas112@gmail.com> - 1:24.02.1-1
 - Add support for vlc & gstreamer
 
 * Wed Feb 21 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.0-1
