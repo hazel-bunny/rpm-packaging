@@ -34,6 +34,13 @@ BuildRequires:  cmake(KF6Package)
 Requires:       plasma-workspace
 Requires:       kf6-kirigami2
 Requires:       libplasma
+Requires:       anoise-media
+
+Recommends:     anoise-community-extension1
+Recommends:     anoise-community-extension2
+Recommends:     anoise-community-extension3
+Recommends:     anoise-community-extension4
+Recommends:     anoise-community-extension5
 
 Provides:       plasma6-applet-ambientnoise = %{version}-%{release}
 
