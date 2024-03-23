@@ -17,6 +17,9 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 BuildRequires:  libxcrypt-compat
 
+Requires:       python3-gstreamer1
+Requires:       gstreamer1
+Requires:       gtk3
 Requires:       webkit2gtk4.0
 Requires:       anoise-media
 Requires:       libappindicator-gtk3
@@ -55,20 +58,33 @@ cd %{name}_%{version}
 rm %{buildroot}%{_datadir}/%{name}/%{name}.ui
 
 cp -r %{buildroot}%{python3_sitelib}%{_datadir} %{buildroot}%{_prefix}/
+mkdir -p %{buildroot}%{_datadir}/licenses/%{name}/
 cp -r %{buildroot}%{python3_sitelib}/%{name}-%{version}.dist-info/COPYING.GPL3 %{buildroot}%{_datadir}/licenses/%{name}/
 rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 
-%py_byte_compile %{python3} %{buildroot}%{_libdir}/%{name}/*.py
+%py_byte_compile %{python3} %{buildroot}%{_datadir}/%{name}/
 
 %files
 %license COPYING.GPL3
 %doc README
+
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/%{name}/
-%{_datadir}/icons/hicolor/*/apps/%{name}.svg
-%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
+
+%dir %{_datadir}/%{name}/
+%{_datadir}/%{name}/preferences.ui
+
+%pycached %{_datadir}/%{name}/%{name}.py
+%pycached %{_datadir}/%{name}/preferences.py
+%pycached %{_datadir}/%{name}/sound_menu.py
+%pycached %{_datadir}/%{name}/utils.py
+
 %{python3_sitelib}/%{name}-%{version}.dist-info/
+
+%{_datadir}/icons/hicolor/{16x16,48x48}/apps/%{name}.png
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+
+%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
 
 %changelog
 %autochangelog

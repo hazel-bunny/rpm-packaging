@@ -1,14 +1,14 @@
 %global _basename anoise
-%global _suffix gui
-%global wheel_name %{_basename}_%{_suffix}
+%global _suffix 5
+%global wheel_name %{_basename}_community_extension%{_suffix}
 
-Name:           %{_basename}-%{_suffix}
-Version:        0.0.4
+Name:           %{_basename}-community-extension%{_suffix}
+Version:        0.0.1
 Release:        %autorelease
-Summary:        Ambient Noise Player GUI
+Summary:        Ambient Noise Community Extension %{_suffix}
 License:        GPLv3
-URL:            https://costales.github.io/projects/%{_basename}
-Source:         https://launchpad.net/~costales/+archive/ubuntu/%{_basename}/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
+URL:            https://costales.github.io/projects/anoise
+Source:         https://launchpad.net/~costales/+archive/ubuntu/anoise/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
 
 BuildArch:      noarch
 
@@ -18,19 +18,16 @@ BuildRequires:  python3-distutils-extra
 BuildRequires:  python3-installer
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
-BuildRequires:  gtk3-devel
 
-Requires:       gtk3
-Requires:       webkit2gtk4.0
-Requires:       anoise
+Requires:       anoise-media
 
 Enhances:       anoise
 
 %description
-GUI for Ambient Noise Player
+Ambient Noise Community Extension %{_suffix}. Sounds and icons for Anoise Player from users
 
 %prep
-%autosetup -p1 -n %{name}
+%setup -qn community-extension%{_suffix}
 
 %generate_buildrequires
 %pyproject_buildrequires
@@ -50,8 +47,12 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 
 %files
 %license COPYING.GPL3
-%{_datadir}/%{_basename}/%{_basename}.ui
-%pycached %{_datadir}/%{_basename}/view.py
+%doc README
+%{_datadir}/%{_basename}/sounds/bambusicola.{ogg,png}
+%{_datadir}/%{_basename}/sounds/carduelis.{ogg,png}
+%{_datadir}/%{_basename}/sounds/ficedula.{ogg,png}
+%{_datadir}/%{_basename}/sounds/prunella.{ogg,png}
+%{_datadir}/%{_basename}/sounds/turdus.{ogg,png}
 %{python3_sitelib}/%{wheel_name}-%{version}.dist-info/
 
 %changelog
