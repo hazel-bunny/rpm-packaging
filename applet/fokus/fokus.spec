@@ -12,9 +12,9 @@ License:       GPLv3
 URL:           %{forgeurl}
 Source:        %{forgesource}
 
+Requires:      plasma-workspace
 Requires:      kf6-kirigami2
 Requires:      libplasma
-Requires:      plasma5support
 
 %description
 Fokus is simple pomodoro kde plasmoid.

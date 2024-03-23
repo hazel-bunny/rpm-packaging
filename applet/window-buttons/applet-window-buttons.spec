@@ -38,6 +38,8 @@ BuildRequires:  cmake(KF6WindowSystem)
 BuildRequires:  cmake(Plasma)
 BuildRequires:  cmake(KDecoration2)
 
+Requires:       plasma-workspace
+
 Provides:       applet-window-buttons6 = %{version}-%{release}
 
 %description
