@@ -79,7 +79,7 @@ project.
 %doc README.md
 
 %{_kf6_datadir}/icons/{breeze,breeze-dark}/apps/{16,22,32}/ambientnoise.svg
-%{_kf6_datadir}/icons/hicolor/apps/scalable/ambientnoise.svg
+%{_kf6_datadir}/icons/hicolor/scalable/ambientnoise.svg
 %{_kf6_datadir}/plasma/plasmoids/%{orig_name}
 %{_kf6_metainfodir}/%{orig_name}.appdata.xml
 
