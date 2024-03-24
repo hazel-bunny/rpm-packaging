@@ -48,11 +48,11 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 %files
 %license COPYING.GPL3
 %doc README
-%{_datadir}/%{_basename}/sounds/bambusicola.{ogg,png}
-%{_datadir}/%{_basename}/sounds/carduelis.{ogg,png}
-%{_datadir}/%{_basename}/sounds/ficedula.{ogg,png}
-%{_datadir}/%{_basename}/sounds/prunella.{ogg,png}
-%{_datadir}/%{_basename}/sounds/turdus.{ogg,png}
+%{_datadir}/%{_basename}/sounds/bambusicola.{mp3,png}
+%{_datadir}/%{_basename}/sounds/carduelis.{mp3,png}
+%{_datadir}/%{_basename}/sounds/ficedula.{mp3,png}
+%{_datadir}/%{_basename}/sounds/prunella.{mp3,png}
+%{_datadir}/%{_basename}/sounds/turdus.{mp3,png}
 %{python3_sitelib}/%{wheel_name}-%{version}.dist-info/
 
 %changelog

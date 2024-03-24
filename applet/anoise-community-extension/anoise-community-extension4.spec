@@ -54,7 +54,7 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 %{_datadir}/%{_basename}/sounds/lake_huron.{ogg,png}
 %{_datadir}/%{_basename}/sounds/lake_superior.{ogg,png}
 %{_datadir}/%{_basename}/sounds/rideau_river.{ogg,png}
-%{_datadir}/%{_basename}/sounds/stony_creek.{ogg,png}
+%{_datadir}/%{_basename}/sounds/stoney_creek.{ogg,png}
 %{_datadir}/%{_basename}/sounds/thunderstorm.{ogg,png}
 %{_datadir}/%{_basename}/sounds/waterfall_olddam.{ogg,png}
 %{_datadir}/%{_basename}/sounds/wind_pinery.{ogg,png}

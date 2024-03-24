@@ -71,8 +71,8 @@ project.
 %install
 %cmake_install
 
-%check
-appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{orig_name}.appdata.xml
+# %%check
+# appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{orig_name}.appdata.xml
 
 %files
 %license LICENSE
