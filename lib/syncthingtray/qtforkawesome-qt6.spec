@@ -24,7 +24,7 @@
 %define soname 1
 
 Name:           %{reponame}-%{cfg}
-Version:        0.1.0
+Version:        0.2.0
 Release:        %autorelease
 Summary:        Library that bundles ForkAwesome for use within Qt applications
 License:        GPL-2.0-or-later

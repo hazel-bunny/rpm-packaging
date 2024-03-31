@@ -36,7 +36,7 @@
 %global __provides_exclude (martchus.syncthingplasmoid.0)
 
 Name:           %{reponame}-%{cfg}
-Version:        1.4.13
+Version:        1.5.0
 Release:        %autorelease
 Summary:        Tray application for Syncthing
 License:        GPL-2.0-or-later
@@ -296,6 +296,8 @@ rm -r %{buildroot}/%{_datadir}/syncthingplasmoid-%{cfg}
 %endif
 
 %changelog
+* Sun Mar 31 2024 Dipta Biswas <dabiswas112@gmail.com>
+- Update to 1.5.0
 * Sun Feb 25 2024 Dipta Biswas <dabiswas112@gmail.com>
 - Build with plasma support
 * Fri Feb 16 2024 Marius Kittler <marius.kittler@suse.com>
