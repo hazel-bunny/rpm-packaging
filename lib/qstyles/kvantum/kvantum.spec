@@ -3,7 +3,7 @@
 %global _vpath_srcdir %{_basename}
 
 Name:           kvantum
-Version:        1.0.10
+Version:        1.1.0
 Release:        %autorelease
 Epoch:          1
 Summary:        SVG-based theme engine for Qt, KDE and LXQt
@@ -21,7 +21,10 @@ BuildRequires:  desktop-file-utils
 
 #Qt4
 BuildRequires:  pkgconfig(Qt)
+
+#KDE4
 BuildRequires:  kdelibs-devel
+BuildRequires:  kde4-filesystem
 
 #Qt5
 BuildRequires:  pkgconfig(Qt5Core)
@@ -34,7 +37,7 @@ BuildRequires:  qt5-rpm-macros
 
 #KF5
 BuildRequires:  cmake(KF5WindowSystem)
-BuildRequires:  kde-filesystem
+BuildRequires:  kf5-filesystem
 BuildRequires:  kf5-rpm-macros
 
 #Qt6
@@ -45,12 +48,19 @@ BuildRequires:  pkgconfig(Qt6Designer)
 BuildRequires:  pkgconfig(Qt6Svg)
 BuildRequires:  qt6-rpm-macros
 
+#KF6
+BuildRequires:  cmake(KF6WindowSystem)
+BuildRequires:  kf6-filesystem
+BuildRequires:  kf6-rpm-macros
+
 Requires:       %{name}-data
 Requires:       %{name}-manager
 
-Requires:       (qt4-style-%{name} if qt)
-Requires:       (qt5-style-%{name} if qt5-qtbase)
-Requires:       (qt6-style-%{name} if qt6-qtbase)
+Requires:       (%{name}-qt4 if qt)
+Requires:       (%{name}-qt5 if qt5-qtbase)
+Requires:       (%{name}-qt6 if qt6-qtbase)
+
+Recommends:     %{name}-color-schemes
 
 Requires:       hicolor-icon-theme
 
@@ -77,13 +87,13 @@ installation and can be selected and activated by using Kvantum Manager.
 %package manager
 Summary:    Application for using and tweaking Kvantum themes
 
-Requires:   kvantum-data
-Requires:   qt5-style-kvantum
+Requires:   %{name}-data
+Requires:   %{name}-qt6
 
-Recommends: (qt4-style-kvantum if qt)
-Recommends: (qt6-style-kvantum if qt6-qtbase)
+Recommends: (%{name}-qt4 if qt)
+Recommends: (%{name}-qt5 if qt5-qtbase)
 
-Enhances:   kvantum
+Enhances:   %{name}
 
 %description manager
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
@@ -92,13 +102,13 @@ elegance, usability and practicality.
 This package contains Kvantum manager.
 
 %files manager -f %{name}.lang
-%{_bindir}/kvantummanager
-%{_bindir}/kvantumpreview
-%{_datadir}/applications/kvantummanager.desktop
-%dir %{_datadir}/kvantumpreview
-%dir %{_datadir}/kvantumpreview/translations
-%dir %{_datadir}/kvantummanager
-%dir %{_datadir}/kvantummanager/translations
+%{_bindir}/%{name}manager
+%{_bindir}/%{name}preview
+%{_datadir}/applications/%{name}manager.desktop
+%dir %{_datadir}/%{name}preview
+%dir %{_datadir}/%{name}preview/translations
+%dir %{_datadir}/%{name}manager
+%dir %{_datadir}/%{name}manager/translations
 
 #-----------------------------------------------------------------------------
 
@@ -107,7 +117,7 @@ Summary:    Common data for Kvantum
 
 BuildArch:  noarch
 
-Enhances:   kvantum
+Enhances:   %{name}
 
 %description data
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
@@ -122,7 +132,7 @@ This package contains the data needed by Kvantum.
 %doc Kvantum/README.md
 %doc Kvantum/doc/*
 %{_datadir}/Kvantum/
-%{_datadir}/icons/hicolor/scalable/apps/kvantum.svg
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 
 #-----------------------------------------------------------------------------
 
@@ -131,7 +141,7 @@ Summary:    Color schemes provided by Kvantum
 
 BuildArch:  noarch
 
-Enhances:   kvantum
+Enhances:   %{name}
 
 %description color-schemes
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
@@ -140,68 +150,68 @@ elegance, usability and practicality.
 This package contains the KDE color schemes provided by Kvantum.
 
 %files color-schemes
-%{_kde4_appsdir}/color-schemes/Kv*.colors
-%{_kf5_datadir}/color-schemes/Kv*.colors
+# %%{_kde4_appsdir}/color-schemes/Kv*.colors
+%{_kf6_datadir}/color-schemes/Kv*.colors
 
 #-----------------------------------------------------------------------------
 
-%package -n qt4-style-kvantum
+%package qt4
 Summary:    SVG-based theme engine for Qt4, KDE and LXQt
 
-Requires:   kvantum-data
+Requires:   %{name}-data
 
-Recommends: kvantum-manager
+Recommends: %{name}-manager
 
-Enhances:   kvantum
+Enhances:   %{name}
 
-%description -n qt4-style-kvantum
+%description qt4
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
 elegance, usability and practicality.
 
 This package contains the Qt4 style.
 
-%files -n qt4-style-kvantum
-%{_qt4_plugindir}/styles/libkvantum.so
+%files qt4
+%{_qt4_plugindir}/styles/lib%{name}.so
 
 #-----------------------------------------------------------------------------
 
-%package -n qt5-style-kvantum
+%package qt5
 Summary:    SVG-based theme engine for Qt5, KDE and LXQt
 
-Requires:   kvantum-data
+Requires:   %{name}-data
 
-Recommends: kvantum-manager
+Recommends: %{name}-manager
 
-Enhances:   kvantum
+Enhances:   %{name}
 
-%description -n qt5-style-kvantum
+%description qt5
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
 elegance, usability and practicality.
 
 This package contains the Qt5 style.
 
-%files -n qt5-style-kvantum
-%{_qt5_plugindir}/styles/libkvantum.so
+%files qt5
+%{_qt5_plugindir}/styles/lib%{name}.so
 
 #-----------------------------------------------------------------------------
 
-%package -n qt6-style-kvantum
+%package qt6
 Summary:    SVG-based theme engine for Qt6, KDE and LXQt
 
-Requires:   kvantum-data
+Requires:   %{name}-data
 
-Recommends: kvantum-manager
+Recommends: %{name}-manager
 
-Enhances:   kvantum
+Enhances:   %{name}
 
-%description -n qt6-style-kvantum
+%description qt6
 Kvantum is an SVG-based theme engine for Qt, KDE and LXQt, with an emphasis on
 elegance, usability and practicality.
 
 This package contains the Qt6 style.
 
-%files -n qt6-style-kvantum
-%{_qt6_plugindir}/styles/libkvantum.so
+%files qt6
+%{_qt6_plugindir}/styles/lib%{name}.so
 
 #-----------------------------------------------------------------------------
 
@@ -241,15 +251,15 @@ This package contains the Qt6 style.
 %undefine _vpath_builddir
 
 mkdir -p %{buildroot}%{_datadir}/doc
-cp -r Kvantum/doc %{buildroot}%{_datadir}/doc/kvantum-data
+cp -r Kvantum/doc %{buildroot}%{_datadir}/doc/%{name}-data
 
 # desktop-file-validate doesn't recognize LXQt
-sed -i "s|LXQt|X-LXQt|" %{buildroot}%{_datadir}/applications/kvantummanager.desktop
+sed -i "s|LXQt|X-LXQt|" %{buildroot}%{_datadir}/applications/%{name}manager.desktop
 
 %find_lang %{name} --all-name --with-qt
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/kvantummanager.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}manager.desktop
 
 %changelog
 %autochangelog
