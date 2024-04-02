@@ -13,7 +13,7 @@ Summary:    Variant of KDE4 Oxygen widget theme for Qt6
 License:    LGPLv2.1
 URL:        %{forgeurl}
 Source:     %{forgesource}
-Patch0:     6a60f887f76c714d9a2c0f4c1a4d2ec36fd47617.patch
+Patch0:     qt6x11_wayland.patch
 
 BuildRequires: cmake
 BuildRequires: pkgconfig(xcb)
