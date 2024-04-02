@@ -1,16 +1,17 @@
+%global style plastik
+%global dev MartinF99
 %global _basename PlastikStyle
-%global forgeurl https://github.com/MartinF99/%{_basename}
-%global tag 1.0.2
-%global date 20230619
-# %%global commit 15db58b0c85663f2d3d43a531c0f865234e5f9bf
-# %%global shortcommit %%(c=%%{commit}; echo ${c:0:7})
+
+%global forgeurl https://github.com/%{dev}/%{_basename}
+%global tag 1.0.4
+%global date 20240319
 %forgemeta
 
-Name:     plastikstyle
+Name:     %{style}style
 Version:  %tag
 Release:  %autorelease
 License:  LGPLv2.1
-Summary:  Fork of QPlastiqueStyle from qt5-styleplugins and a port to qt6
+Summary:  QStyle imitating KDE 3's Plastik
 
 URL:      %{forgeurl}
 Source:   %{forgesource}
@@ -29,13 +30,13 @@ BuildRequires: cmake(Qt6Widgets)
 BuildRequires: cmake(Qt6Gui)
 BuildRequires: qt6-rpm-macros
 
-Requires:      plastikstyle-common
-Requires:      (qt5-style-plastik if qt5-qtbase)
-Requires:      (qt6-style-plastik if qt6-qtbase)
+Requires:      %{name}-common
+Requires:      (%{name}-qt5 if qt5-qtbase)
+Requires:      (%{name}-qt6 if qt6-qtbase)
 
 %description
-Plastik style - used by default for KDE3.4 and KDE3.5
-This is a fork of QPlastiqueStyle from qt5-styleplugins and a port to qt6.
+Plastikstyle is a qstyle for both qt5 and qt6 imitating the look and feel from
+KDE3's plastikstyle. This is QPlastiqueStyle forked from qtstyleplugins.
 
 %files
 #nothing
@@ -54,27 +55,27 @@ Summary:     Common files for plastik widget style
 
 #-------------------------------------------------------------------------------
 
-%package -n     qt5-style-plastik
+%package qt5
 Summary:        Plastik widget style for Qt 5
-Requires:       plastikstyle-common
+Requires:       %{name}-common
 
-%description -n qt5-style-plastik
+%description qt5
 %{summary}
 
-%files -n qt5-style-plastik
-%{_qt5_plugindir}/styles/libplastikstyle5.so
+%files qt5
+%{_qt5_plugindir}/styles/lib%{name}5.so
 
 #-------------------------------------------------------------------------------
 
-%package -n     qt6-style-plastik
+%package qt6
 Summary:        Plastik widget style for Qt 6
-Requires:       plastikstyle-common
+Requires:       %{name}-common
 
-%description -n qt6-style-plastik
+%description qt6
 %{summary}
 
-%files -n qt6-style-plastik
-%{_qt6_plugindir}/styles/libplastikstyle6.so
+%files qt6
+%{_qt6_plugindir}/styles/lib%{name}6.so
 
 #-------------------------------------------------------------------------------
 
