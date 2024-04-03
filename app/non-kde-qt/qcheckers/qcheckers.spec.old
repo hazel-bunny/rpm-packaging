@@ -1,0 +1,59 @@
+Name:           qcheckers
+
+%global forgeurl https://github.com/portnov/%{name}
+%global commit 8b8a3e64520e8e074e6035e3a12ff3f7075c7463
+%global date 20230113
+%forgemeta
+
+Version:        0.9.0
+Release:        %{autorelease}
+Summary:        Checkers board game
+
+License:        GPLv2+
+URL:            %{forgeurl}
+Source:         %{forgesource}
+
+# Port to Qt 6
+# Patch0:         9.patch
+
+Requires:       hicolor-icon-theme
+BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtsvg-devel
+# BuildRequires:  qt6-qt5compat-devel
+BuildRequires:  desktop-file-utils
+BuildRequires:  make
+
+%description
+The Qt version of the classic board game checkers. This game is also
+known as draughts.
+
+%prep
+%forgeautosetup -p1
+
+%build
+%{qmake_qt5} PREFIX=/usr
+make %{?_smp_mflags}
+lrelease-qt5 lang/*.ts
+
+%install
+rm -rf %{buildroot}
+
+install -Dp -m 755 %{name} %{buildroot}%{_bindir}/%{name}
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
+install -Dp -m 644 icons/biglogo.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
+
+mkdir -p %{buildroot}%{_datadir}/%{name}/
+install -p -m 644 lang/*.qm %{buildroot}%{_datadir}/%{name}/
+cp -p -r themes %{buildroot}%{_datadir}/%{name}/
+%find_lang %{name} --with-qt
+
+%files -f %{name}.lang
+%doc AUTHORS COPYING ChangeLog FAQ README TODO
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/themes
+
+%changelog
+%autochangelog

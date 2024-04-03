@@ -1,0 +1,330 @@
+From e98de9d4c385905ac0718e29ca0acba39367a934 Mon Sep 17 00:00:00 2001
+From: Ilya Portnov <portnov@bk.ru>
+Date: Mon, 19 Apr 2021 15:32:58 +0000
+Subject: [PATCH 1/3] Minimal porting to Qt6.
+
+---
+ lang/qcheckers_de.ts | 1 -
+ lang/qcheckers_fr.ts | 1 -
+ src/board.cc         | 4 ++--
+ src/checkers.cc      | 2 +-
+ src/history.cc       | 2 +-
+ src/main.cc          | 8 ++++----
+ src/pdn.cc           | 2 +-
+ src/toplevel.cc      | 4 ++--
+ src/view.cc          | 2 +-
+ 9 files changed, 12 insertions(+), 14 deletions(-)
+
+diff --git a/lang/qcheckers_de.ts b/lang/qcheckers_de.ts
+index 029e206..1d4f02c 100644
+--- a/lang/qcheckers_de.ts
++++ b/lang/qcheckers_de.ts
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!DOCTYPE TS>
+ <TS version="2.0">
+-<defaultcodec>UTF-8</defaultcodec>
+ <context>
+     <name>myHistory</name>
+     <message>
+diff --git a/lang/qcheckers_fr.ts b/lang/qcheckers_fr.ts
+index 37a9b9a..a814cef 100644
+--- a/lang/qcheckers_fr.ts
++++ b/lang/qcheckers_fr.ts
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!DOCTYPE TS>
+ <TS version="2.0">
+-<defaultcodec>UTF-8</defaultcodec>
+ <context>
+     <name>myHistory</name>
+     <message>
+diff --git a/src/board.cc b/src/board.cc
+index 7b1fea9..db8ef99 100644
+--- a/src/board.cc
++++ b/src/board.cc
+@@ -309,7 +309,7 @@ bool myBoard::convert_move(const QString& move_orig, int* from_num, int* to_num)
+ 	from = move.section('-', 0, 0);
+ 	to = move.section('-', sect, sect);
+ 
+-	if(from!=QString::null && to!=QString::null) {
++	if(!from.isNull() && !to.isNull()) {
+ 		for(int i=0; i<32; i++) {
+ 			if(m_fields[i]->label()==from) {
+ 				*from_num = m_fields[i]->number();
+@@ -379,7 +379,7 @@ QString myBoard::doMove(int from_num, int to_num, bool white_player)
+ 		m_game->fromString(m_game->toString(true));
+ 	}
+ 	if(!m_game->go1(from_pos, to_pos)) {
+-		return QString::null;
++		return QString();
+ 		/*
+ 		qDebug() << __PRETTY_FUNCTION__
+ 			<< from_pos << "," << to_pos
+diff --git a/src/checkers.cc b/src/checkers.cc
+index ee829c1..6057636 100644
+--- a/src/checkers.cc
++++ b/src/checkers.cc
+@@ -449,7 +449,7 @@ QString Checkers::toString(bool rotate) const
+ 
+     QString str;
+     for(int i=0; i<32; i++)
+-  	str += QString("").sprintf("%.2u", fields[i]);
++  	str += QString("").asprintf("%.2u", fields[i]);
+ 
+     return str;
+ }
+diff --git a/src/history.cc b/src/history.cc
+index 765834b..28f7aa5 100644
+--- a/src/history.cc
++++ b/src/history.cc
+@@ -118,7 +118,7 @@ myHistory::myHistory(QWidget* parent)
+ 
+ 	// layout
+ 	QVBoxLayout* vb = new QVBoxLayout(this);
+-	vb->setMargin(0);
++	vb->setContentsMargins(0,0,0,0);
+ 	vb->addWidget(m_gamelist, 0);
+ 	vb->addWidget(m_taglist, 2);
+ 	vb->addWidget(m_movelist, 4);
+diff --git a/src/main.cc b/src/main.cc
+index 7989a2c..b98f7f0 100644
+--- a/src/main.cc
++++ b/src/main.cc
+@@ -39,12 +39,12 @@ int main(int argc, char *argv[])
+ 	QString current_lang = QLocale::system().name().split("_").front();
+ 	QString qt_lang_path = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+ 	//QString qcheckers_share_path = PREFIX"/share/qcheckers/lang";
+-  QString lang_path = QStandardPaths::locate(QStandardPaths::DataLocation, "lang", QStandardPaths::LocateDirectory);
++  QString lang_path = QStandardPaths::locate(QStandardPaths::AppDataLocation, "lang", QStandardPaths::LocateDirectory);
+ 
+ 	qDebug()
+-		<< "Your Locale:" << current_lang << endl
+-		<< "QCheckers Translations path:" << lang_path << endl
+-		<< "QT Translations path:" << qt_lang_path << endl;
++		<< "Your Locale:" << current_lang << Qt::endl
++		<< "QCheckers Translations path:" << lang_path << Qt::endl
++		<< "QT Translations path:" << qt_lang_path << Qt::endl;
+ 
+   // Qt translations
+   QTranslator qt_tr;
+diff --git a/src/pdn.cc b/src/pdn.cc
+index 107043c..7a5a1c1 100644
+--- a/src/pdn.cc
++++ b/src/pdn.cc
+@@ -133,7 +133,7 @@ bool Pdn::save(const QString& filename)
+ 	QTextStream ts(&file);
+ 
+ 	foreach(PdnGame* game, m_database) {
+-		ts << game->toString() << endl << endl;
++		ts << game->toString() << Qt::endl << Qt::endl;
+ 	}
+ 
+ 	file.close();
+diff --git a/src/toplevel.cc b/src/toplevel.cc
+index a34d66f..ed820bc 100644
+--- a/src/toplevel.cc
++++ b/src/toplevel.cc
+@@ -109,9 +109,9 @@ QDockWidget* myTopLevel::make_dock(const QString& name, const QString& title, Qt
+ 
+ void myTopLevel::make_actions()
+ {
+-  QString theme_path = QStandardPaths::locate(QStandardPaths::DataLocation, THEME_DIR, QStandardPaths::LocateDirectory);
++  QString theme_path = QStandardPaths::locate(QStandardPaths::AppDataLocation, THEME_DIR, QStandardPaths::LocateDirectory);
+   qDebug()
+-      << "Themes directory: " << theme_path << endl;
++      << "Themes directory: " << theme_path << Qt::endl;
+ 	// game menu actions
+ 	gameNew = new QAction(QIcon(":/icons/logo.svg"), tr("&New..."), this);
+ 	gameNew->setShortcut(tr("CTRL+N", "File|New"));
+diff --git a/src/view.cc b/src/view.cc
+index 2a3b21e..e074312 100644
+--- a/src/view.cc
++++ b/src/view.cc
+@@ -436,7 +436,7 @@ void myView::slot_preview_game(int rules)
+ 
+ void myView::slot_apply_moves(const QString& moves)
+ {
+-	QStringList move_list= moves.split(MOVE_SPLIT, QString::SkipEmptyParts);
++	QStringList move_list= moves.split(MOVE_SPLIT, Qt::SkipEmptyParts);
+ 
+ 	m_board->reset();
+ 
+
+From 36ea667632399eba7d403fc8e85da9a282b18a8e Mon Sep 17 00:00:00 2001
+From: Ilya Portnov <portnov@bk.ru>
+Date: Tue, 20 Apr 2021 22:30:35 +0500
+Subject: [PATCH 2/3] Some Qt5/6 compatibility.
+
+---
+ debian/control  |  2 +-
+ src/common.h    | 14 ++++++++++++++
+ src/main.cc     |  6 +++---
+ src/pdn.cc      |  3 ++-
+ src/toplevel.cc |  2 +-
+ src/view.cc     |  2 +-
+ 6 files changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/debian/control b/debian/control
+index 368cd9e..780bb31 100644
+--- a/debian/control
++++ b/debian/control
+@@ -2,7 +2,7 @@ Source: qcheckers
+ Section: games
+ Priority: optional
+ Maintainer: Ilya Portnov <portnov84@rambler.ru>
+-Build-Depends: debhelper (>= 11), qt5-qmake-bin, qtbase5-dev, libqt5svg5-dev
++Build-Depends: debhelper (>= 9), qt5-qmake, qtbase5-dev, libqt5svg5-dev
+ Standards-Version: 4.1.3
+ Homepage: https://portnov.github.io/qcheckers/
+ 
+diff --git a/src/common.h b/src/common.h
+index 59d40cc..a8ab175 100644
+--- a/src/common.h
++++ b/src/common.h
+@@ -58,5 +58,19 @@
+ //
+ #define MAX_TILE_SIZE	64
+ 
++// Qt5 / 6 compatibility workarounds
++
++#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
++#define QT_ENDL endl
++#else
++#define QT_ENDL Qt::endl
++#endif
++
++#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
++#define QT_SKIP_EMPTY_PARTS QString::SkipEmptyParts
++#else
++#define QT_SKIP_EMPTY_PARTS Qt::SkipEmptyParts
++#endif
++
+ #endif
+ 
+diff --git a/src/main.cc b/src/main.cc
+index b98f7f0..97835e0 100644
+--- a/src/main.cc
++++ b/src/main.cc
+@@ -42,9 +42,9 @@ int main(int argc, char *argv[])
+   QString lang_path = QStandardPaths::locate(QStandardPaths::AppDataLocation, "lang", QStandardPaths::LocateDirectory);
+ 
+ 	qDebug()
+-		<< "Your Locale:" << current_lang << Qt::endl
+-		<< "QCheckers Translations path:" << lang_path << Qt::endl
+-		<< "QT Translations path:" << qt_lang_path << Qt::endl;
++		<< "Your Locale:" << current_lang << QT_ENDL
++		<< "QCheckers Translations path:" << lang_path << QT_ENDL
++		<< "QT Translations path:" << qt_lang_path << QT_ENDL;
+ 
+   // Qt translations
+   QTranslator qt_tr;
+diff --git a/src/pdn.cc b/src/pdn.cc
+index 7a5a1c1..0b4f7ea 100644
+--- a/src/pdn.cc
++++ b/src/pdn.cc
+@@ -24,6 +24,7 @@
+ #include <QProgressDialog>
+ #include <QDebug>
+ 
++#include "common.h"
+ #include "checkers.h"
+ #include "pdn.h"
+ 
+@@ -133,7 +134,7 @@ bool Pdn::save(const QString& filename)
+ 	QTextStream ts(&file);
+ 
+ 	foreach(PdnGame* game, m_database) {
+-		ts << game->toString() << Qt::endl << Qt::endl;
++		ts << game->toString() << QT_ENDL << QT_ENDL;
+ 	}
+ 
+ 	file.close();
+diff --git a/src/toplevel.cc b/src/toplevel.cc
+index ed820bc..5a4d766 100644
+--- a/src/toplevel.cc
++++ b/src/toplevel.cc
+@@ -111,7 +111,7 @@ void myTopLevel::make_actions()
+ {
+   QString theme_path = QStandardPaths::locate(QStandardPaths::AppDataLocation, THEME_DIR, QStandardPaths::LocateDirectory);
+   qDebug()
+-      << "Themes directory: " << theme_path << Qt::endl;
++      << "Themes directory: " << theme_path << QT_ENDL;
+ 	// game menu actions
+ 	gameNew = new QAction(QIcon(":/icons/logo.svg"), tr("&New..."), this);
+ 	gameNew->setShortcut(tr("CTRL+N", "File|New"));
+diff --git a/src/view.cc b/src/view.cc
+index e074312..2532c8c 100644
+--- a/src/view.cc
++++ b/src/view.cc
+@@ -436,7 +436,7 @@ void myView::slot_preview_game(int rules)
+ 
+ void myView::slot_apply_moves(const QString& moves)
+ {
+-	QStringList move_list= moves.split(MOVE_SPLIT, Qt::SkipEmptyParts);
++	QStringList move_list= moves.split(MOVE_SPLIT, QT_SKIP_EMPTY_PARTS);
+ 
+ 	m_board->reset();
+ 
+
+From 0e8654265cc515ffff77692fcfdd6ef76ee7e5c5 Mon Sep 17 00:00:00 2001
+From: Ilya Portnov <portnov@bk.ru>
+Date: Tue, 20 Apr 2021 22:47:19 +0500
+Subject: [PATCH 3/3] Add scripts to build on Arch && Qt6.
+
+---
+ Dockerfile.arch    | 12 ++++++++++++
+ arch_entrypoint.sh |  6 ++++++
+ build_on_arch.sh   | 11 +++++++++++
+ 3 files changed, 29 insertions(+)
+ create mode 100644 Dockerfile.arch
+ create mode 100755 arch_entrypoint.sh
+ create mode 100755 build_on_arch.sh
+
+diff --git a/Dockerfile.arch b/Dockerfile.arch
+new file mode 100644
+index 0000000..d568352
+--- /dev/null
++++ b/Dockerfile.arch
+@@ -0,0 +1,12 @@
++FROM archlinux
++MAINTAINER Ilya V. Portnov <portnov84@rambler.ru>
++
++RUN pacman -Sy && yes | pacman -S gcc make qt6-base qt6-svg qt6-tools icu
++
++VOLUME /dst
++VOLUME /src
++WORKDIR /src/qcheckers
++
++ADD arch_entrypoint.sh .
++
++CMD ["/bin/bash", "-c", "./arch_entrypoint.sh"]
+diff --git a/arch_entrypoint.sh b/arch_entrypoint.sh
+new file mode 100755
+index 0000000..34d009d
+--- /dev/null
++++ b/arch_entrypoint.sh
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++set -e
++
++qmake6
++make
+diff --git a/build_on_arch.sh b/build_on_arch.sh
+new file mode 100755
+index 0000000..c6a4d77
+--- /dev/null
++++ b/build_on_arch.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++set -e
++
++rm -f Makefile src/Makefile
++qmake
++make clean
++rm -f Makefile src/Makefile
++
++docker build -t qcheckers-arch -f Dockerfile.arch .
++
++docker run --rm --name qcheckers-arch -v $(pwd):/src/qcheckers -v $(pwd):/dst qcheckers-arch

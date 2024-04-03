@@ -1,16 +1,12 @@
-%global forgeurl https://github.com/KDE/kmail-account-wizard
-%global commit c1b6450e9cf3341f0d4544b678caecc5b2397b44
-%global date 20240306
-%forgemeta
-
 Name:    kmail-account-wizard
 Summary: KMail Account Wizard
-Version: 24.02.0
-Release: %autorelease
+Version: 24.02.1
+Release: 1%{?dist}
 
 License: GPLv2+
-URL:           %{forgeurl}
-Source:        %{forgesource}
+URL:     https://invent.kde.org/pim/%{name}
+
+Source0: http://download.kde.org/%{stable_kf6}/release-service/%{version}/src/%{name}-%{version}.tar.xz
 
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
@@ -53,7 +49,7 @@ Conflicts: kdepim-common < 16.12
 
 
 %prep
-%forgeautosetup -p1
+%autosetup -n %{name}-%{version} -p1
 
 
 %build
@@ -77,9 +73,6 @@ desktop-file-validate %{buildroot}%{_kf6_datadir}/applications/org.kde.accountwi
 
 
 %changelog
-* Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 24.02.0-1.git
-- Switch to git snapshot
-
 * Wed Feb 21 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.0-1
 - 24.02.0
 
@@ -370,4 +363,3 @@ desktop-file-validate %{buildroot}%{_kf6_datadir}/applications/org.kde.accountwi
 
 * Mon Jan 16 2017 Rex Dieter <rdieter@fedoraproject.org> - 16.12.1-1
 - kmail-account-wizard-16.12.1
-

@@ -67,10 +67,11 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 %files -f %{name}.lang
 %license COPYING LICENSE
 %doc README.md
+
 %{_bindir}/%{name}
 %{_bindir}/%{name}diff
 %{_bindir}/%{name}merge
-%{_kf6_metainfodir}/org.kde.%{name}.appdata.xml
+
 %{_libdir}/lib%{name}.so.0
 %{_libdir}/lib%{name}.so.1.4.0
 %{_libdir}/lib%{name}diff.so.0
@@ -79,18 +80,23 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 %{_libdir}/lib%{name}gui.so.1.4.0
 %{_libdir}/lib%{name}widgets.so.0
 %{_libdir}/lib%{name}widgets.so.1.4.0
-%{_qt6_plugindir}/dolphin/vcs/%{name}dolphinplugin.so
+
+%{_kf6_qtplugindir}/dolphin/vcs/%{name}dolphinplugin.so
+
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/icons/hicolor/scalable/actions/*.svg
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/qlogging-categories6/kommit.categories
+
+%{_kf6_metainfodir}/org.kde.%{name}.appdata.xml
+
 %{_defaultdocdir}/HTML/en/%{name}
 
 
 %changelog
 * Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 1.3.1-1
-- Update to 1.3.0
+- Update to 1.3.1
 
 * Thu Jan 25 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
