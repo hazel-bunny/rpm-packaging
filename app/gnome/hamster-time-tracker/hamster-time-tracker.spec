@@ -17,6 +17,7 @@ Summary:    The Linux time tracker
 Group:      Applications/Productivity
 URL:        %{forgeurl}
 Source:     %{forgesource}
+Patch:      impose_python3.patch
 
 BuildRequires:    gettext
 BuildRequires:    intltool
@@ -57,7 +58,7 @@ what. Maybe print it out, or export to some suitable format, if time reporting
 is a request of your employee.
 
 %prep
-%forgeautosetup
+%forgeautosetup -p1
 
 %build
 ./waf configure -vv --prefix=%{_prefix} --datadir=%{_datadir} 
@@ -68,7 +69,7 @@ is a request of your employee.
 rm -rf %{buildroot}%{_datadir}/glib-2.0/schemas/gschemas.compiled
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.GUI.desktop
 
 %pre
 %gconf_schema_prepare %{name}
@@ -86,11 +87,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
 %{_bindir}/%{_basename}
 
-%{_datadir}/%{_basename}/
-
 %{_libexecdir}/%{_basename}/
 
 %{python3_sitelib}/%{_basename}/
+
+%{_datadir}/%{_basename}/
 
 %{_datadir}/applications/%{app_id}.GUI.desktop
 
@@ -107,7 +108,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.png
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
 
-%{_metainfodir}/%{app_id}.GUI.metainfo.xml
+%{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
 %autochangelog
