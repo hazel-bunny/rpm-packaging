@@ -1,15 +1,16 @@
 %global _basename hamster
 %global app_id org.gnome.Hamster
 
+Name:       %{_basename}-time-tracker
+
 %global forgeurl https://github.com/project%{_basename}/%{_basename}
-%global commit d10ae12cde0370233189574d255c831e3eb267ab
-%global date 20230430
+Version:    3.0.3
+# %%global commit d10ae12cde0370233189574d255c831e3eb267ab
+# %%global date 20230430
 %forgemeta
 
 %global debug_package %{nil}
 
-Name:       %{_basename}-time-tracker
-Version:    3.0.2
 Release:    %autorelease
 License:    GPLv3+
 Summary:    The Linux time tracker
@@ -56,7 +57,7 @@ what. Maybe print it out, or export to some suitable format, if time reporting
 is a request of your employee.
 
 %prep
-%setup -qn %{_basename}-%{commit}
+%forgeautosetup
 
 %build
 ./waf configure -vv --prefix=%{_prefix} --datadir=%{_datadir} 
@@ -82,21 +83,31 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %files
 %license COPYING
 %doc AUTHORS NEWS.md README.md MAINTAINERS
+
 %{_bindir}/%{_basename}
+
+%{_datadir}/%{_basename}/
+
+%{_libexecdir}/%{_basename}/
+
+%{python3_sitelib}/%{_basename}/
+
 %{_datadir}/applications/%{app_id}.GUI.desktop
+
+%{_datadir}/bash-completion/completions/%{_basename}.bash
+
 %{_datadir}/dbus-1/services/%{app_id}.service
 %{_datadir}/dbus-1/services/%{app_id}.WindowServer.service
 %{_datadir}/dbus-1/services/%{app_id}.GUI.service
-%{_datadir}/icons/hicolor/*/apps/*.png
-%{_datadir}/icons/hicolor/scalable/apps/*.svg
-%{_datadir}/%{_basename}/
-%{_libexecdir}/%{_basename}/
-%{python3_sitelib}/%{_basename}/
-%{_datadir}/bash-completion/completions/%{_basename}.bash
-%{_datadir}/metainfo/%{app_id}.GUI.metainfo.xml
+
 %{_datadir}/glib-2.0/schemas/org.gnome.%{_basename}.gschema.xml
 %{_datadir}/help/*/%{_basename}
 %{_datadir}/locale/*/LC_MESSAGES/%{_basename}.mo
+
+%{_datadir}/icons/hicolor/*/apps/*.png
+%{_datadir}/icons/hicolor/scalable/apps/*.svg
+
+%{_metainfodir}/%{app_id}.GUI.metainfo.xml
 
 %changelog
 %autochangelog
