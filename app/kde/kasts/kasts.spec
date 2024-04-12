@@ -1,9 +1,8 @@
 %global kf6_min_version 5.240.0
 
 Name:           kasts
-Version:        24.02.1
-Release:        %autorelease
-Epoch:          1
+Version:        24.02.2
+Release:        3%{?dist}
 License:        GPLv2 and GPLv2+ and GPLv3+ and BSD and LGPLv3+
 Summary:        A mobile podcast application
 Url:            https://apps.kde.org/%{name}
@@ -15,12 +14,13 @@ BuildRequires:  libappstream-glib
 BuildRequires:  cmake
 BuildRequires:  extra-cmake-modules
 BuildRequires:  gcc-c++
-BuildRequires:  gstreamer1-devel
-BuildRequires:  openssl-devel
-BuildRequires:  sqlite-devel
-BuildRequires:  taglib-devel
-BuildRequires:  vlc-devel
-BuildRequires:  zlib-devel
+
+BuildRequires:  pkgconfig(gstreamer-1.0)
+BuildRequires:  pkgconfig(openssl)
+BuildRequires:  pkgconfig(sqlite3)
+BuildRequires:  pkgconfig(taglib)
+BuildRequires:  pkgconfig(libvlc)
+BuildRequires:  pkgconfig(zlib)
 
 BuildRequires:  cmake(Qt6Core)
 BuildRequires:  cmake(Qt6Quick)
@@ -85,7 +85,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 
 
 %changelog
-* Fri Mar 22 2024 Dipta Biswas <dabiswas112@gmail.com> - 1:24.02.1-1
+* Fri Apr 12 2024 Dipta Biswas <dabiswas112@gmail.com> - 24.02.2-3
 - Add support for vlc & gstreamer
 
 * Wed Feb 21 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.0-1
