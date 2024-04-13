@@ -1,19 +1,19 @@
 %global debug_package %{nil}
 %global forgeurl https://gitlab.com/divinae/focus-plasmoid
-%global commit 27129140956645d8ab17eb2ca847cdb7d97d7496
-%global date 20240315
+%global commit 09d8e4b73eff15ab42c79149cead255c191c72a5
+%global date 20240326
 %forgemeta
 
 Name:          fokus-plasmoid
 Version:       2.1.0
-Release:       %autorelease
+Release:       1%{?dist}
 Summary:       Simple pomodoro de plasmoid
 License:       GPLv3
 URL:           %{forgeurl}
 Source:        %{forgesource}
 
 Requires:      plasma-workspace
-Requires:      kf6-kirigami2
+Requires:      kf6-kirigami
 Requires:      libplasma
 
 %description

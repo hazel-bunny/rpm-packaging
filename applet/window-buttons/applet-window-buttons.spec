@@ -1,13 +1,13 @@
 %global forgeurl https://github.com/moodyhunter/applet-window-buttons6
-%global date 20240308
-%global commit a7b95da32717b90a1d9478db429d6fa8a6c4605f
+%global date 20240405
+%global commit 326382805641d340c9902689b549e4488682f553
 %forgemeta
 
 %global orig_name org.kde.windowbuttons
 
 Name:           applet-window-buttons
-Version:        0.12.0
-Release:        %autorelease
+Version:        0.13.0
+Release:        1%{?dist}
 Summary:        Plasma 6 applet to show window buttons in panels
 License:        GPL-2.0-or-later
 URL:            %{forgeurl}
@@ -73,6 +73,9 @@ desktop-file-validate %{buildroot}%{_datadir}/plasma/plasmoids/%{orig_name}/meta
 
 
 %changelog
+* Sun Apr 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.13.0-1.git
+- Update to version 0.13.0
+
 * Fri Mar 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.12.0-1.git
 - Switch to a git snapshot to fix metadata.json
 

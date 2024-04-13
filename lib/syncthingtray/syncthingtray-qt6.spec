@@ -37,7 +37,7 @@
 
 Name:           %{reponame}-%{cfg}
 Version:        1.5.0
-Release:        %autorelease
+Release:        1%{?dist}
 Summary:        Tray application for Syncthing
 License:        GPL-2.0-or-later
 Group:          System/Packages

@@ -22,7 +22,7 @@
 
 Name:           %{reponame}
 Version:        5.24.7
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Common C++ classes and routines
 License:        GPL-2.0-or-later
 Group:          Development/Libraries/C and C++

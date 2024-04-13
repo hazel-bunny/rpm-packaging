@@ -22,8 +22,8 @@
 %define soname 6
 
 Name:           %{reponame}-%{cfg}
-Version:        6.13.5
-Release:        1
+Version:        6.14.0
+Release:        1%{?dist}
 Summary:        Common Qt related C++ classes and routines such as dialogs, widgets and models
 License:        GPL-2.0-or-later
 Group:          System/Packages
