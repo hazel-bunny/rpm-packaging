@@ -1,15 +1,15 @@
 %global _basename qt6gtk2
 %global forgeurl https://github.com/trialuser02/%{_basename}
-%global commit 2a21a8ad59a76e6928fae1699c830ca24fb2461c
+%global commit 5df96819e534a5776cf3a511f270895e35225dd2
 # %%global shortcommit %%(c=%%{commit}; echo ${c:0:7})
-%global date 20220520
+%global date 20240120
 %forgemeta
 
 Name:     qt6-gtk2-platform-theme
 Version:  0.2
-Release:  %autorelease
+Release:  1%{?dist}
 Summary:  GTK+2.0 integration plugins for Qt6
-License:  GPLv2
+License:  GPL-2.0
 
 URL:      %{forgeurl}
 Source:   %{forgesource}
@@ -43,6 +43,10 @@ Qt6Gtk2 - GTK+2.0 integration plugins for Qt6
 %{_qt6_plugindir}/styles/libqt6gtk2-style.so
 
 %changelog
+* Thu Jul 27 2023 Dipta Biswas <dabiswas112@gmail.com> 0.2-1.20240120git5df96819
+- Fix license
+- Rebuild for qt6-qtbase 6.7.0
+
 * Thu Jul 27 2023 Dipta Biswas <dabiswas112@gmail.com> 0.2-1.20220520git2a21a8ad
 - Fix license
 - Add docs

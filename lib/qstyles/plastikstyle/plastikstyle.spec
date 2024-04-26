@@ -9,7 +9,7 @@
 
 Name:     %{style}style
 Version:  %tag
-Release:  %autorelease
+Release:  1%{?dist}
 License:  LGPLv2.1
 Summary:  QStyle imitating KDE 3's Plastik
 

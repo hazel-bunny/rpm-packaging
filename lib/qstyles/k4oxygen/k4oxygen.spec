@@ -8,7 +8,7 @@
 
 Name:    %{style}
 Version: 0
-Release: %autorelease
+Release: 2%{?dist}
 Summary: Variant of KDE4 Oxygen widget theme
 License: LGPL-2.1
 URL:     %{forgeurl}

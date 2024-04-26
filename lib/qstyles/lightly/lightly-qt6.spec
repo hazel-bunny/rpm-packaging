@@ -11,7 +11,7 @@
 
 Name:           %{_style}-qt%{_qt_major_version}
 Version:        6.80
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        A modern style for qt applications
 License:        GPL-2.0-or-later
 Group:          System/GUI/KDE

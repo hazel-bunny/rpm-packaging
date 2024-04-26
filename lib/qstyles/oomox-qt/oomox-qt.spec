@@ -5,7 +5,7 @@
 
 Name:    oomox-qt
 Version: 1.4.2
-Release: %autorelease
+Release: 2%{?dist}
 Summary: Native style to bend Qt5/Qt6 applications to look with Themix colors
 License: GPLv2+, LGPLv2+
 URL:     %{forgeurl}
