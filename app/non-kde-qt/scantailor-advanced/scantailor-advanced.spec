@@ -11,7 +11,7 @@ Name:           %{_basename}-advanced
 %forgemeta
 
 Version:        1.0.19
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        An interactive post-processing tool for scanned pages
 License:        GPLv3+ or LGPLv2.1
 URL:            %{forgeurl}

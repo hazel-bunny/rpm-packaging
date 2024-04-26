@@ -5,7 +5,7 @@ Name:           klassy
 %global date 20240314
 %forgemeta
 
-Version:        %{tag}
+Version:        6.1
 Release:        1%{?dist}
 Summary:        Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop.
 License:        GPL-2.0-or-later
@@ -109,14 +109,15 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 
 %{_kf6_datadir}/color-schemes/Klassy*.colors
 
-%{_datadir}/icons/hicolor/
-%{_datadir}/icons/%{name}/
-%{_datadir}/icons/%{name}-dark/
+%{_kf6_datadir}/icons/hicolor/
+%{_kf6_datadir}/icons/%{name}/
+%{_kf6_datadir}/icons/%{name}-dark/
 
 %{_kf6_datadir}/kstyle/themes/%{name}.themerc
 
 %{_kf6_datadir}/plasma/layout-templates/org.kde.klassy.*
 %{_kf6_datadir}/plasma/look-and-feel/org.kde.klassy*
+%{_kf6_datadir}/plasma/desktoptheme/%{name}/
 
 %changelog
 %autochangelog
