@@ -1,0 +1,25 @@
+diff -U 3 -H -d -r -N -- a/usr/bin/yuki-iptv b/usr/bin/yuki-iptv
+--- a/usr/bin/yuki-iptv	2024-03-17 18:42:33.000000000 +0600
++++ b/usr/bin/yuki-iptv	2024-04-14 14:55:47.419886749 +0600
+@@ -2,9 +2,5 @@
+ cd "$(dirname "$(realpath "$0")")/../lib/yuki-iptv/" || exit 1
+ PULSE_PROP="media.role=video"
+ export PULSE_PROP
+-if [ "$WAYLAND_DISPLAY" != "" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+-QT_QPA_PLATFORM=xcb
+-export QT_QPA_PLATFORM
+-fi
+ exec python3 ./yuki-iptv.py "$@"
+ exit "$?"
+diff -U 3 -H -d -r -N -- a/usr/lib/yuki-iptv/yuki_iptv/settings.py b/usr/lib/yuki-iptv/yuki_iptv/settings.py
+--- a/usr/lib/yuki-iptv/yuki_iptv/settings.py	2024-03-17 18:42:33.000000000 +0600
++++ b/usr/lib/yuki-iptv/yuki_iptv/settings.py	2024-04-14 14:56:27.758274008 +0600
+@@ -48,7 +48,7 @@
+         "multicastoptimization": False,
+         "hideepgpercentage": False,
+         "hidebitrateinfo": False,
+-        "styleredefoff": True,
++        "styleredefoff": False,
+         "volumechangestep": 1,
+         "mouseswitchchannels": False,
+         "autoreconnection": False,
