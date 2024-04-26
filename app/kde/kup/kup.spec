@@ -6,7 +6,7 @@
 
 Name:           kup
 Version:        0.9.1
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Backup scheduler for the Plasma desktop
 
 License:        GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-KDE-Accepted-GPL

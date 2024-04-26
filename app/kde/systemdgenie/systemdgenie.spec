@@ -7,7 +7,7 @@ Name:    systemdgenie
 
 Summary: Systemd managment utility
 Version: 0.99.0
-Release: %autorelease
+Release: 2%{?dist}
 
 License: GPLv2+
 URL:     %{forgeurl}

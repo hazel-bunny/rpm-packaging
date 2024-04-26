@@ -16,11 +16,8 @@ BuildRequires:  extra-cmake-modules
 BuildRequires:  gcc-c++
 
 BuildRequires:  pkgconfig(gstreamer-1.0)
-BuildRequires:  pkgconfig(openssl)
-BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  pkgconfig(taglib)
 BuildRequires:  pkgconfig(libvlc)
-BuildRequires:  pkgconfig(zlib)
 
 BuildRequires:  cmake(Qt6Core)
 BuildRequires:  cmake(Qt6Quick)
