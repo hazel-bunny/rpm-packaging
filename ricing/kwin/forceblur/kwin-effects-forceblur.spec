@@ -46,7 +46,6 @@ BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xcb)
 
-Requires:       plasma-workspace
 Requires:       kwin
 
 %description

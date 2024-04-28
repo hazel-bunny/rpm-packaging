@@ -2,7 +2,7 @@
 
 Name:               %{_basename}-icon-theme
 Version:            1.6.0
-Release:            %autorelease
+Release:            2%{?dist}
 License:            GPL-3.0
 URL:                https://github.com/bikass/%{_basename}
 Summary:            Kora icon theme for GNU/Linux os
@@ -46,9 +46,35 @@ cp -dr --no-preserve=mode "%{_basename}-light" %{buildroot}%{_datadir}/icons/%{_
 cp -dr --no-preserve=mode "%{_basename}-light-panel" %{buildroot}%{_datadir}/icons/%{_basename}-light-panel
 cp -dr --no-preserve=mode "%{_basename}-pgrey" %{buildroot}%{_datadir}/icons/%{_basename}-pgrey
 
+export THEMES="%{_basename} %{_basename}-light %{_basename}-light-panel %{_basename}-pgrey"
+for t in $THEMES; do
+    /bin/touch %{buildroot}/%{_datadir}/icons/$t/icon-theme.cache
+done
+
 # Install license
 mkdir -p %{buildroot}%{_datadir}/licenses/%{name}
 cp -p "LICENSE" %{buildroot}%{_datadir}/licenses/%{name}
+
+%post
+export THEMES="%{_basename} %{_basename}-light %{_basename}-light-panel %{_basename}-pgrey"
+for t in $THEMES; do
+    /bin/touch --no-create %{_datadir}/icons/$t &>/dev/null || :
+done
+
+%postun
+if [ $1 -eq 0 ] ; then
+    export THEMES="%{_basename} %{_basename}-light %{_basename}-light-panel %{_basename}-pgrey"
+    for t in $THEMES; do
+        /bin/touch --no-create %{_datadir}/icons/$t &>/dev/null
+        /usr/bin/gtk-update-icon-cache %{_datadir}/icons/$t &>/dev/null || :
+    done
+fi
+
+%posttrans
+export THEMES="%{_basename} %{_basename}-light %{_basename}-light-panel %{_basename}-pgrey"
+for t in $THEMES; do
+    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/$t &>/dev/null || :
+done
 
 %files
 %doc README.md
