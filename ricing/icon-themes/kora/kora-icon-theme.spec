@@ -1,13 +1,17 @@
 %global _basename kora
+%global debug_package %{nil}
 
 Name:               %{_basename}-icon-theme
-Version:            1.6.0
-Release:            2%{?dist}
-License:            GPL-3.0
-URL:                https://github.com/bikass/%{_basename}
-Summary:            Kora icon theme for GNU/Linux os
 
-Source0:            %{url}/archive/v%{version}/%{_basename}-%{version}.tar.gz
+%global forgeurl https://github.com/bikass/%{_basename}
+Version:            1.6.1
+%forgemeta
+
+Release:            1%{?dist}
+Summary:            Kora icon theme for GNU/Linux os
+License:            GPL-3.0
+URL:                %{forgeurl}
+Source:             %{forgesource}
 
 BuildArch:          noarch
 
