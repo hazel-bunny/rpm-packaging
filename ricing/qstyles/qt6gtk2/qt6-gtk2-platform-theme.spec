@@ -1,8 +1,8 @@
 %global _basename qt6gtk2
 %global forgeurl https://github.com/trialuser02/%{_basename}
-%global commit 5df96819e534a5776cf3a511f270895e35225dd2
+%global commit d29ba6c1fb4ac933ed7b91f0480cbd0c5a975ab8
 # %%global shortcommit %%(c=%%{commit}; echo ${c:0:7})
-%global date 20240120
+%global date 20240507
 %forgemeta
 
 Name:     qt6-gtk2-platform-theme
