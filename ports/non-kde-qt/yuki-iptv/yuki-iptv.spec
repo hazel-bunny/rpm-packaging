@@ -5,7 +5,7 @@ Name:           yuki-iptv
 Version:        0.0.11
 %forgemeta
 
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        IPTV player with EPG support
 Group:          Multimedia
 License:        GPL-3.0-or-later
@@ -52,7 +52,6 @@ IPTV player with EPG support
 %forgeautosetup -p1
 sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
 sed -i "s/"styleredefoff": True/"styleredefoff": False/g" usr/lib/%{name}/yuki_iptv/settings.py
-sed -i "s/QT_QPA_PLATFORM=xcb/QT_QPA_PLATFORM=wayland/g" usr/lib/%{name}/yuki_iptv/settings.py
 sed -i "s/setAppFusion = True/setAppFusion = False/g" usr/lib/%{name}/%{name}.py
 
 %build
