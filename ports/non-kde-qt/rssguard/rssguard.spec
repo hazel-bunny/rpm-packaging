@@ -6,6 +6,8 @@ Version:        4.7.0
 %global date 20240514
 %forgemeta
 
+%global app_id io.github.martinrotter.rssguard
+
 Release:        1%{?dist}
 Summary:        Simple yet powerful feed reader
 
@@ -71,18 +73,24 @@ sed -i 's/\r$//' README.md
 %cmake_install
 
 %check
-desktop-file-validate %{buildroot}/%{_datadir}/applications/*.rssguard.desktop
-appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/metainfo/*.rssguard.metainfo.xml
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 
 %files
 %doc README.md
 %license LICENSE.md
+
 %{_bindir}/%{name}
+
 %{_includedir}/lib%{name}/
-%{_libdir}/lib%{name}*.so
-%{_datadir}/applications/io.github.martinrotter.rssguard.desktop
-%{_datadir}/icons/hicolor/*/apps/io.github.martinrotter.rssguard.png
-%{_datadir}/metainfo/io.github.martinrotter.rssguard.metainfo.xml
+
+%{_libdir}/lib%{name}.so
+%{_libdir}/%{name}/lib%{name}*.so
+
+%{_datadir}/applications/%{app_id}.desktop
+%{_datadir}/icons/hicolor/*/apps/%{app_id}.png
+
+%{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
 %autochangelog
