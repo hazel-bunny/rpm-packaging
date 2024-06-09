@@ -1,7 +1,7 @@
 Name:           kwin-effects-forceblur
 
 %global forgeurl https://github.com/taj-ny/%{name}
-Version:        1.2.0
+Version:        1.2.1
 %forgemeta
 
 Release:        1%{?dist}
@@ -74,5 +74,11 @@ Features
 %cmake_install
 
 %changelog
+* Fri Jun 7 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.2.1-1
+- Update to 1.2.1
+
+* Sun May 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.2.0-2
+- rebuild for kwin 6.0.5
+
 * Fri Apr 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.2.0-1
 - initial package

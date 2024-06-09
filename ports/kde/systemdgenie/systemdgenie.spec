@@ -1,5 +1,8 @@
 Name:    systemdgenie
 
+%global app_id org.kde.%{name}
+%global service_id org.kde.kcontrol.%{name}
+
 %global forgeurl https://github.com/KDE/%{name}
 %global commit 45ce5d742d2c0f6a3fa8cb1b6f81e526ccdcfc2d
 %global date 20240317
@@ -13,6 +16,7 @@ License: GPLv2+
 URL:     %{forgeurl}
 Source:  %{forgesource}
 
+BuildRequires: gcc-c++
 BuildRequires: cmake
 BuildRequires: extra-cmake-modules
 BuildRequires: desktop-file-utils
@@ -46,17 +50,17 @@ SystemdGenie is a systemd management utility based on KDE technologies. It provi
 %find_lang %{name} --all-name --with-html
 
 %check
-desktop-file-validate %{buildroot}%{_kf6_datadir}/applications/org.kde.systemdgenie.desktop
+desktop-file-validate %{buildroot}%{_kf6_datadir}/applications/%{app_id}.desktop
 
 %files -f %{name}.lang
 %license LICENSES/*
 %{_kf6_bindir}/%{name}
-%{_kf6_libexecdir}/kauth/systemdgeniehelper
-%{_kf6_datadir}/applications/org.kde.systemdgenie.desktop
-%{_kf6_datadir}/dbus-1/system-services/org.kde.kcontrol.systemdgenie.service
-%{_kf6_datadir}/dbus-1/system.d/org.kde.kcontrol.systemdgenie.conf
+%{_kf6_libexecdir}/kauth/%{name}helper
+%{_kf6_datadir}/applications/%{app_id}.desktop
+%{_kf6_datadir}/dbus-1/system-services/%{service_id}.service
+%{_kf6_datadir}/dbus-1/system.d/%{service_id}.conf
 %{_kf6_datadir}/kxmlgui5/%{name}/
-%{_kf6_datadir}/polkit-1/actions/org.kde.kcontrol.systemdgenie.policy
+%{_kf6_datadir}/polkit-1/actions/%{service_id}.policy
 
 %changelog
 * Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 0.99.0-1.git

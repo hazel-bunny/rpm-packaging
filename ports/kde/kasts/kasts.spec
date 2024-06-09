@@ -1,7 +1,7 @@
 %global kf6_min_version 5.240.0
 
 Name:           kasts
-Version:        24.02.2
+Version:        24.05.0
 Release:        3%{?dist}
 License:        GPLv2 and GPLv2+ and GPLv3+ and BSD and LGPLv3+
 Summary:        A mobile podcast application
@@ -82,11 +82,20 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 
 
 %changelog
-* Fri Apr 12 2024 Dipta Biswas <dabiswas112@gmail.com> - 24.02.2-3
+* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 24.02.3-3
 - Add support for vlc & gstreamer
 
+* Fri Apr 12 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.2-1
+- 24.02.2
+
+* Thu Apr 04 2024 Jan Grulich <jgrulich@redhat.com> - 24.02.1-2
+- Rebuild (qt6)
+
+* Fri Mar 29 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.1-1
+- 24.02.1
+
 * Wed Feb 21 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.0-1
-- 24.02.0	
+- 24.02.0
 
 * Wed Jan 31 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.01.95-1
 - 24.01.95

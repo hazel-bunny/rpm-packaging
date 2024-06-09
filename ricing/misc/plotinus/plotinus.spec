@@ -6,10 +6,16 @@ Name:              plotinus
 %forgemeta
 
 Version:           0.2.0
-Release:           %autorelease
+Release:           1%{?dist}
+Epoch:             1
 Summary:           A searchable command palette in every modern GTK+ application
+License:           WTFPL-1.0
 URL:               %{forgeurl}
 Source:            %{forgesource}
+
+BuildRequires:     cmake
+BuildRequires:     vala
+BuildRequires:     gtk3-devel
 
 %description
 Have you used Sublime Text's or Atom's "Command Palette"? It's a list of
@@ -27,22 +33,24 @@ Just press Ctrl+Shift+P (configurable) and you're in business – it feels so
 natural you'll soon wonder how you ever lived without it.
 
 %prep
-#  – an autosetup wrapper, forgeautosetup, is also provided
-#  – use the “-v” flag if you want verbose processing; remove it before commit
-#  – call forgesetup/autosetup directly if you do not like the result
 %forgeautosetup
-sed -i 's/LIBRARY DESTINATION lib/LIBRARY DESTINATION %{_lib}/' CMakeLists.txt
-#
-# After this point the archive extraction is done. forgemeta is no longer used.
+sed -i 's,LIBRARY DESTINATION lib,LIBRARY DESTINATION %{_libdir},' CMakeLists.txt
 
 %build
+%cmake
+%cmake_build
 
 %install
+%cmake_install
 
 %check
+#nothing
 
 %files
-%license
-%doc
+%doc README.md
+%{_bindir}/plotinus
+%{_libdir}/libplotinus.so
+%{_datadir}/glib-2.0/schemas/com.worldwidemann.plotinus.gschema.xml
 
 %changelog
+%autochangelog

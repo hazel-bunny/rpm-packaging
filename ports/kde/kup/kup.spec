@@ -1,20 +1,26 @@
-%global app_id org.kde.kup
-%global forgeurl https://github.com/KDE/kup
-%global commit 439195e275d030c88127871c03323ba58abf0bb7
-%global date 20240321
+Name:           kup
+Version:        0.10.0
+
+%global app_id org.kde.%{name}
+
+%global forgeurl https://github.com/KDE/%{name}
+%global tag %{name}-%{version}
+#global commit 130face33a7500b6f881cf8dc7114a2ba2ea1081
+%global date 20240526
 %forgemeta
 
-Name:           kup
-Version:        0.9.1
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Backup scheduler for the Plasma desktop
 
 License:        GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-KDE-Accepted-GPL
 URL:            %{forgeurl}
 Source:         %{forgesource}
 
+BuildRequires:  desktop-file-utils
+BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  extra-cmake-modules
+BuildRequires:  libappstream-glib
 BuildRequires:  qt6-rpm-macros
 BuildRequires:  kf6-rpm-macros
 
@@ -41,6 +47,8 @@ BuildRequires:  pkgconfig(openssl)
 
 Requires:       rsync
 Requires:       bup
+Requires:       hicolor-icon-theme
+Requires:       plasma-workspace
 
 %description
 Kup can help you remember to keep up-to-date backups of your personal files. It provides:
@@ -59,41 +67,58 @@ Kup can help you remember to keep up-to-date backups of your personal files. It 
 
 %install
 %cmake_install
+
+# Bad icon name
+sed -i "/<icon type=\"stock\">/d" %{buildroot}%{_kf6_metainfodir}/%{app_id}.appdata.xml
+sed -i "/<icon type=\"stock\">/d" %{buildroot}%{_kf6_metainfodir}/%{app_id}applet.appdata.xml
+
 %find_lang %{name}
 
+%check
+desktop-file-validate %{buildroot}%{_kf6_datadir}/applications/kcm_%{name}.desktop
+desktop-file-validate %{buildroot}%{_qt6_sysconfdir}/autostart/%{name}-daemon.desktop
+
+appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/%{app_id}.appdata.xml
+appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/%{app_id}applet.appdata.xml
 
 %files -f %{name}.lang
 %license LICENSES/*
 
-/etc/xdg/autostart/kup-daemon.desktop
+%{_qt6_sysconfdir}/autostart/%{name}-daemon.desktop
 
-%{_bindir}/kup-daemon
-%{_bindir}/kup-filedigger
-%{_bindir}/kup-purger
+%{_kf6_bindir}/%{name}-daemon
+%{_kf6_bindir}/%{name}-filedigger
+%{_kf6_bindir}/%{name}-purger
 
 %{_kf6_plugindir}/kio/kio_bup.so
 
-%{_kf6_qtplugindir}/plasma/kcms/systemsettings_qwidgets/kcm_kup.so
-%{_kf6_qtplugindir}/plasma5support/dataengine/plasma_engine_kup.so
+%{_kf6_qtplugindir}/plasma/kcms/systemsettings_qwidgets/kcm_%{name}.so
+%{_kf6_qtplugindir}/plasma5support/dataengine/plasma_engine_%{name}.so
 
-%{_datadir}/applications/kcm_kup.desktop
-%{_datadir}/icons/hicolor/scalable/apps/kup.svg
-%{_datadir}/knotifications6/kupdaemon.notifyrc
+%{_kf6_datadir}/applications/kcm_%{name}.desktop
+%{_kf6_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_kf6_datadir}/knotifications6/%{name}daemon.notifyrc
 
 %{_kf6_metainfodir}/%{app_id}.appdata.xml
 %{_kf6_metainfodir}/%{app_id}applet.appdata.xml
 
-%{_datadir}/plasma/plasmoids/%{app_id}applet/contents/ui/FullRepresentation.qml
-%{_datadir}/plasma/plasmoids/%{app_id}applet/contents/ui/main.qml
-%{_datadir}/plasma/plasmoids/%{app_id}applet/metadata.json
+%{_kf6_datadir}/plasma/plasmoids/%{app_id}applet/contents/ui/FullRepresentation.qml
+%{_kf6_datadir}/plasma/plasmoids/%{app_id}applet/contents/ui/main.qml
+%{_kf6_datadir}/plasma/plasmoids/%{app_id}applet/metadata.json
 
-%{_datadir}/plasma5support/services/kupdaemonservice.operations
-%{_datadir}/plasma5support/services/kupservice.operations
+%{_kf6_datadir}/plasma5support/services/%{name}daemonservice.operations
+%{_kf6_datadir}/plasma5support/services/%{name}service.operations
 
-%{_datadir}/qlogging-categories6/kup.categories
+%{_kf6_datadir}/qlogging-categories6/%{name}.categories
 
 
 %changelog
+* Mon May 27 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.10.0-1
+- Update to 0.10.0
+
+* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.9.1-3.git
+- Add check
+
 * Sun Feb 25 2024 Dipta Biswas <dabiswas112@gmail.com> 0.9.1-1.git
 - Switch to git snapshot
 

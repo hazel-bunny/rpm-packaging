@@ -1,0 +1,517 @@
+From e3f07bfee3ce78040cae2fbda73a3d46397a4200 Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Tue, 23 Jan 2018 21:04:38 +0100
+Subject: [PATCH 1/7] add column displaying the checked state for
+ radiobuttons/checkboxes
+
+---
+ src/Command.vala     | 63 ++++++++++++++++++++++++++++++++++++++++++++
+ src/CommandList.vala | 18 +++++++++++++
+ 2 files changed, 81 insertions(+)
+
+diff --git a/src/Command.vala b/src/Command.vala
+index 9b7f7ab..dd23282 100644
+--- a/src/Command.vala
++++ b/src/Command.vala
+@@ -28,6 +28,14 @@ namespace Plotinus {
+     }
+ 
+     public abstract void execute();
++
++    public virtual bool is_active() {
++      return false;
++    }
++
++    public virtual Gtk.ButtonRole get_check_type() {
++      return Gtk.ButtonRole.NORMAL;
++    }
+   }
+ 
+   class SignalCommand : Command {
+@@ -55,6 +63,26 @@ namespace Plotinus {
+     public override void execute() {
+       action.activate(parameter);
+     }
++
++    public override bool is_active() {
++      if(parameter != null)
++        return parameter.equal(action.get_state());
++
++      if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
++        return action.get_state().get_boolean();
++
++      return false;
++    }
++
++    public override Gtk.ButtonRole get_check_type() {
++      if(parameter != null)
++        return Gtk.ButtonRole.RADIO;
++
++      if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
++        return Gtk.ButtonRole.CHECK;
++
++      return Gtk.ButtonRole.NORMAL;
++    }
+   }
+ 
+   class MenuItemCommand : Command {
+@@ -68,6 +96,24 @@ namespace Plotinus {
+     public override void execute() {
+       menu_item.activate();
+     }
++
++    public override bool is_active() {
++      if(get_check_type() != Gtk.ButtonRole.NORMAL)
++        return (menu_item as Gtk.CheckMenuItem).active;
++
++      return false;
++    }
++    public override Gtk.ButtonRole get_check_type() {
++      if(menu_item is Gtk.CheckMenuItem) {
++        var checkable = menu_item as Gtk.CheckMenuItem;
++        if((menu_item is Gtk.RadioMenuItem) || checkable.draw_as_radio)
++          return Gtk.ButtonRole.RADIO;
++
++        return Gtk.ButtonRole.CHECK;
++      }
++
++      return Gtk.ButtonRole.NORMAL;
++    }
+   }
+ 
+   class ButtonCommand : Command {
+@@ -81,6 +127,23 @@ namespace Plotinus {
+     public override void execute() {
+       button.clicked();
+     }
++
++    public override bool is_active() {
++      if(get_check_type() != Gtk.ButtonRole.NORMAL)
++        return (button as Gtk.CheckButton).active;
++
++      return false;
++    }
++
++    public override Gtk.ButtonRole get_check_type() {
++      if(button is Gtk.RadioButton)
++        return Gtk.ButtonRole.RADIO;
++
++      if(button is Gtk.CheckButton)
++        return Gtk.ButtonRole.CHECK;
++
++      return Gtk.ButtonRole.NORMAL;
++    }
+   }
+ 
+ }
+diff --git a/src/CommandList.vala b/src/CommandList.vala
+index b192f93..83e18eb 100644
+--- a/src/CommandList.vala
++++ b/src/CommandList.vala
+@@ -32,6 +32,22 @@ class Plotinus.CommandList : Gtk.TreeView {
+     }
+   }
+ 
++  private class ToggleColumn : Gtk.TreeViewColumn {
++    public ToggleColumn() {
++      var cell_renderer = new Gtk.CellRendererToggle();
++
++      pack_start(cell_renderer, false);
++
++      set_cell_data_func(cell_renderer, (cell_layout, cell, tree_model, tree_iter) => {
++        var toggle = (cell as Gtk.CellRendererToggle);
++        var command = get_iter_command(tree_model, tree_iter);
++        toggle.visible = command.get_check_type() != Gtk.ButtonRole.NORMAL;
++        toggle.radio = command.get_check_type() == Gtk.ButtonRole.RADIO;
++        toggle.active = command.is_active();
++      });
++    }
++  }
++
+   private const string COLUMN_PADDING = "  ";
+ 
+   private string filter = "";
+@@ -74,6 +90,8 @@ class Plotinus.CommandList : Gtk.TreeView {
+                COLUMN_PADDING;
+       }, true, text_color));
+ 
++      append_column(new ToggleColumn());
++
+       append_column(new ListColumn((command) => {
+         return highlight_words(command.label, filter_words);
+       }, false, null, 1.4));
+
+From 7c0fd4cd5f19b79ae906f38578797213980c1aed Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Wed, 24 Jan 2018 18:32:28 +0100
+Subject: [PATCH 2/7] Use switch statement to prevent conditions from being
+ written twice (DRY)
+
+---
+ src/Command.vala | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/src/Command.vala b/src/Command.vala
+index dd23282..5f74048 100644
+--- a/src/Command.vala
++++ b/src/Command.vala
+@@ -65,13 +65,14 @@ namespace Plotinus {
+     }
+ 
+     public override bool is_active() {
+-      if(parameter != null)
+-        return parameter.equal(action.get_state());
+-
+-      if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
+-        return action.get_state().get_boolean();
+-
+-      return false;
++      switch(get_check_type()) {
++        case Gtk.ButtonRole.RADIO:
++          return parameter.equal(action.get_state());
++        case Gtk.ButtonRole.CHECK:
++          return action.get_state().get_boolean();
++        default:
++          return false;
++      }
+     }
+ 
+     public override Gtk.ButtonRole get_check_type() {
+
+From a6a2a3fab52bc91af4ef3ea662eb02613f87dd96 Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Wed, 24 Jan 2018 18:33:22 +0100
+Subject: [PATCH 3/7] check that state != null
+
+---
+ src/Command.vala | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/Command.vala b/src/Command.vala
+index 5f74048..17f699e 100644
+--- a/src/Command.vala
++++ b/src/Command.vala
+@@ -76,7 +76,7 @@ namespace Plotinus {
+     }
+ 
+     public override Gtk.ButtonRole get_check_type() {
+-      if(parameter != null)
++      if(parameter != null && action.get_state() != null)
+         return Gtk.ButtonRole.RADIO;
+ 
+       if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
+
+From de3d8ff4d24d4c62e9c3daec9e140d775187b927 Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Wed, 24 Jan 2018 21:51:20 +0100
+Subject: [PATCH 4/7] add icons from menus
+
+---
+ src/Command.vala          | 52 ++++++++++++++++++++++++++++++++++++++-
+ src/CommandExtractor.vala |  3 ++-
+ src/CommandList.vala      | 20 ++++++++++-----
+ 3 files changed, 67 insertions(+), 8 deletions(-)
+
+diff --git a/src/Command.vala b/src/Command.vala
+index 17f699e..e99370e 100644
+--- a/src/Command.vala
++++ b/src/Command.vala
+@@ -36,6 +36,11 @@ namespace Plotinus {
+     public virtual Gtk.ButtonRole get_check_type() {
+       return Gtk.ButtonRole.NORMAL;
+     }
++
++    [DBus(visible=false)]
++    public virtual bool set_image(Gtk.CellRendererPixbuf cell) {
++      return false;
++    }
+   }
+ 
+   class SignalCommand : Command {
+@@ -53,11 +58,13 @@ namespace Plotinus {
+   class ActionCommand : Command {
+     private Action action;
+     private Variant? parameter;
++    private Variant? icon;
+ 
+-    public ActionCommand(string[] path, string label, string[] accelerators, Action action, Variant? parameter) {
++    public ActionCommand(string[] path, string label, string[] accelerators, Action action, Variant? parameter, Variant? icon) {
+       base(path, label, accelerators);
+       this.action = action;
+       this.parameter = parameter;
++      this.icon = icon;
+     }
+ 
+     public override void execute() {
+@@ -84,6 +91,15 @@ namespace Plotinus {
+ 
+       return Gtk.ButtonRole.NORMAL;
+     }
++
++    public override bool set_image(Gtk.CellRendererPixbuf cell) {
++      if(this.icon == null)
++        return base.set_image(cell);
++
++      var icon = Icon.deserialize(this.icon);
++      cell.gicon = icon;
++      return true;
++    }
+   }
+ 
+   class MenuItemCommand : Command {
+@@ -115,6 +131,40 @@ namespace Plotinus {
+ 
+       return Gtk.ButtonRole.NORMAL;
+     }
++
++    public override bool set_image(Gtk.CellRendererPixbuf cell) {
++      if(!(menu_item is Gtk.ImageMenuItem))
++        return base.set_image(cell);
++
++      var image_menu_item = menu_item as Gtk.ImageMenuItem;
++      if(!(image_menu_item.always_show_image || Gtk.Settings.get_default().gtk_menu_images))
++        return base.set_image(cell);
++
++      var widget = image_menu_item.get_image();
++      if(!(widget is Gtk.Image))
++        return base.set_image(cell);
++
++      var image = widget as Gtk.Image;
++
++      cell.stock_size = Gtk.IconSize.MENU;
++
++      switch(image.get_storage_type()) {
++        case Gtk.ImageType.PIXBUF:
++          cell.pixbuf = image.pixbuf;
++          return true;
++        case Gtk.ImageType.ICON_NAME:
++          cell.icon_name = image.icon_name;
++          return true;
++        case Gtk.ImageType.GICON:
++          cell.gicon = image.gicon;
++          return true;
++        case Gtk.ImageType.STOCK:
++          cell.stock_id = image.stock;
++          return true;
++        default:
++          return base.set_image(cell);
++      }
++    }
+   }
+ 
+   class ButtonCommand : Command {
+diff --git a/src/CommandExtractor.vala b/src/CommandExtractor.vala
+index ba2d5d3..eb69916 100644
+--- a/src/CommandExtractor.vala
++++ b/src/CommandExtractor.vala
+@@ -72,11 +72,12 @@ class Plotinus.CommandExtractor : Object {
+       var action_value = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_ACTION, VariantType.STRING);
+       var action_name = (action_value != null) ? action_value.get_string() : null;
+       var action = (action_name != null) ? get_action(action_name) : null;
++      var icon = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_ICON, null);
+ 
+       if (label != null && label != "" && action != null && action.enabled) {
+         var accelerators = (application != null) ? application.get_accels_for_action(action_name) : new string[0];
+         var target = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_TARGET, null);
+-        commands += new ActionCommand(path, label, accelerators, action, target);
++        commands += new ActionCommand(path, label, accelerators, action, target, icon);
+       }
+ 
+       var link_iterator = menu_model.iterate_item_links(i);
+diff --git a/src/CommandList.vala b/src/CommandList.vala
+index 83e18eb..8e7e5dc 100644
+--- a/src/CommandList.vala
++++ b/src/CommandList.vala
+@@ -32,19 +32,27 @@ class Plotinus.CommandList : Gtk.TreeView {
+     }
+   }
+ 
+-  private class ToggleColumn : Gtk.TreeViewColumn {
+-    public ToggleColumn() {
+-      var cell_renderer = new Gtk.CellRendererToggle();
++  private class IconColumn : Gtk.TreeViewColumn {
++    public IconColumn() {
++      var toggle_renderer = new Gtk.CellRendererToggle();
++      var pixbuf_renderer = new Gtk.CellRendererPixbuf();
+ 
+-      pack_start(cell_renderer, false);
++      pack_start(toggle_renderer, false);
++      pack_start(pixbuf_renderer, false);
+ 
+-      set_cell_data_func(cell_renderer, (cell_layout, cell, tree_model, tree_iter) => {
++      set_cell_data_func(toggle_renderer, (cell_layout, cell, tree_model, tree_iter) => {
+         var toggle = (cell as Gtk.CellRendererToggle);
+         var command = get_iter_command(tree_model, tree_iter);
+         toggle.visible = command.get_check_type() != Gtk.ButtonRole.NORMAL;
+         toggle.radio = command.get_check_type() == Gtk.ButtonRole.RADIO;
+         toggle.active = command.is_active();
+       });
++
++      set_cell_data_func(pixbuf_renderer, (cell_layout, cell, tree_model, tree_iter) => {
++        var pixbuf = (cell as Gtk.CellRendererPixbuf);
++        var command = get_iter_command(tree_model, tree_iter);
++        pixbuf.visible = command.set_image(pixbuf);
++      });
+     }
+   }
+ 
+@@ -90,7 +98,7 @@ class Plotinus.CommandList : Gtk.TreeView {
+                COLUMN_PADDING;
+       }, true, text_color));
+ 
+-      append_column(new ToggleColumn());
++      append_column(new IconColumn());
+ 
+       append_column(new ListColumn((command) => {
+         return highlight_words(command.label, filter_words);
+
+From 2b204a0a935b1e4aa1e60a7d82a48fe97ca66fd5 Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Wed, 24 Jan 2018 22:02:29 +0100
+Subject: [PATCH 5/7] add icons from buttons
+
+---
+ src/Command.vala | 54 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 31 insertions(+), 23 deletions(-)
+
+diff --git a/src/Command.vala b/src/Command.vala
+index e99370e..57d4c93 100644
+--- a/src/Command.vala
++++ b/src/Command.vala
+@@ -41,6 +41,32 @@ namespace Plotinus {
+     public virtual bool set_image(Gtk.CellRendererPixbuf cell) {
+       return false;
+     }
++
++    protected bool set_image_from_widget(Gtk.CellRendererPixbuf cell, Gtk.Widget? widget) {
++      if(widget == null || !(widget is Gtk.Image))
++        return false;
++
++      var image = widget as Gtk.Image;
++
++      cell.stock_size = Gtk.IconSize.MENU;
++
++      switch(image.get_storage_type()) {
++        case Gtk.ImageType.PIXBUF:
++          cell.pixbuf = image.pixbuf;
++          return true;
++        case Gtk.ImageType.ICON_NAME:
++          cell.icon_name = image.icon_name;
++          return true;
++        case Gtk.ImageType.GICON:
++          cell.gicon = image.gicon;
++          return true;
++        case Gtk.ImageType.STOCK:
++          cell.stock_id = image.stock;
++          return true;
++        default:
++          return false;
++      }
++    }
+   }
+ 
+   class SignalCommand : Command {
+@@ -141,29 +167,7 @@ namespace Plotinus {
+         return base.set_image(cell);
+ 
+       var widget = image_menu_item.get_image();
+-      if(!(widget is Gtk.Image))
+-        return base.set_image(cell);
+-
+-      var image = widget as Gtk.Image;
+-
+-      cell.stock_size = Gtk.IconSize.MENU;
+-
+-      switch(image.get_storage_type()) {
+-        case Gtk.ImageType.PIXBUF:
+-          cell.pixbuf = image.pixbuf;
+-          return true;
+-        case Gtk.ImageType.ICON_NAME:
+-          cell.icon_name = image.icon_name;
+-          return true;
+-        case Gtk.ImageType.GICON:
+-          cell.gicon = image.gicon;
+-          return true;
+-        case Gtk.ImageType.STOCK:
+-          cell.stock_id = image.stock;
+-          return true;
+-        default:
+-          return base.set_image(cell);
+-      }
++      return base.set_image_from_widget(cell, widget);
+     }
+   }
+ 
+@@ -195,6 +199,10 @@ namespace Plotinus {
+ 
+       return Gtk.ButtonRole.NORMAL;
+     }
++
++    public override bool set_image(Gtk.CellRendererPixbuf cell) {
++      return base.set_image_from_widget(cell, button.get_image());
++    }
+   }
+ 
+ }
+
+From 9e16b5d4861fba8227b1430bff66375f8b88502d Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Wed, 24 Jan 2018 22:39:17 +0100
+Subject: [PATCH 6/7] add verb-icon from actions
+
+---
+ src/CommandExtractor.vala | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/CommandExtractor.vala b/src/CommandExtractor.vala
+index eb69916..fbbbcdc 100644
+--- a/src/CommandExtractor.vala
++++ b/src/CommandExtractor.vala
+@@ -74,6 +74,13 @@ class Plotinus.CommandExtractor : Object {
+       var action = (action_name != null) ? get_action(action_name) : null;
+       var icon = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_ICON, null);
+ 
++      if(icon == null) {
++        var verb = menu_model.get_item_attribute_value(i, "verb-icon", VariantType.STRING);
++        if(verb != null) {
++          icon = (Icon.new_for_string(verb.get_string())).serialize();
++        }
++      }
++
+       if (label != null && label != "" && action != null && action.enabled) {
+         var accelerators = (application != null) ? application.get_accels_for_action(action_name) : new string[0];
+         var target = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_TARGET, null);
+
+From c51aa596b4f92ec98baad4e20c659592369527a3 Mon Sep 17 00:00:00 2001
+From: Felix Kloft <felix.kloft@gmail.com>
+Date: Wed, 24 Jan 2018 22:51:33 +0100
+Subject: [PATCH 7/7] remove padding around icon column
+
+---
+ src/CommandList.vala | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/src/CommandList.vala b/src/CommandList.vala
+index 8e7e5dc..10d0834 100644
+--- a/src/CommandList.vala
++++ b/src/CommandList.vala
+@@ -94,8 +94,7 @@ class Plotinus.CommandList : Gtk.TreeView {
+       text_color.alpha = 0.4;
+       append_column(new ListColumn((command) => {
+         return COLUMN_PADDING +
+-               highlight_words(string.joinv("  \u25B6  ", command.path), filter_words) +
+-               COLUMN_PADDING;
++               highlight_words(string.joinv("  \u25B6  ", command.path), filter_words);
+       }, true, text_color));
+ 
+       append_column(new IconColumn());
+@@ -105,8 +104,7 @@ class Plotinus.CommandList : Gtk.TreeView {
+       }, false, null, 1.4));
+ 
+       append_column(new ListColumn((command) => {
+-        return COLUMN_PADDING +
+-               Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator))) +
++        return Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator))) +
+                COLUMN_PADDING;
+       }, true, selection_color));
+     });

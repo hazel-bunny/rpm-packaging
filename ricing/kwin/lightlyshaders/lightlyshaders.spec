@@ -1,7 +1,7 @@
 %global _basename LightlyShaders
 %global forgeurl https://github.com/a-parhom/%{_basename}
-%global commit a380ae644caa874d79626bccc5674c7e653b99fe
-%global date 20240216
+%global commit b159684311e17812cb1a2a9da3f7d9727f3fbe3d
+%global date 20240512
 %forgemeta
 
 Name:           lightlyshaders

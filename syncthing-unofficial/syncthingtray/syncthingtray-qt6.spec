@@ -36,7 +36,7 @@
 %global __provides_exclude (martchus.syncthingplasmoid.0)
 
 Name:           %{reponame}-%{cfg}
-Version:        1.5.0
+Version:        1.5.3
 Release:        1%{?dist}
 Summary:        Tray application for Syncthing
 License:        GPL-2.0-or-later

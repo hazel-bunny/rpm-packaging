@@ -1,39 +1,39 @@
-Name:    webapp-manager
+Name:          webapp-manager
+Version:       1.3.5
 
 %global forgeurl https://github.com/linuxmint/%{name}
-%global tag 1.3.4
-%global date 20231203
+%global commit 42d0993fb2c7c294a0e70ae368ee1f763127589c
+%global date 20240605
 %forgemeta
 
-Version: %{tag}
-Release: %autorelease
-License: GPLv3+
-Summary: Web Application Manager
+Release:       1%{?dist}
+License:       GPLv3+
+Summary:       Web Application Manager
 
-URL:     %{forgeurl}
-Source:  %{forgesource}
+URL:           %{forgeurl}
+Source:        %{forgesource}
 
 BuildRequires: gettext
 BuildRequires: make
 BuildRequires: python3-devel
 BuildRequires: python3-rpm-macros
 
-Requires: python3-beautifulsoup4
-Requires: python3-configobj
-Requires: python3-gobject
-Requires: python3-pillow
-Requires: python3-setproctitle
-Requires: python3-tldextract
-Requires: xapps
+Requires:      python3-beautifulsoup4
+Requires:      python3-configobj
+Requires:      python3-gobject
+Requires:      python3-pillow
+Requires:      python3-setproctitle
+Requires:      python3-tldextract
+Requires:      xapps
 
-BuildArch: noarch
+BuildArch:     noarch
 
 %description
 Launch websites as if they were apps.
 
 %files
 %{_bindir}/%{name}
-%{_libdir}/%{name}
+%{_prefix}/lib/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/kde4/%{name}.desktop
 %{_datadir}/desktop-directories/webapps-webapps.directory
@@ -47,8 +47,7 @@ Launch websites as if they were apps.
 #------------------------------------------------------------------
 
 %prep
-%autosetup -p1
-sed -i 's,/usr/lib/,%{_libdir}/,' usr/bin/%{name}
+%forgeautosetup -p1
 sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
 
 %build
@@ -58,14 +57,16 @@ sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
 install -Dm 755 usr/bin/%{name} -t %{buildroot}%{_bindir}
 
 cp -r etc %{buildroot}%{_sysconfdir}
-cp -r usr/lib %{buildroot}%{_libdir}
-cp -r usr/share %{buildroot}%{_datadir}
+cp -r usr %{buildroot}%{_prefix}
 
-%py_byte_compile %{python3} %{buildroot}%{_libdir}/%{name}/*.py
+%py_byte_compile %{python3} %{buildroot}%{_prefix}/lib/%{name}/*.py
 
 #------------------------------------------------------------------
 
 %changelog
+* Fri Jun 7 2024 Dipta Biswas <dabiswas112@gmail.com> 1.3.5-1
+- Update to 1.3.5
+
 * Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 1.3.4-1
 - Update to 1.3.4
 

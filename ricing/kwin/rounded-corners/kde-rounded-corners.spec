@@ -1,6 +1,6 @@
 %global _basename KDE-Rounded-Corners
 %global forgeurl https://github.com/matinlotfali/%{_basename}
-Version:        0.6.2
+Version:        0.6.6
 %forgemeta
 
 Name:           kde-rounded-corners
@@ -48,6 +48,9 @@ This effect rounds the corners of your windows and adds an outline around them w
 %cmake_install
 
 %changelog
+* Sun May 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.6.5-1
+- update to 0.6.5
+
 * Sat Apr 27 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.6.2-1
 - initial package
 

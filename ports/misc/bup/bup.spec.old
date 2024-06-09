@@ -1,0 +1,360 @@
+# render_template(src, dest):
+# Renders the source template (using %%expand macro) and copies it to the
+# destination path.
+# Arguments:
+#   - src: path of the source template to render
+#   - dest: path of the destination file
+%define render_template()\
+if [[ %# -ne 2 ]]; then\
+    echo "Invalid number of arguments to %0 macro: %#"\
+    exit 1\
+fi\
+cat << 'EOF' > %2\
+%{expand:%(cat %1)}\
+EOF
+
+%global gittag 0.29.2
+
+%if 0%{?fedora} >= 31
+# NOTE: Tornado in Fedora 31+ doesn't support Python 2 anymore, so bup-web
+# can't be packaged anymore. For more info, see:
+# https://lists.fedoraproject.org/archives/list/python-devel@lists.fedoraproject.org/thread/APMXYFWAMC3HIM6R2FVJBR3TUEDDMJ76/
+%bcond_with bup_web
+%else
+%bcond_without bup_web
+%endif
+
+Name: bup
+Version: %{gittag}
+Release: 5%{?dist}
+Summary: Very efficient backup system based on the git packfile format
+
+# all of the code is licensed as GNU Lesser General Public License v2, except:
+# - lib/bup/bupsplit.c: BSD License (two clause),
+# - lib/bup/bupsplit.h: BSD License (two clause),
+# - lib/bup/options.py: BSD License (two clause),
+# - definition of relpath() function in wvtest.py: Python License
+License: LGPLv2 and BSD and Python
+URL: https://bup.github.io/
+Source0: https://github.com/bup/bup/archive/%{gittag}/bup-%{version}.tar.gz
+Source1: README.Fedora.md
+Source2: bup-web.service
+Source3: README-bup-web.Fedora.md
+
+BuildRequires: gcc
+BuildRequires: python2-devel
+BuildRequires: git-core
+# Required for building documentation
+BuildRequires: pandoc
+%if %{with bup_web}
+# Required for preparing systemd service for 'bup web' command
+BuildRequires: systemd
+%endif
+# Required for running tests
+BuildRequires: par2cmdline
+BuildRequires: perl(Getopt::Long)
+BuildRequires: perl(Pod::Usage)
+BuildRequires: perl(Time::HiRes)
+%if 0%{?fedora} >= 28
+BuildRequires: python2-pyxattr
+%else
+BuildRequires: pyxattr
+%endif
+BuildRequires: pylibacl
+%if %{with bup_web}
+BuildRequires: python2-tornado
+%endif
+BuildRequires: rsync
+
+Requires: git-core
+%if 0%{?fedora} >= 28
+Requires: python2-pyxattr
+%else
+Requires: pyxattr
+%endif
+Requires: pylibacl
+# Only required for 'bup fuse' command
+%if 0%{?fedora} >= 28
+Requires: python2-fuse
+%else
+Requires: fuse-python
+%endif
+# Only required for 'bup fsck' command
+Requires: par2cmdline
+
+%if 0%{?fedora} >= 31
+# Remove bup-web subpackage from previous installations.
+Obsoletes: bup-web < 0.29.2-4
+%endif
+
+%description
+Very efficient backup system based on the git packfile format, providing fast
+incremental saves and global deduplication (among and within files, including
+virtual machine images). Some of its features are:
+* It uses a rolling checksum algorithm and hence it can backup huge files
+  incrementally.
+* It uses packfile format from git, so one can access the stored data even if
+  he doesn't like bup's user interface.
+* It writes packfiles directly so it is fast even with huge amounts of data:
+  it can track millions of files and keep track of hundreds or thousands of
+  gigabytes of objects.
+* Data is "automagically" shared between incremental backups without having to
+  know which backup is based on which other one.
+* One can make a backup directly to a remote bup server, without needing tons
+  of temporary disk space on the computer being backed up. If the backup is
+  interrupted halfway through, the next run will pick up where the previous
+  backup left off.
+* It can use "par2" redundancy to recover corrupted backups even if the disk
+  has undetected bad sectors.
+* Each incremental backup acts as if it's a full backup, it just takes less
+  disk space.
+* One can mount a bup repository as a FUSE filesystem and access the contents
+  that way, or even export it over Samba.
+
+%if %{with bup_web}
+#
+# bup-web
+#
+%package web
+License: LGPLv2
+Summary: Web server for browsing through bup repositories
+URL: https://bup.github.io/
+Requires: %{name}%{?_isa} = %{version}-%{release}
+Requires: python2-tornado
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
+
+%description web
+Provides the "bup web" command which runs a web server for browsing through
+bup repositories.
+%endif
+
+
+%prep
+%autosetup -S git
+
+
+%build
+# Remove .git/ directory otherwise bup's make command fails with:
+# error: detected release, but found ./.git
+# Makefile:43: *** Version configuration failed.  Stop
+rm -r .git/
+
+# NOTE: We can't use %%configure since bup uses a non-standard configure script
+# which is executed during the execution of the make command.
+# To configure the build process, we need to pass environment variables to the
+# make command.
+%make_build CFLAGS="%{build_cflags}"
+
+%render_template %{SOURCE1} %{_builddir}/%{buildsubdir}/%{basename:%SOURCE1}
+%if %{with bup_web}
+%render_template %{SOURCE3} %{_builddir}/%{buildsubdir}/%{basename:%SOURCE3}
+%endif
+
+
+%install
+# NOTE: Since bup uses a non-standard configure script, which doesn't support
+# specifying distro-specific paths of the variables defined below, we need to
+# manually pass variables to the make command.
+%make_install \
+    PREFIX=%{_prefix} \
+    MANDIR=%{_mandir} \
+    DOCDIR=%{_pkgdocdir} \
+    BINDIR=%{_bindir} \
+    LIBDIR=%{_libdir}/%{name}
+
+# Fix hard-coded libdir location in bup's executable
+sed -i 's|/lib/bup|/%{_lib}/bup|' %{buildroot}%{_bindir}/bup
+
+%if %{with bup_web}
+# Install systemd unit file for bup-web.
+mkdir -p %{buildroot}%{_userunitdir}
+install -p -m 0644 %{SOURCE2} %{buildroot}%{_userunitdir}
+%else
+# Remove bup-web related stuff.
+rm %{buildroot}/%{_libdir}/%{name}/cmd/bup-web
+rm -r %{buildroot}/%{_libdir}/%{name}/web
+rm %{buildroot}/%{_mandir}/man1/bup-web.1*
+rm %{buildroot}/%{_pkgdocdir}/bup-web.html
+%endif
+
+
+# Install READMEs and Notable changes manually
+# NOTE: This is necessary since mixing the %%doc with relative paths and
+# installation of files directly into %%_pkgdocdir in the same source package
+# is forbidden. For more details, see:
+# https://fedoraproject.org/wiki/Packaging:Guidelines#Documentation
+install -p -m 0644 README.md %{buildroot}%{_pkgdocdir}
+install -p -m 0644 README*.Fedora.md %{buildroot}%{_pkgdocdir}
+install -p -m 0644 note/*.md %{buildroot}%{_pkgdocdir}
+
+
+%check
+# Run the built-in test suite containing 4200+ tests.
+# NOTE: The bup-web tests will automatically skip if Tornado is not present.
+%make_build test
+
+
+%if %{with bup_web}
+%post web
+%systemd_user_post bup-web.service
+
+
+%preun web
+%systemd_user_preun bup-web.service
+
+
+%postun web
+%systemd_user_postun_with_restart bup-web.service
+
+
+%files web
+%{_libdir}/%{name}/cmd/bup-web
+%{_libdir}/%{name}/web/
+%{_userunitdir}/bup-web.service
+%{_mandir}/man1/bup-web.1*
+%{_pkgdocdir}/bup-web.html
+%{_pkgdocdir}/README-bup-web.Fedora.md
+%endif
+
+%files
+%license LICENSE
+%{_bindir}/%{name}
+%{_libdir}/%{name}/
+%if %{with bup_web}
+%exclude %{_libdir}/%{name}/cmd/bup-web
+%exclude %{_libdir}/%{name}/web/
+%endif
+%{_mandir}/man1/%{name}.1*
+%{_mandir}/man1/%{name}-*.1*
+%if %{with bup_web}
+%exclude %{_mandir}/man1/bup-web.1*
+%endif
+%{_pkgdocdir}/
+%if %{with bup_web}
+%exclude %{_pkgdocdir}/bup-web.html
+%exclude %{_pkgdocdir}/README-bup-web.Fedora.md
+%endif
+
+
+%changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.29.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Mon Jun 10 2019 Tadej Janež <tadej.j@nez.si> - 0.29.2-4
+- Remove bup-web functionality in Fedora 31+. This accounts for the fact that
+  Tornado in F31+ doesn't support Python 2 anymore.
+
+* Thu Feb 07 2019 Tadej Janež <tadej.j@nez.si> - 0.29.2-3
+- Use %%{build_cflags} to specify the C compiler flags (i.e. CFLAGS). This
+  will properly account for
+  https://fedoraproject.org/wiki/Changes/Python_Extension_Flags
+
+* Wed Feb 06 2019 Tadej Janež <tadej.j@nez.si> - 0.29.2-2
+- Use %%{extension_cflags} to specify the C compiler flags (i.e. CFLAGS) to
+  account for https://fedoraproject.org/wiki/Changes/Python_Extension_Flags
+
+* Fri Feb 01 2019 Tadej Janež <tadej.j@nez.si> - 0.29.2-1
+- Update to version 0.29.2
+- Remove obsolete patches
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.29.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Aug 01 2018 Tadej Janež <tadej.j@nez.si> - 0.29.1-2
+- Use older version of pyxattr (build) requirement on Fedora < 28
+
+* Thu Jul 26 2018 Tadej Janež <tadej.j@nez.si> - 0.29.1-1
+- Update to version 0.29.1
+- Add patches that backport fixes for test-rm tests that make them work with
+  older and newer versions of git
+- Simplify SourceURL handling to only use the %%gittag macro (renamed from
+  %%gittag0)
+
+* Sat Jul 21 2018 Tadej Janež <tadej.j@nez.si> - 0.29-9
+- Add gcc to BuildRequires to account for
+  https://fedoraproject.org/wiki/Changes/Remove_GCC_from_BuildRoot
+  (resolves https://bugzilla.redhat.com/1603530)
+
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.29-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Mon Mar 26 2018 Iryna Shcherbina <ishcherb@redhat.com> - 0.29-7
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.29-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Mon Aug 21 2017 Tadej Janež <tadej.j@nez.si> - 0.29-5
+- Explicitly require python2- prefixed Python packages when available
+  (python2-fuse on Fedora 28+, python2-tornado)
+- Drop work-around for broken %%systemd_user_post macro in Fedora < 24
+- Add rsync BuildRequirement needed for running tests
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.29-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.29-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.29-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Tue Jan 10 2017 Tadej Janež <tadej.j@nez.si> 0.29-1
+- Updated to 0.29 release.
+- Replaced 'git' requirement with 'git-core' which provides just core git with
+  minimal extra dependencies (e.g. doesn't require numerous Perl modules).
+- Added missing Perl BuildRequirements masked by the full 'git' install:
+  - perl(Getopt::Long)
+  - perl(Pod::Usage)
+- Updated spec file:
+  - Use %%{basename: ...} when rendering README templates.
+
+* Tue Dec 27 2016 Tadej Janež <tadej.j@nez.si> 0.28.1-1
+- Updated to 0.28.1 release.
+- Enabled 'par2' support in 'bup fsck'.
+- Made tests run in parallel.
+- Packaged HTML documentation.
+- Dropped all patches.
+- Updated and modernized spec file:
+  - Use %%make_build macro.
+  - Use %%make_install macro.
+  - Simplify %%make_install part since bup now properly implements DESTDIR
+    environment variable.
+  - Stop mixing the %%doc with relative paths and installation of files
+    directly into %%_pkgdocdir.
+  - Use %%systemd_user_post macro on Fedora 24+.
+  - Implement and use %%render_template macro to render READMEs containing
+    RPM macros using %%expand macro.
+  - Add additional BuildRequires needed by tests.
+  - Follow the latest SourceURL packaging guidelines and reference git tag
+    instead of commit revision in Source0 URL.
+  - Drop special prerelease handling.
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.27-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Mon Dec 14 2015 Tadej Janež <tadej.j@nez.si> 0.27-1
+- Initial release in Fedora 22+ and EPEL 7.
+- Added a workaround for an %%autosetup bug on EPEL 7.
+
+* Fri Dec 04 2015 Tadej Janež <tadej.j@nez.si> 0.27-0.4
+- Made bup-web subpackage Requires on the base package arch-specific.
+
+* Mon Nov 23 2015 Tadej Janež <tadej.j@nez.si> 0.27-0.3
+- Split bup web server into a separate sub-package.
+- Added systemd service for running the bup web server.
+- Added a work-around for a bug in systemd's %%systemd_user_post macro.
+- Added a README with Fedora-specific notes on using the bup-web package.
+- Converted the main README with Fedora-specific notes to Markdown.
+
+* Wed Oct 14 2015 Tadej Janež <tadej.j@nez.si> 0.27-0.2
+- Added perl(Time::HiRes) to BuildRequires since it is required for running the
+  tests.
+- Temporarily disable test_from_path_error() test that fails on Fedora Koji and
+  COPR build systems.
+
+* Sun May 17 2015 Tadej Janež <tadej.j@nez.si> 0.27-0.1
+- Initial package.

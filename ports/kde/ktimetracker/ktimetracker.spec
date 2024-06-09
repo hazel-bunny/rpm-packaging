@@ -2,28 +2,23 @@
 
 Name:           ktimetracker
 Version:        5.0.1
-Release:        %autorelease
-License:        GPLv2
-Group:          Productivity/Other
+Release:        2%{?dist}
+License:        GFDL-1.2-only AND LGPL-3.0-only AND GPL-2.0-only
 URL:            https://apps.kde.org/%{name}
 Summary:        Personal Time Tracker
 
 Source0:        https://download.kde.org/stable/%{name}/%{version}/src/%{name}-%{version}.tar.xz
 
-BuildRequires:  gettext
-BuildRequires:  cmake
-BuildRequires:  make
+BuildRequires:  appstream
 BuildRequires:  bison
-BuildRequires:  flex
 BuildRequires:  boost-devel
-BuildRequires:  grantlee-qt5-devel >= 5.1.0
-BuildRequires:  libassuan-devel
+BuildRequires:  cmake
+BuildRequires:  desktop-file-utils
 BuildRequires:  extra-cmake-modules
+BuildRequires:  flex
+BuildRequires:  gcc-c++
+BuildRequires:  libappstream-glib
 BuildRequires:  kf5-rpm-macros
-BuildRequires:  sed
-BuildRequires:  qca-qt5-devel
-BuildRequires:  qjson-qt5-devel
-BuildRequires:  zlib-devel
 
 BuildRequires:  cmake(KF5CalendarCore)
 BuildRequires:  cmake(KF5Config)
@@ -33,22 +28,26 @@ BuildRequires:  cmake(KF5DocTools)
 BuildRequires:  cmake(KF5I18n)
 BuildRequires:  cmake(KF5IdleTime)
 BuildRequires:  cmake(KF5JobWidgets)
+BuildRequires:  cmake(KF5KCMUtils)
 BuildRequires:  cmake(KF5KIO)
 BuildRequires:  cmake(KF5Notifications)
 BuildRequires:  cmake(KF5TextWidgets)
 BuildRequires:  cmake(KF5WindowSystem)
 BuildRequires:  cmake(KF5XmlGui)
+
 BuildRequires:  cmake(Qt5DBus) >= 5.10.0
 BuildRequires:  cmake(Qt5Gui) >= 5.10.0
 BuildRequires:  cmake(Qt5Widgets) >= 5.10.0
 BuildRequires:  cmake(Qt5Xml) >= 5.10.0
 
+BuildRequires:  cmake(Grantlee5)
+BuildRequires:  cmake(Qca-qt5)
+BuildRequires:  cmake(QJSON-qt5)
+
+BuildRequires:  pkgconfig(libassuan)
 BuildRequires:  pkgconfig(libical)
 BuildRequires:  pkgconfig(libxslt)
-
-BuildRequires:  desktop-file-utils
-
-Recommends:     %{name}-lang = %{version}
+BuildRequires:  pkgconfig(zlib)
 
 %description
 KTimeTracker tracks time spent on various tasks.
@@ -67,21 +66,7 @@ KTimeTracker tracks time spent on various tasks.
 
 %check
 desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{app_id}.desktop
-
-%post
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-update-desktop-database &> /dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-   touch --no-create %{_kf5_iconsdir}/hicolor &>/dev/null
-   gtk-update-icon-cache %{_kf5_iconsdir}/hicolor &>/dev/null || :
-   update-desktop-database -q &> /dev/null
-fi
-
-%posttrans
-gtk-update-icon-cache %{_kf5_iconsdir}/hicolor &>/dev/null || :
-update-desktop-database -q &> /dev/null
+appstream-util validate-relax --nonet %{buildroot}%{_kf5_metainfodir}/%{app_id}.appdata.xml
 
 %files -f %{name}.lang
 %license COPYING COPYING.DOC
@@ -94,5 +79,8 @@ update-desktop-database -q &> /dev/null
 %{_kf5_metainfodir}/%{app_id}.appdata.xml
 
 %changelog
+* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 5.0.1-2
+- Fix license
+
 * Sun Jun 25 2023 Dipta Biswas <dabiswas112@gmail.com> - 5.0.1-1
-- Initial package
+- Adapt OpenSUSE spec for Fedora
