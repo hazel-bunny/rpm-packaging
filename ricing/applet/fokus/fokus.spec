@@ -12,6 +12,7 @@ License:       GPLv3
 URL:           %{forgeurl}
 Source:        %{forgesource}
 
+BuildArch:     noarch
 Requires:      plasma-workspace
 Requires:      kf6-kirigami
 Requires:      libplasma

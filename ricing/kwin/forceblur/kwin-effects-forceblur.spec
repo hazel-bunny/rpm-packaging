@@ -1,7 +1,7 @@
 Name:           kwin-effects-forceblur
 
 %global forgeurl https://github.com/taj-ny/%{name}
-Version:        1.2.1
+Version:        1.3.0
 %forgemeta
 
 Release:        1%{?dist}

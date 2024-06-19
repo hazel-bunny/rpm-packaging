@@ -4,11 +4,13 @@
 
 Name:           %{_basename}-%{_suffix}
 Version:        0.0.4
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Ambient Noise Player GUI
 License:        GPLv3
 URL:            https://costales.github.io/projects/%{_basename}
 Source:         https://launchpad.net/~costales/+archive/ubuntu/%{_basename}/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
+
+#------------------------------------------------------------------------------
 
 BuildArch:      noarch
 
@@ -26,8 +28,18 @@ Requires:       anoise
 
 Enhances:       anoise
 
+#------------------------------------------------------------------------------
+
 %description
 GUI for Ambient Noise Player
+
+%files
+%license COPYING.GPL3
+%{_datadir}/%{_basename}/%{_basename}.ui
+%pycached %{_datadir}/%{_basename}/view.py
+%{python3_sitelib}/%{wheel_name}-%{version}.dist-info/
+
+#------------------------------------------------------------------------------
 
 %prep
 %autosetup -p1 -n %{name}
@@ -48,11 +60,11 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 
 %py_byte_compile %{python3} %{buildroot}%{_datadir}/%{_basename}/
 
-%files
-%license COPYING.GPL3
-%{_datadir}/%{_basename}/%{_basename}.ui
-%pycached %{_datadir}/%{_basename}/view.py
-%{python3_sitelib}/%{wheel_name}-%{version}.dist-info/
+#------------------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.4-2
+- refactoring of spec file
+
+* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.4-1
+- initial package

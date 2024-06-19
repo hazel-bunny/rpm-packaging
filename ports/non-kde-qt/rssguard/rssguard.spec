@@ -1,9 +1,9 @@
 Name:           rssguard
-Version:        4.6.6
+Version:        4.7.2
 
 %global forgeurl https://github.com/martinrotter/%{name}
 %global tag %{version}
-%global date 20240514
+%global date 20240531
 %forgemeta
 
 %global app_id io.github.martinrotter.rssguard
@@ -97,7 +97,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.meta
 %license LICENSE.md
 %{_bindir}/%{name}
 %{_libdir}/lib%{name}.so
-# %{_libdir}/%{name}/lib%{name}*.so
+%{_libdir}/%{name}/lib%{name}*.so
 %{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{app_id}.png
 %{_metainfodir}/%{app_id}.metainfo.xml

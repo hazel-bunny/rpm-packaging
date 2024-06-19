@@ -1,65 +1,66 @@
-%global _libPath libdecsync/libs
+%global module libdecsync
+%global _basename %{module}-bindings-python3
+%global _libPath %{module}/libs
 
-Name:           python-libdecsync
+Name:           python-%{module}
 Version:        2.2.1
-Release:        %autorelease
-Summary:        Python3 bindings for libdecsync
 
-# Check if the automatically generated License and its spelling is correct for Fedora
-# https://docs.fedoraproject.org/en-US/packaging-guidelines/LicensingGuidelines/
-License:        LGPLv2
-URL:            https://github.com/39aldo39/libdecsync-bindings-python3
-Source:         %{pypi_source libdecsync}
+%global forgeurl https://github.com/39aldo39/%{_basename}
+%global tag v%{version}
+%global date 20211224
+%forgemeta
+
+Release:        2%{?dist}
+Summary:        Python3 bindings for %{module}
+License:        LGPL-2.0
+URL:            %forgeurl
+Source:         %forgesource
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  libxcrypt-compat
-BuildRequires:  libdecsync-devel
+%ifarch x86_64
+BuildRequires:  %{module}-devel
+%endif
+BuildRequires:  %{module}
+Requires:       %{module}
 
-
-# Fill in the actual package description to submit package to Fedora
 %global _description %{expand:
-python3-libdecsync is a Python3 wrapper around libdecsync for synchronizing using DecSync.}
-
+python3-%{module} is a Python3 wrapper around %{module} for synchronizing using DecSync.}
 
 %description %_description
 
-%package -n     python3-libdecsync
+#------------------------------------------------------------------
+
+%package -n     python3-%{module}
 Summary:        %{summary}
 
-%description -n python3-libdecsync %_description
+%description -n python3-%{module} %_description
 
+%files -n python3-%{module} -f %{pyproject_files}
+%{python3_sitelib}/%{_libPath}/%{module}.so
+
+#------------------------------------------------------------------
 
 %prep
-%autosetup -p1 -n libdecsync-%{version}
+%forgeautosetup -p1
 find %{_libPath} -delete
-cat "libdecsync/__init__.py" | tr $'\n' $'\r' | sed 's#os_name = platform.system().*not supported")#libpath = resource_filename(__name__, "libs/libdecsync.so")#' | tr $'\r' $'\n' > __init__.py.new
-mv __init__.py.new libdecsync/__init__.py
+cat "%{module}/__init__.py" | tr $'\n' $'\r' | sed 's#os_name = platform.system().*not supported")#libpath = resource_filename(__name__, "libs/%{module}.so")#' | tr $'\r' $'\n' > __init__.py.new
+mv __init__.py.new %{module}/__init__.py
 
 %generate_buildrequires
 %pyproject_buildrequires
 
-
 %build
 %pyproject_wheel
 
-
 %install
 %pyproject_install
-# For official Fedora packages, including files with '*' +auto is not allowed
-# Replace it with a list of relevant Python modules/globs and list extra files in %%files
-%pyproject_save_files '*' +auto
+%pyproject_save_files %{module}
 mkdir -p %{buildroot}%{python3_sitelib}/%{_libPath}
-ln -s %{_libdir}/libdecsync.so %{buildroot}%{python3_sitelib}/%{_libPath}/libdecsync.so
+ln -s %{_libdir}/%{module}.so %{buildroot}%{python3_sitelib}/%{_libPath}/%{module}.so
 # not necessary for every package, but for those who it is, it'd generate conflict with others otherwise
 rm -rf %{buildroot}%{python3_sitelib}/tests/
-
-# %%check
-# %%pyproject_check_import
-
-
-%files -n python3-libdecsync -f %{pyproject_files}
-%{python3_sitelib}/%{_libPath}/libdecsync.so
 
 %changelog
 %autochangelog

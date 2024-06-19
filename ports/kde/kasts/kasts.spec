@@ -1,7 +1,7 @@
 %global kf6_min_version 5.240.0
 
 Name:           kasts
-Version:        24.05.0
+Version:        24.05.1
 Release:        3%{?dist}
 License:        GPLv2 and GPLv2+ and GPLv3+ and BSD and LGPLv3+
 Summary:        A mobile podcast application
@@ -31,7 +31,7 @@ BuildRequires:  cmake(Qt6Network)
 BuildRequires:  cmake(Qt6Keychain)
 BuildRequires:  cmake(Qt6Widgets)
 BuildRequires:  cmake(Qt6DBus)
-BuildRequires:  cmake(Qt6Multimedia)	
+BuildRequires:  cmake(Qt6Multimedia)
 
 BuildRequires:  cmake(KF6I18n)           >= %{kf6_min_version}
 BuildRequires:  cmake(KF6CoreAddons)     >= %{kf6_min_version}
@@ -75,15 +75,22 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 %{_kf6_datadir}/icons/hicolor/scalable/apps/%{name}-tray-dark.svg
 %{_kf6_datadir}/icons/hicolor/scalable/apps/%{name}-tray-light.svg
 %{_kf6_libdir}/libKMediaSession.so
-%{_kf6_libdir}/qt6/qml/org/kde/kmediasession/libkmediasession-qmlplugin.so
-%{_kf6_libdir}/qt6/qml/org/kde/kmediasession/qmldir
 %{_kf6_metainfodir}/org.kde.%{name}.appdata.xml
 %license LICENSES/*
 
 
 %changelog
-* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 24.02.3-3
+* Sat Jun 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 24.05.1-3
 - Add support for vlc & gstreamer
+
+* Fri Jun 14 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.05.1-1
+- 24.05.1
+
+* Tue May 21 2024 Jan Grulich <jgrulich@redhat.com> - 24.05.0-2
+- Rebuild (qt6)
+
+* Fri May 17 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.05.0-1
+- 24.05.0
 
 * Fri Apr 12 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.02.2-1
 - 24.02.2

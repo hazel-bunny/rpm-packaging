@@ -1,38 +1,48 @@
 Name:           photoflare
-Version:        1.6.9
+Version:        1.6.13
+
+%global forgeurl https://github.com/PhotoFlare/%{name}
+%global tag v%{version}
+%global date 20230809
+%forgemeta
+
 Release:        1%{?dist}
-Summary:        Quick, simple but powerful Cross Platform image editor.
-License:        GPL3
-Group:          Graphics
+Summary:        Quick, simple but powerful Cross Platform image editor
+License:        GPL-3.0
+
 URL:            http://photoflare.io/
-Source0:        https://github.com/PhotoFlare/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
-#BuildRequires:  qt5-devel
+Source:         %{forgesource}
+
+# Upstream patches
+Patch0:         qt-6.diff
+
+BuildRequires:  gcc-c++
 BuildRequires:  make
-BuildRequires:  qt5-qtbase-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  hicolor-icon-theme
 BuildRequires:  pkgconfig(GraphicsMagick)
-BuildRequires:  qt5-qttools
-BuildRequires:  qt5-qttranslations
-BuildRequires:  qt5-linguist
-BuildRequires:	GraphicsMagick-c++-devel
+BuildRequires:  pkgconfig(GraphicsMagick++)
+
+BuildRequires:  qt6-qtbase-devel
+BuildRequires:  qt6-qttools-devel
+BuildRequires:  qt6-rpm-macros
+
+Requires:       qt6-qtimageformats
 
 %description
-Quick, simple but powerful Cross Platform image editor.
+%summary
 
 %prep
-%setup -q
+%forgeautosetup -p1
+sed -i '/pixmaps \\/d' Photoflare.pro
 
 %build
-%qmake_qt5 PREFIX=/usr
+%qmake_qt6 PREFIX=/usr
 %make_build
 
 %install
 mkdir -p %{buildroot}%{_bindir}
 %make_install INSTALL_ROOT=%{buildroot}
-
-# We dont need this:
-rm -rf %{buildroot}%{_datadir}/pixmaps/photoflare.png
 
 %files
 %{_bindir}/%{name}
@@ -41,3 +51,7 @@ rm -rf %{buildroot}%{_datadir}/pixmaps/photoflare.png
 %{_mandir}/man1/%{name}.1.gz
 %{_datadir}/metainfo/io.%{name}.%{name}.appdata.xml
 %{_datadir}/%{name}/languages/*.qm
+
+%changelog
+* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.6.13-1
+- initial package

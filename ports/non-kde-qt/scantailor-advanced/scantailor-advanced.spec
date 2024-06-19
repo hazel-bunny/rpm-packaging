@@ -11,11 +11,13 @@ Name:           %{_basename}-advanced
 %forgemeta
 
 Version:        1.0.19
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An interactive post-processing tool for scanned pages
 License:        GPLv3+ or LGPLv2.1
 URL:            %{forgeurl}
 Source:         %{forgesource}
+
+#------------------------------------------------------------------
 
 BuildRequires:  glibc-static
 BuildRequires:  gcc-c++
@@ -31,11 +33,11 @@ BuildRequires:  pkgconfig(libpng)
 BuildRequires:  pkgconfig(libtiff-4)
 BuildRequires:  pkgconfig(pthread-stubs)
 BuildRequires:  pkgconfig(zlib)
-
-# BuildRequires:  pkgconfig(gl)
-# BuildRequires:  pkgconfig(xcb)
-# BuildRequires:  pkgconfig(xrender)
-# BuildRequires:  pkgconfig(xext)
+BuildRequires:  pkgconfig(gl)
+BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xrender)
+BuildRequires:  pkgconfig(xext)
 
 BuildRequires:  cmake(Qt%{_qt_major_version}Core)
 BuildRequires:  cmake(Qt%{_qt_major_version}Gui)
@@ -50,6 +52,8 @@ BuildRequires:  cmake(Qt%{_qt_major_version}OpenGLWidgets)
 Provides:       %{_basename} = %{version}
 Obsoletes:      %{_basename} < %{version}
 
+#------------------------------------------------------------------
+
 %description
 Scan Tailor is an interactive post-processing tool for scanned pages. It
 performs operations such as page splitting, deskewing, adding/removing borders,
@@ -59,6 +63,16 @@ assembling multi-page documents are out of scope of this project.
 
 ScanTailor Advanced is the ScanTailor version that merges the features of the
 ScanTailor Featured and ScanTailor Enhanced versions, brings new ones and fixes.
+
+%files
+%doc README.md
+%{_bindir}/%{_basename}
+%{_datadir}/%{name}
+%{_datadir}/applications/%{_basename}.desktop
+%{_datadir}/icons/hicolor/scalable/apps/%{iconname}.svg
+%{_datadir}/mime/packages/%{_basename}-project.xml
+
+#------------------------------------------------------------------
 
 %prep
 %forgeautosetup
@@ -70,15 +84,12 @@ ScanTailor Featured and ScanTailor Enhanced versions, brings new ones and fixes.
 %install
 %cmake_install
 
-%files
-%doc README.md
-%{_bindir}/%{_basename}
-%{_datadir}/%{name}
-%{_datadir}/applications/%{_basename}.desktop
-%{_datadir}/icons/hicolor/scalable/apps/%{iconname}.svg
-%{_datadir}/mime/packages/%{_basename}-project.xml
+#------------------------------------------------------------------
 
 %changelog
+* Sun Jun 16 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.0.19-3.git
+- Fix build dependencies
+
 * Sun Mar 31 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.0.19-1.git
 - Switch to git snapshot
 

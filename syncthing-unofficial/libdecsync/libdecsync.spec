@@ -6,7 +6,7 @@
 
 Name:    libdecsync
 Version: 2.2.1
-Release: %autorelease
+Release: 2%{?dist}
 Summary: Library for DecSync
 License: GPLv2+
 URL:     %{forgeurl}
@@ -17,6 +17,10 @@ BuildRequires:  make
 BuildRequires:  java-17-openjdk-headless
 BuildRequires:  ncurses-compat-libs
 
+Provides:       %{name} = %{version}
+
+ExclusiveArch:  x86_64
+
 %description
 libdecsync is a multiplatform library for synchronizing using DecSync
 
@@ -24,7 +28,6 @@ libdecsync is a multiplatform library for synchronizing using DecSync
 %license LICENSE.txt
 %doc README.md
 %_libdir/%{name}.so
-%_datadir/pkgconfig/decsync.pc
 
 #-----------------------------------------------------------------------
 
@@ -37,6 +40,7 @@ This package includes the header files you will need to compile
 applications supporting DecSync
 
 %files devel
+%_datadir/pkgconfig/decsync.pc
 %_includedir/%{name}.h
 %_includedir/%{name}_api.h
 

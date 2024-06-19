@@ -1,20 +1,21 @@
-%global debug_package %{nil}
-
 Name:           plasma-applet-ambientnoise
+Version:        0.6.0
 
 %global forgeurl https://github.com/m-pilia/%{name}
+%global tag %{version}
 %global date 20240311
-%global tag 0.6.0
 %forgemeta
 
-%global orig_name org.kde.plasma.ambientnoise
+%global applet_id org.kde.plasma.ambientnoise
+%global debug_package %{nil}
 
-Version:        %{tag}
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Ambient noise player applet (plasmoid) for KDE Plasma 6
 License:        GPL-3.0
 URL:            %{forgeurl}
 Source:         %{forgesource}
+
+#------------------------------------------------------------------------------
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -32,7 +33,7 @@ BuildRequires:  cmake(KF6Declarative)
 BuildRequires:  cmake(KF6Package)
 
 Requires:       plasma-workspace
-Requires:       kf6-kirigami2
+Requires:       kf6-kirigami
 Requires:       libplasma
 Requires:       anoise-media
 
@@ -45,6 +46,8 @@ Recommends:     anoise-community-extension5
 Provides:       plasma6-applet-ambientnoise = %{version}-%{release}
 
 Obsoletes:      plasma5-applet-ambientnoise <= %{version}-%{release}
+
+#------------------------------------------------------------------------------
 
 %description
 This applet for the KDE Plasma desktop allows to reproduce ambient noise. Multiple
@@ -61,6 +64,16 @@ and tick "Paused at start-up".
 Free noises in a ready-to-use format for this plasmoid can be found in the anoise
 project.
 
+%files
+%license LICENSE
+%doc README.md
+%{_kf6_datadir}/icons/{breeze,breeze-dark}/apps/{16,22,32}/ambientnoise.svg
+%{_kf6_datadir}/icons/hicolor/scalable/ambientnoise.svg
+%{_kf6_datadir}/plasma/plasmoids/%{applet_id}
+%{_kf6_metainfodir}/%{applet_id}.appdata.xml
+
+#------------------------------------------------------------------------------
+
 %prep
 %forgeautosetup -p1
 
@@ -71,17 +84,17 @@ project.
 %install
 %cmake_install
 
-# %%check
-# appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{orig_name}.appdata.xml
+# Bad icon name
+sed -i "/<icon type=\"stock\">/d" %{buildroot}%{_datadir}/metainfo/%{applet_id}.appdata.xml
 
-%files
-%license LICENSE
-%doc README.md
+%check
+appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{applet_id}.appdata.xml
 
-%{_kf6_datadir}/icons/{breeze,breeze-dark}/apps/{16,22,32}/ambientnoise.svg
-%{_kf6_datadir}/icons/hicolor/scalable/ambientnoise.svg
-%{_kf6_datadir}/plasma/plasmoids/%{orig_name}
-%{_kf6_metainfodir}/%{orig_name}.appdata.xml
+#------------------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.6.0-2
+- refactoring of spec file
+
+* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.6.0-1
+- initial package

@@ -4,11 +4,13 @@
 
 Name:           %{_basename}-community-extension%{_suffix}
 Version:        0.0.4
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Ambient Noise Community Extension %{_suffix}
 License:        GPLv3
 URL:            https://costales.github.io/projects/anoise
 Source:         https://launchpad.net/~costales/+archive/ubuntu/anoise/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
+
+#------------------------------------------------------------------------------
 
 BuildArch:      noarch
 
@@ -23,8 +25,25 @@ Requires:       anoise-media
 
 Enhances:       anoise
 
+#------------------------------------------------------------------------------
+
 %description
 Ambient Noise Community Extension %{_suffix}. Sounds and icons for Anoise Player from users
+
+%files
+%license COPYING.GPL3
+%doc README
+%{_datadir}/%{_basename}/sounds/diesel_motor.{ogg,png}
+%{_datadir}/%{_basename}/sounds/dumptruck_idling.{ogg,png}
+%{_datadir}/%{_basename}/sounds/fishing_boat.{ogg,png}
+%{_datadir}/%{_basename}/sounds/forest_rain.{ogg,png}
+%{_datadir}/%{_basename}/sounds/fountain.{ogg,png}
+%{_datadir}/%{_basename}/sounds/house_fan.{ogg,png}
+%{_datadir}/%{_basename}/sounds/large_boat.{ogg,png}
+%{_datadir}/%{_basename}/sounds/old_air_conditioner.{ogg,png}
+%{python3_sitelib}/%{wheel_name}-%{version}.dist-info/
+
+#------------------------------------------------------------------------------
 
 %prep
 %setup -qn community-extension%{_suffix}
@@ -45,18 +64,11 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 
 %py_byte_compile %{python3} %{buildroot}%{_datadir}/%{_basename}/
 
-%files
-%license COPYING.GPL3
-%doc README
-%{_datadir}/%{_basename}/sounds/diesel_motor.{ogg,png}
-%{_datadir}/%{_basename}/sounds/dumptruck_idling.{ogg,png}
-%{_datadir}/%{_basename}/sounds/fishing_boat.{ogg,png}
-%{_datadir}/%{_basename}/sounds/forest_rain.{ogg,png}
-%{_datadir}/%{_basename}/sounds/fountain.{ogg,png}
-%{_datadir}/%{_basename}/sounds/house_fan.{ogg,png}
-%{_datadir}/%{_basename}/sounds/large_boat.{ogg,png}
-%{_datadir}/%{_basename}/sounds/old_air_conditioner.{ogg,png}
-%{python3_sitelib}/%{wheel_name}-%{version}.dist-info/
+#------------------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.4-2
+- refactoring of spec file
+
+* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.4-1
+- initial package

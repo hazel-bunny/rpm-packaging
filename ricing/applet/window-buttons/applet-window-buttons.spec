@@ -3,7 +3,7 @@
 %global commit 326382805641d340c9902689b549e4488682f553
 %forgemeta
 
-%global orig_name org.kde.windowbuttons
+%global applet_id org.kde.windowbuttons
 
 Name:           applet-window-buttons
 Version:        0.13.0
@@ -58,18 +58,18 @@ support Plasma panels.
 %cmake_install
 
 # Bad icon name
-sed -i "/<icon type=\"stock\">/d" %{buildroot}%{_datadir}/metainfo/%{orig_name}.appdata.xml
+sed -i "/<icon type=\"stock\">/d" %{buildroot}%{_datadir}/metainfo/%{applet_id}.appdata.xml
 
 
 %check
-appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{orig_name}.appdata.xml
-desktop-file-validate %{buildroot}%{_datadir}/plasma/plasmoids/%{orig_name}/metadata.desktop
+appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{applet_id}.appdata.xml
+desktop-file-validate %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/metadata.desktop
 
 %files
 %license LICENSE
-%{_kf6_datadir}/plasma/plasmoids/%{orig_name}
+%{_kf6_datadir}/plasma/plasmoids/%{applet_id}
 %{_qt6_qmldir}/org/kde/appletdecoration
-%{_kf6_metainfodir}/%{orig_name}.appdata.xml
+%{_kf6_metainfodir}/%{applet_id}.appdata.xml
 
 
 %changelog

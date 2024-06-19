@@ -12,13 +12,15 @@ License:          LGPLv2 and BSD and Python
 URL:              https://bup.github.io/
 Source0:          %{forgesource}
 
+#------------------------------------------------------------------
+
 BuildRequires:    gcc
 BuildRequires:    sed
 BuildRequires:    make
 BuildRequires:    git-core
-
 BuildRequires:    rsync
 BuildRequires:    man-db
+BuildRequires:    pandoc
 BuildRequires:    par2cmdline
 
 BuildRequires:    perl(Getopt::Long)
@@ -36,13 +38,8 @@ BuildRequires:    python3-pytest-xdist
 
 BuildRequires:    pkgconfig(libacl)
 BuildRequires:    pkgconfig(libattr)
-BuildRequires:    pkgconfig(kmod)
+BuildRequires:    pkgconfig(libkmod)
 BuildRequires:    pkgconfig(readline)
-
-# Required for building documentation
-BuildRequires:    pandoc
-# Required for preparing systemd service for 'bup web' command
-BuildRequires:    systemd
 
 Requires:         git-core
 Requires:         par2cmdline
@@ -50,6 +47,8 @@ Requires:         python3-fuse
 Requires:         python3-pylibacl
 Requires:         python3-pyxattr
 Requires:         python3-tornado
+
+#------------------------------------------------------------------
 
 %description
 Very efficient backup system based on the git packfile format, providing fast
@@ -77,11 +76,11 @@ virtual machine images). Some of its features are:
 
 %doc README.md
 %doc note/*.md
-%doc %{name}*.html
 
 %{_bindir}/%{name}
 %{_libdir}/%{name}/
 %{_mandir}/man1/%{name}*.gz
+%{_pkgdocdir}/%{name}*.html
 
 #-----------------------------------------------------------------------------------
 
@@ -90,7 +89,7 @@ virtual machine images). Some of its features are:
 
 %build
 %_configure
-%make_build CFLAGS=%{build_cflags} PREFIX=%{_prefix} PYTHON=%{python3}
+%make_build PREFIX=%{_prefix} PYTHON=%{python3}
 
 %install
 %make_install BINDIR=%{_bindir} DOCDIR=%{_pkgdocdir} \

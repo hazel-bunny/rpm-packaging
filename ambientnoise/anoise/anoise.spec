@@ -1,38 +1,68 @@
 Name:           anoise
 Version:        0.0.36
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Ambient Noise Player
 License:        GPLv3
-URL:            https://costales.github.io/projects/anoise
+URL:            https://costales.github.io/projects/%{name}
 Source:         https://launchpad.net/~costales/+archive/ubuntu/%{name}/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
 Patch0:         setup.patch
 
+#------------------------------------------------------------------------------
+
 BuildArch:      noarch
-BuildRequires:  python3-devel
+
+BuildRequires:  desktop-file-utils
+BuildRequires:  libxcrypt-compat
 BuildRequires:  python3-build
+BuildRequires:  python3-devel
 BuildRequires:  python3-distutils-extra
 BuildRequires:  python3-gstreamer1
 BuildRequires:  python3-installer
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
-BuildRequires:  libxcrypt-compat
 
-Requires:       python3-gstreamer1
 Requires:       gstreamer1
 Requires:       gtk3
-Requires:       webkit2gtk4.0
-Requires:       anoise-media
 Requires:       libappindicator-gtk3
+Requires:       python3-gstreamer1
+Requires:       webkit2gtk4.0
+Requires:       %{name}-media
 
-Recommends:     anoise-community-extension1
-Recommends:     anoise-community-extension2
-Recommends:     anoise-community-extension3
-Recommends:     anoise-community-extension4
-Recommends:     anoise-community-extension5
-Recommends:     anoise-gui
+Recommends:     %{name}-community-extension1
+Recommends:     %{name}-community-extension2
+Recommends:     %{name}-community-extension3
+Recommends:     %{name}-community-extension4
+Recommends:     %{name}-community-extension5
+Recommends:     %{name}-gui
+
+#------------------------------------------------------------------------------
 
 %description
 Ambient Noise Player. Relax or concentrate with a noise
+
+%files
+%license COPYING.GPL3
+%doc README
+
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+
+%dir %{_datadir}/%{name}/
+%{_datadir}/%{name}/preferences.ui
+
+%pycached %{_datadir}/%{name}/%{name}.py
+%pycached %{_datadir}/%{name}/preferences.py
+%pycached %{_datadir}/%{name}/sound_menu.py
+%pycached %{_datadir}/%{name}/utils.py
+
+%{python3_sitelib}/%{name}-%{version}.dist-info/
+
+%{_datadir}/icons/hicolor/{16x16,48x48}/apps/%{name}.png
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+
+%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
+
+#------------------------------------------------------------------------------
 
 %prep
 rm -rf %{name}_%{version}
@@ -64,27 +94,14 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 
 %py_byte_compile %{python3} %{buildroot}%{_datadir}/%{name}/
 
-%files
-%license COPYING.GPL3
-%doc README
+%check
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
-%{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
-
-%dir %{_datadir}/%{name}/
-%{_datadir}/%{name}/preferences.ui
-
-%pycached %{_datadir}/%{name}/%{name}.py
-%pycached %{_datadir}/%{name}/preferences.py
-%pycached %{_datadir}/%{name}/sound_menu.py
-%pycached %{_datadir}/%{name}/utils.py
-
-%{python3_sitelib}/%{name}-%{version}.dist-info/
-
-%{_datadir}/icons/hicolor/{16x16,48x48}/apps/%{name}.png
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
-
-%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
+#------------------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.36-2
+- refactoring of spec file
+
+* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.36-1
+- initial package
