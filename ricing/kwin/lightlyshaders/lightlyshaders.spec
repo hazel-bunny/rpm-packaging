@@ -6,7 +6,7 @@
 
 Name:           lightlyshaders
 Version:        2.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Rounded window corners and outline effect for KWin
 License:        GPL-3.0
 URL:            %{forgeurl}
