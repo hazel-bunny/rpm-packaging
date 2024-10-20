@@ -10,7 +10,7 @@ Version:       2.49
 %global date 20190228
 %forgemeta
 
-Release:       4%{?dist}
+Release:       5%{?dist}
 License:       GPLv2+
 Summary:       A multi-purpose note-taking application
 
@@ -125,13 +125,16 @@ desktop-file-validate %{buildroot}%{_kf5_datadir}/applications/%{name}.desktop
 %{_kf5_qtplugindir}/kcm_%{name}.so
 
 %changelog
-* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 2.49-4
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.49-5
+- Fedora 41 Mass Rebuild
+
+* Fri May 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.49-4
 - Make spec compliant with Fedora packaging guidelines
 
-* Tue Jul 25 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-3
+* Tue Jul 25 2023 Hazel Bunny <hazel_bunny@disroot.org> - 2.49-3
 - switch to forge macros in spec
 
-* Tue Jul 4 2023 Dipta Biswas <dabiswas112@gmail.com> - 2.49-2.1
+* Tue Jul 4 2023 Hazel Bunny <hazel_bunny@disroot.org> - 2.49-2.1
 - add patch for libgit2
 - refactor spec
 - fix files

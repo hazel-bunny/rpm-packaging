@@ -89,9 +89,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/%{app_id}.
 #------------------------------------------------------------------
 
 %changelog
-* Sat Jun 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 2024.04.22-2
+* Sat Jun 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2024.04.22-2
 - Fix permissions
 
-* Fri Jun 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 2024.04.22-1
+* Fri Jun 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2024.04.22-1
 - initial package
 

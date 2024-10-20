@@ -1,11 +1,12 @@
-%global forgeurl https://github.com/moodyhunter/applet-window-buttons6
-%global date 20240405
-%global commit 326382805641d340c9902689b549e4488682f553
+Name:           applet-window-buttons
+
+%global forgeurl https://github.com/ChrTall/%{name}6
+%global date 20240617
+%global commit fb4d203e75e22ceef02ce6ccb5913b6b2a0b9461
 %forgemeta
 
 %global applet_id org.kde.windowbuttons
 
-Name:           applet-window-buttons
 Version:        0.13.0
 Release:        1%{?dist}
 Summary:        Plasma 6 applet to show window buttons in panels
@@ -26,6 +27,7 @@ BuildRequires:  cmake(Qt6Gui)
 BuildRequires:  cmake(Qt6Qml)
 BuildRequires:  cmake(Qt6Quick)
 BuildRequires:  cmake(Qt6Widgets)
+BuildRequires:  cmake(KF6Config)
 BuildRequires:  cmake(KF6ConfigWidgets)
 BuildRequires:  cmake(KF6CoreAddons)
 BuildRequires:  cmake(KF6Declarative)
@@ -35,6 +37,7 @@ BuildRequires:  cmake(KF6Package)
 BuildRequires:  cmake(KF6Service)
 BuildRequires:  cmake(KF6Svg)
 BuildRequires:  cmake(KF6WindowSystem)
+BuildRequires:  cmake(KWinDBusInterface)
 BuildRequires:  cmake(Plasma)
 BuildRequires:  cmake(KDecoration2)
 
@@ -73,13 +76,13 @@ desktop-file-validate %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/meta
 
 
 %changelog
-* Sun Apr 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.13.0-1.git
+* Sun Apr 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.13.0-1.git
 - Update to version 0.13.0
 
-* Fri Mar 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.12.0-1.git
+* Fri Mar 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.12.0-1.git
 - Switch to a git snapshot to fix metadata.json
 
-* Fri Mar 8 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.12.0-1
+* Fri Mar 8 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.12.0-1
 - Update to version 0.12.0
 
 * Wed Feb 21 2024 Alessandro Astone <ales.astone@gmail.com> - 0.11.1^20240221.3047ed7-1

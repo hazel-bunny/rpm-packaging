@@ -1,14 +1,14 @@
 Name:           warehouse
-Version:        1.6.2
+Version:        1.6.5
 
 %global forgeurl https://github.com/flattool/%{name}
 %global tag %{version}
-%global date 20240416
+%global date 20240920
 %forgemeta
 
 %global app_id io.github.flattool.Warehouse
 
-Release:        2%{?dist}
+Release:        1%{?dist}
 License:        GPL-3.0
 Summary:        View flatpak info, manage user data, and batch manage installed flatpaks
 URL:            %{forgeurl}
@@ -91,10 +91,16 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Sat Jun 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.6.2-2
+* Fri Sep 20 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.5-1
+- Update to 1.6.5
+
+* Sun Jul 7 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.4-1
+- Update to 1.6.4
+
+* Sat Jun 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.2-2
 - Fix permissions
 
-* Fri Jun 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.6.2-1
+* Fri Jun 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.2-1
 - initial package
 
 

@@ -1,0 +1,24 @@
+From 3f84a81bf57e8a1772b2628960679f622c307c76 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ball=C3=B3=20Gy=C3=B6rgy?= <ballogyor@gmail.com>
+Date: Tue, 6 Aug 2024 15:27:11 +0000
+Subject: [PATCH] appdata: Add URLs for translate and vcs-browser
+
+---
+ resources/org.gnome.OCRFeeder.appdata.xml.in | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/resources/org.gnome.OCRFeeder.appdata.xml.in b/resources/org.gnome.OCRFeeder.appdata.xml.in
+index d6840c2..fd00951 100644
+--- a/resources/org.gnome.OCRFeeder.appdata.xml.in
++++ b/resources/org.gnome.OCRFeeder.appdata.xml.in
+@@ -28,6 +28,8 @@
+   </screenshots>
+   <url type="bugtracker">https://gitlab.gnome.org/GNOME/ocrfeeder/issues</url>
+   <url type="homepage">https://wiki.gnome.org/Apps/OCRFeeder</url>
++  <url type="translate">https://l10n.gnome.org/module/ocrfeeder/</url>
++  <url type="vcs-browser">https://gitlab.gnome.org/GNOME/ocrfeeder</url>
+   <update_contact>me@joaquimrocha.com</update_contact>
+   <translation type="gettext">ocrfeeder</translation>
+   <provides>
+-- 
+GitLab

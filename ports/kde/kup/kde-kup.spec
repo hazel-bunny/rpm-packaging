@@ -9,7 +9,7 @@ Version:        0.10.0
 %global date 20240526
 %forgemeta
 
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Backup scheduler for the Plasma desktop
 License:        GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-KDE-Accepted-GPL
 URL:            %{forgeurl}
@@ -119,13 +119,16 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/%{app_id}a
 #------------------------------------------------------------------
 
 %changelog
-* Mon May 27 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.10.0-1
+* Tue Aug 27 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.10.0-2
+- Rebuild for Fedora 41
+
+* Mon May 27 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.10.0-1
 - Update to 0.10.0
 
-* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.9.1-3.git
+* Fri May 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.1-3.git
 - Add check
 
-* Sun Feb 25 2024 Dipta Biswas <dabiswas112@gmail.com> 0.9.1-1.git
+* Sun Feb 25 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.9.1-1.git
 - Switch to git snapshot
 
 * Tue Mar 28 2023 Justin Zobel <justin@1707.io> - 0.9.1-1

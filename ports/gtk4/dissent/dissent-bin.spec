@@ -11,7 +11,7 @@
 %endif
 
 Name:       %{_basename}-bin
-Version:    0.0.24
+Version:    0.0.27
 Release:    1%{?dist}
 License:    GPL-3.0
 Summary:    Tiny Discord app
@@ -89,5 +89,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/icons/hicolor/scalable/actions/*.svg
 
 %changelog
-%autochangelog
+* Thu Aug 8 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.27-1
+- initial package
 

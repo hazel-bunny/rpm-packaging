@@ -5,7 +5,7 @@ Name:           material-cursors
 %forgemeta
 
 Version:        0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material Cursors
 License:        GPL-2.0
 URL:            %{forgeurl}
@@ -61,6 +61,11 @@ for t in $THEMES; do
     /usr/bin/gtk-update-icon-cache %{_datadir}/icons/$t &>/dev/null || :
 done
 
+#------------------------------------------------------------------
+
 %changelog
-* Sun Apr 28 2024 Dipta Biswas <dabiswas112@gmail.com> - 0-1.git
+* Tue Oct 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0-2
+- Fedora 41 Mass Rebuild
+
+* Sun Apr 28 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0-1.git
 - initial package

@@ -1,0 +1,58 @@
+diff --git a/src/blur/blur.cpp b/src/blur/blur.cpp
+index 109db19..8a8b606 100644
+--- a/src/blur/blur.cpp
++++ b/src/blur/blur.cpp
+@@ -10,10 +10,11 @@
+ // KConfigSkeleton
+ #include "blurconfig.h"
+ 
++#include "core/pixelgrid.h"
+ #include "core/rendertarget.h"
+ #include "core/renderviewport.h"
+ #include "effect/effecthandler.h"
+-//#include "opengl/glplatform.h" //we want plugin to be disabled by default, so no checks needed
++#include "opengl/glplatform.h"
+ #include "wayland/blur.h"
+ #include "wayland/display.h"
+ #include "wayland/surface.h"
+@@ -371,7 +372,7 @@ bool BlurEffect::enabledByDefault()
+ 
+ bool BlurEffect::supported()
+ {
+-    return effects->isOpenGLCompositing() && GLFramebuffer::supported() && GLFramebuffer::blitSupported();
++    return effects->openglContext() && effects->openglContext()->supportsBlits();
+ }
+ 
+ bool BlurEffect::decorationSupportsBlurBehind(const EffectWindow *w) const
+@@ -780,7 +781,7 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
+         GLFramebuffer::popFramebuffer();
+         const auto &read = renderInfo.framebuffers[1];
+ 
+-        projectionMatrix = data.projectionMatrix();
++        projectionMatrix = viewport.projectionMatrix();
+         projectionMatrix.translate(deviceBackgroundRect.x(), deviceBackgroundRect.y());
+         m_upsamplePass.shader->setUniform(m_upsamplePass.mvpMatrixLocation, projectionMatrix);
+ 
+@@ -822,7 +823,7 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
+         if (GLTexture *noiseTexture = ensureNoiseTexture()) {
+             ShaderManager::instance()->pushShader(m_noisePass.shader.get());
+ 
+-            QMatrix4x4 projectionMatrix = data.projectionMatrix();
++            QMatrix4x4 projectionMatrix = viewport.projectionMatrix();
+             projectionMatrix.translate(deviceBackgroundRect.x(), deviceBackgroundRect.y());
+ 
+             m_noisePass.shader->setUniform(m_noisePass.mvpMatrixLocation, projectionMatrix);
+diff --git a/src/lightlyshaders/lightlyshaders.cpp b/src/lightlyshaders/lightlyshaders.cpp
+index 6e5d35f..a3cbd53 100644
+--- a/src/lightlyshaders/lightlyshaders.cpp
++++ b/src/lightlyshaders/lightlyshaders.cpp
+@@ -354,7 +354,8 @@ LightlyShadersEffect::enabledByDefault()
+ bool
+ LightlyShadersEffect::supported()
+ {
+-    return effects->isOpenGLCompositing() && GLFramebuffer::supported();
++    return effects->isOpenGLCompositing();
++    // return effects->isOpenGLCompositing() && GLFramebuffer::supported();
+ }
+ 
+ } // namespace KWin

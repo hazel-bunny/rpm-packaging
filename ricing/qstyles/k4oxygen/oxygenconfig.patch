@@ -1,0 +1,13 @@
+diff --git a/libs/imported/oxygenconfig.cpp b/libs/imported/oxygenconfig.cpp
+index 734d73b..e538f5a 100644
+--- a/libs/imported/oxygenconfig.cpp
++++ b/libs/imported/oxygenconfig.cpp
+@@ -62,6 +62,9 @@ QStringList getConfigPaths()
+     if(process.waitForFinished() && process.exitCode()==0)
+         return QString::fromUtf8(process.readAllStandardOutput()).trimmed().split(':');
+     process.start("kf5-config",args);
++    if(process.waitForFinished() && process.exitCode()==0)
++        return QString::fromUtf8(process.readAllStandardOutput()).trimmed().split(':');
++    process.start("kf6-config",args);
+     if(process.waitForFinished() && process.exitCode()==0)
+         return QString::fromUtf8(process.readAllStandardOutput()).trimmed().split(':');

@@ -43,18 +43,6 @@ system of "User Agent".
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
-%post
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
 %files
 %doc README
 %license LICENSE
@@ -64,7 +52,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/*/apps/%{name}.*
 
 %changelog
-* Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 1.4.11-1
+* Thu Oct 17 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.4.11-2
+- Fedora 41 Mass Rebuild
+
+* Wed Apr 26 2023 Hazel Bunny <hazel_bunny@disroot.org> 1.4.11-1
 - Update to 1.4.11
 - Update spec for qt6
 

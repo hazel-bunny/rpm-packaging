@@ -1,12 +1,12 @@
 Name:          webapp-manager
-Version:       1.3.5
+Version:       1.3.7
 
 %global forgeurl https://github.com/linuxmint/%{name}
-%global commit 42d0993fb2c7c294a0e70ae368ee1f763127589c
-%global date 20240605
+%global commit 141821082ba10fb69ff88336169efa04b5a3b544
+%global date 20240721
 %forgemeta
 
-Release:       1%{?dist}
+Release:       2%{?dist}
 License:       GPLv3+
 Summary:       Web Application Manager
 
@@ -33,7 +33,7 @@ Launch websites as if they were apps.
 
 %files
 %{_bindir}/%{name}
-%{_prefix}/lib/%{name}
+%{_prefix}/lib/%{name}/
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/kde4/%{name}.desktop
 %{_datadir}/desktop-directories/webapps-webapps.directory
@@ -54,32 +54,38 @@ sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
 %make_build
 
 %install
-install -Dm 755 usr/bin/%{name} -t %{buildroot}%{_bindir}
+mkdir -p %{buildroot}
 
-cp -r etc %{buildroot}%{_sysconfdir}
-cp -r usr %{buildroot}%{_prefix}
+cp -r etc %{buildroot}
+cp -r usr %{buildroot}
 
 %py_byte_compile %{python3} %{buildroot}%{_prefix}/lib/%{name}/*.py
 
 #------------------------------------------------------------------
 
 %changelog
-* Fri Jun 7 2024 Dipta Biswas <dabiswas112@gmail.com> 1.3.5-1
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.3.7-2
+- Fedora 41 Mass Rebuild
+
+* Tue Jul 30 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.3.7-1
+- Update to 1.3.7
+
+* Fri Jun 7 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.3.5-1
 - Update to 1.3.5
 
-* Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 1.3.4-1
+* Wed Mar 6 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.3.4-1
 - Update to 1.3.4
 
-* Sun Jul 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.2-2
+* Sun Jul 9 2023 Hazel Bunny <hazel_bunny@disroot.org> 1.3.2-2
 - Comply to fedora python packaging guidelines
 
-* Sun Jun 25 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.2-1
+* Sun Jun 25 2023 Hazel Bunny <hazel_bunny@disroot.org> 1.3.2-1
 - Bump version
 - Fix app version in about screen
 
-* Thu Jun 15 2023 Dipta Biswas <dabiswas112@gmail.com> 1.3.0-2
+* Thu Jun 15 2023 Hazel Bunny <hazel_bunny@disroot.org> 1.3.0-2
 - Bump version
 - Fix app entry in kickoff
 
-* Fri Jun 9 2023 Dipta Biswas <dabiswas112@gmail.com> 1.1.5-1
+* Fri Jun 9 2023 Hazel Bunny <hazel_bunny@disroot.org> 1.1.5-1
 - Import from github:refi64/webapp-manager-fedora

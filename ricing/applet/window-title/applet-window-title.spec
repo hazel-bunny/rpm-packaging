@@ -2,15 +2,15 @@
 %global debug_package %{nil}
 
 %global forgeurl https://github.com/dhruv8sh/%{_basename}
-%global commit 6d6b939bb8138a8b1640cf2f6d395a3030d7bbaa
-%global date 20240411
+Version:        0.9.0
+# %%global commit 6d6b939bb8138a8b1640cf2f6d395a3030d7bbaa
+# %%global date 20240411
 %forgemeta
 
 %global applet_id org.kde.windowtitle
 
 Name:           applet-window-title
-Version:        0.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Plasma 6 applet that shows the application title and icon for active window
 License:        GPL-2.0-or-later
 
@@ -29,7 +29,7 @@ panels.
 %files
 %license LICENSE
 %doc README.md
-%{_datadir}/plasma/plasmoids/%{applet_id}
+%{_datadir}/plasma/plasmoids/%{applet_id}/
 
 %prep
 %forgeautosetup
@@ -40,11 +40,14 @@ panels.
 %install
 mkdir -p %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/
 cp -r contents %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/
-install -Dm644 metadata.desktop %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/
-
-%check
-desktop-file-validate %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/metadata.desktop
+install -Dm644 metadata.json %{buildroot}%{_datadir}/plasma/plasmoids/%{applet_id}/
 
 %changelog
-* Wed Jun 19 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.9.6-1
+* Mon Oct 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.0-2
+- Fedora 41 Mass Rebuild
+
+* Tue Jul 30 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.0-1
+- Update to 0.9.0
+
+* Wed Jun 19 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.5-1
 - initial package

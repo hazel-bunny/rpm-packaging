@@ -1,3 +1,0 @@
-# newsflash
-
-The newsflash package

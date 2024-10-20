@@ -36,4 +36,5 @@ mkdir -p %{buildroot}%{_datadir}/plasma/plasmoids/com.dv.fokus/
 cp -r package/* %{buildroot}%{_datadir}/plasma/plasmoids/com.dv.fokus/
 
 %changelog
-%autochangelog
+* Mon Oct 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.1.0-1
+- initial package

@@ -5,17 +5,17 @@
 %global cargo_install_lib 0
 
 Name:           boxbuddy-rs
-Version:        2.2.5
+Version:        2.3.0
 
 %global _basename BoxBuddyRS
 %global app_id io.github.dvlv.boxbuddyrs
 
 %global forgeurl https://github.com/Dvlv/%{_basename}
 %global tag %{version}
-%global date 20240611
+%global date 20241015
 %forgemeta
 
-Release:        %autorelease
+Release:        1%{?dist}
 Summary:        A Graphical Interface for Distrobox
 License:        MIT
 # LICENSE.dependencies contains a full license breakdown
@@ -84,5 +84,12 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.meta
 %{_datadir}/locale/*/LC_MESSAGES/boxbuddyrs.mo
 
 %changelog
-%autochangelog
+* Thu Oct 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.3.0-1
+- Update to 2.3.0
+
+* Sat Sep 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.2.12-1
+- Update to 2.2.12
+
+* Thu Aug 1 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.2.9-1
+- initial package
 

@@ -11,6 +11,7 @@ Summary:        Rounded window corners and outline effect for KWin
 License:        GPL-3.0
 URL:            %{forgeurl}
 Source:         %{forgesource}
+Patch0:         lightlyPlasma6.1.txt
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
@@ -78,6 +79,9 @@ A simple KWin effect that simply rounds corners of windows, to do this it uses a
 %cmake_install
 
 %changelog
-* Sun Apr 28 2024 Dipta Biswas <dabiswas112@gmail.com> - 2.2.1-1.git
+* Sun Jun 23 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.2.1-2.git
+- Rebuild for plasma 6.1.0
+
+* Sun Apr 28 2024 Hazel Bunny <hazel_bunny@disroot.org> - 2.2.1-1.git
 - initial package
 

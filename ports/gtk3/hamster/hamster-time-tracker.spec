@@ -10,7 +10,7 @@ Version:    3.0.3
 # %%global date 20230430
 %forgemeta
 
-Release:    2%{?dist}
+Release:    3%{?dist}
 License:    GPL-3.0
 Summary:    The Linux time tracker
 URL:        %{forgeurl}
@@ -85,16 +85,19 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.meta
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Mon Jun 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 3.0.3-2
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.3-3
+- Fedora 41 Mass Rebuild
+
+* Mon Jun 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.3-2
 - Rebuild for newer Fedora versions
 
-* Fri Apr 12 2024 Dipta Biswas <dabiswas112@gmail.com> - 3.0.3-1
+* Fri Apr 12 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.3-1
 - New upstream version
 
-* Fri Jun 23 2023 Dipta Biswas <dabiswas112@gmail.com> - 3.0.2.git
+* Fri Jun 23 2023 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.2.git
 - Updated spec with forge macros
 
-* Fri Jun 23 2023 Dipta Biswas <dabiswas112@gmail.com> - 3.0.2^git
+* Fri Jun 23 2023 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.2^git
 - Switch to git snapshot
 - Updated spec for newer versions of Fedora
 

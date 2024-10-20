@@ -52,5 +52,5 @@ ln -s "/opt/%{_basename}/Liftoff"  %{buildroot}%{_bindir}/%{_basename}
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{_basename}.desktop
 
 %changelog
-* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.10.10-1
+* Tue Jun 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.10.10-1
 - initial package

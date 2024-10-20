@@ -1,14 +1,14 @@
 Name:           warpinator
-Version:        1.8.4
+Version:        1.8.6
 
 %global forgeurl https://github.com/linuxmint/%{name}
-%global commit d450699a6b462127911bfec6bbd90a6ce6e6c633
-%global date 20240612
+%global commit 34413b665559c96f8ccc4bff5856d180e02777f6
+%global date 20240721
 %forgemeta
 
 %global app_id org.x.Warpinator
 
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv3
 Summary:        Send and Receive Files across the Network
 URL:            %{forgeurl}
@@ -42,6 +42,7 @@ Requires:       python3-netifaces
 Requires:       python3-packaging
 Requires:       python3-protobuf
 Requires:       python3-pynacl
+Requires:       python3-qrcode
 Requires:       python3-setproctitle
 Requires:       python3-xapp
 Requires:       python3-zeroconf
@@ -65,7 +66,7 @@ local area network and share files quickly and securely.
 %{_datadir}/glib-2.0/schemas/%{app_id}.gschema.xml
 %{_datadir}/icons/hicolor/*/apps/%{app_id}.png
 %{_datadir}/icons/hicolor/scalable/apps/%{app_id}*.svg
-%{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
+# %{_datadir}/locale/*/LC_MESSAGES/%{name}.mo
 %{_datadir}/polkit-1/actions/org.x.%{name}.policy
 %{_datadir}/%{name}/
 
@@ -121,4 +122,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.appd
 #------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.8.6-2
+- Fedora 41 Mass Rebuild
+
+* Tue Jul 30 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.8.6-1
+- initial package

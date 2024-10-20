@@ -87,11 +87,11 @@ ScanTailor Featured and ScanTailor Enhanced versions, brings new ones and fixes.
 #------------------------------------------------------------------
 
 %changelog
-* Sun Jun 16 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.0.19-3.git
+* Sun Jun 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.0.19-3.git
 - Fix build dependencies
 
-* Sun Mar 31 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.0.19-1.git
+* Sun Mar 31 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.0.19-1.git
 - Switch to git snapshot
 
-* Sat Jun 24 2023 Dipta Biswas <dabiswas112@gmail.com> - 1.0.18-1
+* Sat Jun 24 2023 Hazel Bunny <hazel_bunny@disroot.org> - 1.0.18-1
 - Initial release

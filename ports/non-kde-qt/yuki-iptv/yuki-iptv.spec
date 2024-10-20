@@ -1,11 +1,11 @@
 %global debug_package %{nil}
 
 Name:           yuki-iptv
-%global forgeurl https://codeberg.org/Ame-chan-angel/%{name}
-Version:        0.0.11
+%global forgeurl https://codeberg.org/liya/%{name}
+Version:        0.0.14
 %forgemeta
 
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        IPTV player with EPG support
 Group:          Multimedia
 License:        GPL-3.0-or-later
@@ -21,12 +21,12 @@ BuildArch:      noarch
 
 Requires:       mpv-libs
 Requires:       python3-pyqt6
-Requires:       python3-pillow
 Requires:       python3-gobject
 Requires:       python3-unidecode
 Requires:       python3-chardet
 Requires:       python3-requests
 Requires:       python3-setproctitle
+Requires:       python3-wand
 Requires:       ffmpeg
 Requires:       yt-dlp
 
@@ -50,9 +50,10 @@ IPTV player with EPG support
 
 %prep
 %forgeautosetup -p1
+sed -i "s/QT_QPA_PLATFORM=xcb/QT_QPA_PLATFORM=wayland/g" usr/bin/%{name}
 sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/%{name}/%{name}.py
-sed -i "s/"styleredefoff": True/"styleredefoff": False/g" usr/lib/%{name}/yuki_iptv/settings.py
-sed -i "s/setAppFusion = True/setAppFusion = False/g" usr/lib/%{name}/%{name}.py
+# sed -i "s/"styleredefoff": True/"styleredefoff": False/g" usr/lib/%{name}/yuki_iptv/settings.py
+# sed -i "s/setAppFusion = True/setAppFusion = False/g" usr/lib/%{name}/%{name}.py
 
 %build
 %make_build
@@ -67,8 +68,14 @@ cp -r usr/share %{buildroot}%{_datadir}
 %py_byte_compile %{python3} usr/lib/%{name}/*.py
 
 %changelog
-* Fri Apr 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.11-1
+* Tue Oct 13 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.14-1
+- Upgrade to 0.0.14
+
+* Mon Sep 9 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.13-1
+- Upgrade to 0.0.13
+
+* Fri Apr 26 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.11-1
 - Upgrade to 0.0.11
 
-* Sun Apr 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.10-1
+* Sun Apr 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.10-1
 - initial package

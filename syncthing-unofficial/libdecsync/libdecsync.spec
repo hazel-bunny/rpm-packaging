@@ -6,7 +6,7 @@
 
 Name:    libdecsync
 Version: 2.2.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Library for DecSync
 License: GPLv2+
 URL:     %{forgeurl}
@@ -31,9 +31,10 @@ libdecsync is a multiplatform library for synchronizing using DecSync
 
 #-----------------------------------------------------------------------
 
-%package devel
-Summary:  Development files for libdecsync
-Requires: libdecsync
+%package    devel
+Summary:    Development files for libdecsync
+Requires:   libdecsync
+BuildArch:  noarch
 
 %description devel
 This package includes the header files you will need to compile

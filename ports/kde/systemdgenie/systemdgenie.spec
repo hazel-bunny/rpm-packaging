@@ -10,7 +10,7 @@ Name:    systemdgenie
 
 Summary: Systemd managment utility
 Version: 0.99.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv2+
 URL:     %{forgeurl}
@@ -63,5 +63,11 @@ desktop-file-validate %{buildroot}%{_kf6_datadir}/applications/%{app_id}.desktop
 %{_kf6_datadir}/polkit-1/actions/%{service_id}.policy
 
 %changelog
-* Wed Mar 6 2024 Dipta Biswas <dabiswas112@gmail.com> 0.99.0-1.git
+* Thu Oct 17 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.99.0-3.git
+- Fedora 41 Mass Rebuild
+
+* Thu Apr 25 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.99.0-2.git
+- Rebuild for Qt 6.8
+
+* Wed Mar 6 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.99.0-1.git
 - Initial packaging

@@ -6,7 +6,7 @@ Version:        0.9.0
 %global date 20190314
 %forgemeta
 
-Release:        %{autorelease}
+Release:        2%{?dist}
 Summary:        Checkers board game
 License:        GPL-2.0
 URL:            %{forgeurl}
@@ -50,4 +50,8 @@ rm -rf %{buildroot}%{_datadir}/%{name}/{AUTHORS,COPYING,ChangeLog}
 #------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Thu Oct 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.0-2
+- Fedora 41 mass rebuild
+
+* Sun Jun 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.0-1
+- Initial package

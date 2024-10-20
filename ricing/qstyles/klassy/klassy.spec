@@ -1,15 +1,16 @@
 Name:           klassy
+Version:        6.2
+
+%global breeze_version 6.2.1
 
 %global forgeurl https://github.com/paulmcauley/%{name}
-%global tag 6.1.breeze6.0.3
-%global date 20240314
+%global tag %{version}.breeze%{breeze_version}
+%global date 20241019
 %forgemeta
 
-Version:        6.1
 Release:        1%{?dist}
 Summary:        Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop.
 License:        GPL-2.0-or-later
-Group:          System/GUI/KDE
 URL:            %{forgeurl}
 Source:         %{forgesource}
 
@@ -120,5 +121,14 @@ Klassy (formerly ClassiK/ClassikStyles) is a highly customizable binary Window D
 %{_kf6_datadir}/plasma/desktoptheme/%{name}/
 
 %changelog
-%autochangelog
+* Sat Oct 19 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.2-1
+- Update to 6.2
 
+* Thu Apr 25 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.1-1
+- Update to 6.1
+
+* Fri Mar 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.0-1
+- Update to 6.0
+
+* Sat Mar 9 2024 Hazel Bunny <hazel_bunny@disroot.org> - 5.101-1
+- Initial package

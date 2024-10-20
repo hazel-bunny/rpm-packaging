@@ -1,9 +1,9 @@
-%global kf6_min_version 5.240.0
+%global kf6_min_version 6.0.0
 
 Name:           kasts
-Version:        24.05.1
+Version:        24.08.2
 Release:        3%{?dist}
-License:        GPLv2 and GPLv2+ and GPLv3+ and BSD and LGPLv3+
+License:        GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-or-later AND LicenseRef-Callaway-BSD AND LGPL-3.0-or-later
 Summary:        A mobile podcast application
 Url:            https://apps.kde.org/%{name}
 Source:         https://download.kde.org/stable/release-service/%{version}/src/%{name}-%{version}.tar.xz
@@ -33,6 +33,7 @@ BuildRequires:  cmake(Qt6Widgets)
 BuildRequires:  cmake(Qt6DBus)
 BuildRequires:  cmake(Qt6Multimedia)
 
+BuildRequires:  cmake(KF6BreezeIcons)    >= %{kf6_min_version}
 BuildRequires:  cmake(KF6I18n)           >= %{kf6_min_version}
 BuildRequires:  cmake(KF6CoreAddons)     >= %{kf6_min_version}
 BuildRequires:  cmake(KF6Kirigami)       >= %{kf6_min_version}
@@ -80,8 +81,26 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf6_metainfodir}/org.kde.%{
 
 
 %changelog
-* Sat Jun 15 2024 Dipta Biswas <dabiswas112@gmail.com> - 24.05.1-3
+* Thu Oct 10 2024 Hazel Bunny <hazel_bunny@disroot.org> - 24.08.2-3
 - Add support for vlc & gstreamer
+
+* Tue Oct 08 2024 Steve Cossette <farchord@gmail.com> - 24.08.2-1
+- 24.08.2
+
+* Wed Sep 25 2024 Alessandro Astone <ales.astone@gmail.com> - 24.08.1-1
+- 24.08.1
+
+* Sat Sep 14 2024 Pavel Solovev <daron439@gmail.com> - 24.08.0-3
+- Add optional KF6BreezeIcons
+
+* Mon Sep 02 2024 Miroslav Suchý <msuchy@redhat.com> - 24.08.0-2
+- convert license to SPDX
+
+* Thu Aug 22 2024 Steve Cossette <farchord@gmail.com> - 24.08.0-1
+- 24.08.0
+
+* Sun Jul 07 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.05.2-1
+- 24.05.2
 
 * Fri Jun 14 2024 Marc Deop i Argemí <marcdeop@fedoraproject.org> - 24.05.1-1
 - 24.05.1

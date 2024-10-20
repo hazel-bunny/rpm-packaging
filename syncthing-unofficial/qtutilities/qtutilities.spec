@@ -1,6 +1,6 @@
 %global _basename qtutilities
 %global forgeurl https://github.com/Martchus/%{_basename}
-Version:        6.14.1
+Version:        6.14.3
 %forgemeta
 
 %define soname 6
@@ -17,6 +17,7 @@ Source:         %{forgesource}
 BuildRequires:  cmake >= 3.17
 BuildRequires:  gcc-c++
 BuildRequires:  c++utilities-devel
+BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
 
 BuildRequires:  cmake(Qt6Core)
@@ -79,4 +80,11 @@ export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 #------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Fri Sep 20 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.14.3-1
+- Update to version 6.14.3
+
+* Mon Aug 12 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.14.2-1
+- Update to version 6.14.2
+
+* Sat Jul 6 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.14.1-2
+- Adopt from obs://home:mkittler

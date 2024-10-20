@@ -1,8 +1,8 @@
 %global _basename qt6gtk2
 %global forgeurl https://github.com/trialuser02/%{_basename}
-%global commit d29ba6c1fb4ac933ed7b91f0480cbd0c5a975ab8
+%global commit b574ba5b59edf5ce220ca304e1d07d75c94d03a2
 # %%global shortcommit %%(c=%%{commit}; echo ${c:0:7})
-%global date 20240507
+%global date 20240814
 %forgemeta
 
 Name:     qt6-gtk2-platform-theme
@@ -43,17 +43,23 @@ Qt6Gtk2 - GTK+2.0 integration plugins for Qt6
 %{_qt6_plugindir}/styles/libqt6gtk2-style.so
 
 %changelog
-* Thu Jul 27 2023 Dipta Biswas <dabiswas112@gmail.com> 0.2-1.20240120git5df96819
-- Fix license
-- Rebuild for qt6-qtbase 6.7.0
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2-1.20240814gitb574ba5b
+- Fedora 41 Mass Rebuild
 
-* Thu Jul 27 2023 Dipta Biswas <dabiswas112@gmail.com> 0.2-1.20220520git2a21a8ad
+* Mon Jul 8 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.2-1.20240623git2e872948
+- Rebuild for Qt 6.7.2
+
+* Wed Jun 19 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.2-1.20240120git5df96819
+- Fix license
+- Rebuild for Qt 6.7.0
+
+* Thu Jul 27 2023 Hazel Bunny <hazel_bunny@disroot.org> 0.2-1.20220520git2a21a8ad
 - Fix license
 - Add docs
-- Rebuild for qt6-qtbase 6.5.2-1
+- Rebuild for Qt 6.5.2
 
-* Mon Jul 17 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520-2
-- Rebuild for qt6-qtbase 6.5.1-2
+* Mon Jul 17 2023 Hazel Bunny <hazel_bunny@disroot.org> 0.0^git20220520-2
+- Rebuild for Qt 6.5.1
 
-* Sat May 6 2023 Dipta Biswas <dabiswas112@gmail.com> 0.0^git20220520-1
+* Sat May 6 2023 Hazel Bunny <hazel_bunny@disroot.org> 0.0^git20220520-1
 - Initial Package.

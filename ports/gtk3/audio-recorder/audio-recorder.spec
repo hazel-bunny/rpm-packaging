@@ -4,7 +4,7 @@ Version:       3.3.4
 %global app_id org.gnome.%{name}
 %global ubuntu jammy
 
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       Audio recorder application for the GNOME 3
 License:       GPL-3.0
 URL:           https://launchpad.net/%{name}
@@ -69,5 +69,8 @@ popd
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
-* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 3.3.4-1
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.3.4-2
+- Fedora 41 Mass Rebuild
+
+* Tue Jun 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.3.4-1
 - initial package

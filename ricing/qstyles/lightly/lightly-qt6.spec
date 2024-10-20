@@ -11,7 +11,7 @@
 
 Name:           %{_style}-qt%{_qt_major_version}
 Version:        6.80
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern style for qt applications
 License:        GPL-2.0-or-later
 Group:          System/GUI/KDE
@@ -19,6 +19,7 @@ Group:          System/GUI/KDE
 URL:            %{forgeurl}
 Source:         %{forgesource}
 Patch0:         add-missing-files.patch
+Patch1:         scale.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake >= 3.16
@@ -99,4 +100,11 @@ Lightly is a fork of breeze theme style that aims to be visually modern and mini
 %{_datadir}/kstyle/themes/%{_style}.themerc
 
 %changelog
-%autochangelog
+* Tue Oct 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.80-3
+- Fedora 41 Mass Rebuild
+
+* Fri Apr 26 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.80-2
+- Rebuild for Qt 6.7
+
+* Thu Mar 21 2024 Hazel Bunny <hazel_bunny@disroot.org> - 6.80-1
+- Initial package

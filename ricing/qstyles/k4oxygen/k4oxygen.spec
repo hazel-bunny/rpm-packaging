@@ -2,22 +2,19 @@
 %global dev 10110111
 
 %global forgeurl https://github.com/%{dev}/%{style}
-%global commit b0291eff019d4ccd498970d0c8323e49e74a2fec
-%global date 20240329
+%global commit 9a65c1ebe90ba0169a3ea73441d89291bee19d71
+%global date 20240603
 %forgemeta
 
 Name:    %{style}
 Version: 0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Variant of KDE4 Oxygen widget theme
 License: LGPL-2.1
 URL:     %{forgeurl}
 Source:  %{forgesource}
-Patch:   qt6x11_wayland.patch
 
 BuildRequires: cmake
-BuildRequires: pkgconfig(xcb)
-BuildRequires: pkgconfig(x11)
 
 #Qt6
 BuildRequires: cmake(Qt6Core)
@@ -32,7 +29,6 @@ BuildRequires: cmake(Qt5Core)
 BuildRequires: cmake(Qt5Widgets)
 BuildRequires: cmake(Qt5Gui)
 BuildRequires: cmake(Qt5DBus)
-BuildRequires: cmake(Qt5X11Extras)
 BuildRequires: qt5-rpm-macros
 
 # Qt4
@@ -124,6 +120,7 @@ This package contains the Qt6 style.
 
 %prep
 %forgesetup
+sed -i 's/set(X11_FOUND TRUE)/set(X11_FOUND FALSE)/g' CMakeLists.txt
 
 %build
 # Build for Qt 4

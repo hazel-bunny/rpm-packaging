@@ -1,0 +1,24 @@
+From 703288a39c8c0add0d233a0cf16bda0a9b965c1d Mon Sep 17 00:00:00 2001
+From: Victor Probio Lopes <victor.probio@gmail.com>
+Date: Mon, 13 May 2024 15:48:03 -0300
+Subject: [PATCH] revert 39700ce from original repo
+
+---
+ kstyle/lightlystyle.cpp | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/kstyle/lightlystyle.cpp b/kstyle/lightlystyle.cpp
+index d35f75b3..2fe096e1 100644
+--- a/kstyle/lightlystyle.cpp
++++ b/kstyle/lightlystyle.cpp
+@@ -237,10 +237,6 @@ namespace Lightly
+         if( StyleConfigData::opaqueApps().contains(appName, Qt::CaseInsensitive) || StyleConfigData::forceOpaque().contains(appName, Qt::CaseInsensitive) )
+             _isOpaque = true;
+         
+-        const qreal dpr = qApp->devicePixelRatio();
+-        bool nonIntegerScale = (dpr > static_cast<qreal>(1) && static_cast<qreal>(qRound(dpr)) != dpr);
+-        if( nonIntegerScale ) 
+-            _isOpaque = true;
+         if(_translucentWidgets.size() > 0) _translucentWidgets.clear();
+ 
+         // base class polishing

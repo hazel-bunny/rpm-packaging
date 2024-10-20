@@ -61,7 +61,7 @@ install -Dm0644 %{SOURCE1} %{buildroot}%{_datadir}/metainfo/%{name}.appdata.xml
 %{_datadir}/metainfo/%{name}.appdata.xml
 
 %changelog
-* Sat Jun 24 2023 Dipta Biswas <dabiswas112@gmail.com> - 1:0.4.4.2-1
+* Sat Jun 24 2023 Hazel Bunny <hazel_bunny@disroot.org> - 1:0.4.4.2-1
 - Adopt and refactor old spec
 
 * Tue Sep 07 2021 Sérgio Basto <sergio@serjux.com> - 1:0.4.4.2-1

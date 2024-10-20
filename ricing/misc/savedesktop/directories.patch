@@ -1,0 +1,17 @@
+diff --unified --recursive --text a/src/localization.py b/src/localization.py
+--- a/src/localization.py	2024-02-03 11:16:36.480021814 +0100
++++ b/src/localization.py	2024-02-03 11:26:18.467418811 +0100
+@@ -76,10 +76,10 @@
+ else:
+     try:
+-      locale = open(f"{home}/.local/share/savedesktop/translations/{r_lang}.json")
++      locale = open(f"/usr/share/savedesktop/translations/{r_lang}.json")
+     except:
+-      locale = open(f"{home}/.local/share/savedesktop/translations/en.json")
++      locale = open(f"/usr/share/savedesktop/translations/en.json")
+     version = f"{v}-native"
+     # Directories
+-    system_dir = f"{home}/.local/share/savedesktop/src"
++    system_dir = f"/usr/share/savedesktop/src"
+     CACHE = f"{GLib.get_user_cache_dir()}/io.github.vikdevelop.SaveDesktop"
+     DATA = f"{GLib.get_user_data_dir()}/io.github.vikdevelop.SaveDesktop"

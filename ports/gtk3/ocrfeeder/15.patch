@@ -1,0 +1,95 @@
+From 50932aff7d1bbcaea145807e2aec6baa86cd4c23 Mon Sep 17 00:00:00 2001
+From: Anders Jonsson <anders.jonsson@norsjovallen.se>
+Date: Fri, 30 Dec 2022 23:04:15 +0100
+Subject: [PATCH] Fix typos in help (is -> in etc)
+
+---
+ help/C/automaticrecognition.page | 2 +-
+ help/C/finetuning.page           | 6 +++---
+ help/C/importingfromscanner.page | 2 +-
+ help/C/projects.page             | 2 +-
+ help/C/unpaper.page              | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/help/C/automaticrecognition.page b/help/C/automaticrecognition.page
+index 58f4435..f01568c 100644
+--- a/help/C/automaticrecognition.page
++++ b/help/C/automaticrecognition.page
+@@ -21,7 +21,7 @@ by clicking
+ 
+ <note style="important"><p>Since there are many different document
+ layouts out there, the automatic recognition, mainly the page
+-segmentation, may turn out not to be accurate for you document. In this
++segmentation, may turn out not to be accurate for your document. In this
+ case, some manual editing of the recognition results might be needed.
+ </p></note>
+ 
+diff --git a/help/C/finetuning.page b/help/C/finetuning.page
+index f8dd0c8..02781bf 100644
+--- a/help/C/finetuning.page
++++ b/help/C/finetuning.page
+@@ -18,12 +18,12 @@ dialog, under its <gui>Recognition</gui> tab.</p>
+ <p>The following list describes the mentioned options:</p>
+ <list>
+     <item><p><gui>Fix line breaks and hyphenization</gui>: OCR engines
+-    usually read the text line by line and seperate each line with a
++    usually read the text line by line and separate each line with a
+     line break. Sometimes, this is not what the user wants because the
+     text might be broken in the middle of a sentence.</p>
+     <p>Checking this option will make <app>OCRFeeder</app> remove single
+     newline characters after the text is recognized by the engines.</p>
+-    <p>Since just removing newlines in an hyphenized text would result
++    <p>Since just removing newlines in a hyphenized text would result
+     in wrongly separated words, hyphenization is also detected and removed
+     in this process.</p></item>
+     <item><p><gui>Window Size</gui>: <app>OCRFeeder</app>'s algorithm to
+@@ -41,7 +41,7 @@ dialog, under its <gui>Recognition</gui> tab.</p>
+     <item><p><gui>Improve columns detection</gui>: Check this option if
+     <app>OCRFeeder</app> should try to divide the detected content areas
+     horizontally (originating more columns). The value that is used to
+-    check the existance of blank space within the contents may be set to
++    check the existence of blank space within the contents may be set to
+     automatic or manual when the columns aren't detected correctly.</p></item>
+     <item><p><gui>Adjust content areas' bounds</gui>: The detected content
+     areas sometimes have a considerable margin between their contents and
+diff --git a/help/C/importingfromscanner.page b/help/C/importingfromscanner.page
+index 6acf508..e902b0c 100644
+--- a/help/C/importingfromscanner.page
++++ b/help/C/importingfromscanner.page
+@@ -20,7 +20,7 @@ or the keyboard shortcut
+ <keyseq><key>Ctrl</key><key>Shift</key><key>I</key></keyseq>.</p>
+ 
+ <p>The currently detected scanner device will be used to
+-scan the page. If more than one scanner if found, then a dialog
++scan the page. If more than one scanner is found, then a dialog
+ will be shown with the options to choose from.</p>
+ 
+ </page>
+diff --git a/help/C/projects.page b/help/C/projects.page
+index dc1ceb0..6b1e4b4 100644
+--- a/help/C/projects.page
++++ b/help/C/projects.page
+@@ -54,7 +54,7 @@ wanted project.</p>
+ <section id="clear">
+ <title>Clearing A Project</title>
+ 
+-<p>If all the information is a project should be deleted (for example,
++<p>If all the information in a project should be deleted (for example,
+ to start over again), it can be done by choosing
+ <guiseq><gui>Edit</gui><gui>Clear Project</gui></guiseq>.</p>
+ 
+diff --git a/help/C/unpaper.page b/help/C/unpaper.page
+index 96189ce..a131a54 100644
+--- a/help/C/unpaper.page
++++ b/help/C/unpaper.page
+@@ -20,7 +20,7 @@ images before processing them, which usually results in a better
+ recognition.</p>
+ 
+ <p><em>Unpaper</em> needs to be installed in order to be used.
+-If it is not installed, <app>OCRFeeder</app> won't show it's action
++If it is not installed, <app>OCRFeeder</app> won't show its action
+ in the interface.</p>
+ 
+ <p>To use <em>Unpaper</em> on a loaded image, click
+-- 
+GitLab

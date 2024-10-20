@@ -90,4 +90,11 @@ Requires:       %{name}-common
 %cmake_install
 
 %changelog
-%autochangelog
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.0.4-2
+- Fedora 41 Mass Rebuild
+
+* Fri Apr 26 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.0.4-1
+- Update to version 1.0.4
+
+* Tue Feb 27 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.0.2-1
+- Initial package

@@ -1,0 +1,53 @@
+From 5ac75d681539d03482a1ddd4c5944b753f7f9395 Mon Sep 17 00:00:00 2001
+From: Xu Zhao <i@xuzhao.net>
+Date: Sat, 29 Jun 2024 21:52:48 -0400
+Subject: [PATCH 1/2] Fix window decoration config in lightly-settings
+
+---
+ kdecoration/config/kcm_lightlydecoration.json | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kdecoration/config/kcm_lightlydecoration.json b/kdecoration/config/kcm_lightlydecoration.json
+index 490f110d..81bbec9c 100644
+--- a/kdecoration/config/kcm_lightlydecoration.json
++++ b/kdecoration/config/kcm_lightlydecoration.json
+@@ -1,5 +1,7 @@
+ {
+     "KPlugin": {
++        "Name": "Lightly Window Decoration",
++        "Icon": "preferences-system-windows",
+         "Description": "Modify the appearance of window decorations",
+         "ServiceTypes": [
+             "KCModule"
+
+From d3adf1cf397d542bdcab17cb6017ec62cc88e520 Mon Sep 17 00:00:00 2001
+From: Xu Zhao <i@xuzhao.net>
+Date: Sat, 29 Jun 2024 22:14:37 -0400
+Subject: [PATCH 2/2] Fix kde decoration config
+
+---
+ kdecoration/lightly.json | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kdecoration/lightly.json b/kdecoration/lightly.json
+index 2aeda2dc..5b0b58f7 100644
+--- a/kdecoration/lightly.json
++++ b/kdecoration/lightly.json
+@@ -1,15 +1,15 @@
+ {
+     "KPlugin": {
++        "Description": "Lightly Window decoration",
+         "EnabledByDefault": true,
+-        "Id": "org.kde.lightly",
+         "Name": "Lightly",
+         "ServiceTypes": [
+             "org.kde.kdecoration2"
+         ]
+     },
++    "X-KDE-ConfigModule": "kcm_lightlydecoration",
+     "org.kde.kdecoration2": {
+         "blur": true,
+-        "kcmodule": true,
+         "recommendedBorderSize": "None"
+     }
+ }

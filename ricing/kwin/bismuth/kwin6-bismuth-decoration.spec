@@ -6,7 +6,7 @@ Name:           kwin6-bismuth-decoration
 %forgemeta
 
 Version:        0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Tiling-WM-like window decorations for KWin
 License:        BSD-3-Clause and CC-BY-4.0 and LGPL-3.0-or-later and MIT
 URL:            %{forgeurl}
@@ -63,5 +63,8 @@ This is just a port of Bismuth decoration for Plasma/KWin 6
 %cmake_install
 
 %changelog
-* Fri Jun 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 0-1
+* Tue Oct 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0-2
+- Fedora 41 Mass Rebuild
+
+* Fri Jun 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0-1
 - initial package

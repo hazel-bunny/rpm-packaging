@@ -11,7 +11,7 @@
 
 Name:           %{_style}-qt%{_qt_major_version}
 Version:        0.43
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern style for qt applications
 License:        GPL-2.0-or-later
 Group:          System/GUI/KDE
@@ -99,4 +99,11 @@ rm -rf %{buildroot}%{_libdir}/cmake/%{style}
 %{_datadir}/kservices%{_qt_major_version}/%{_style}styleconfig.desktop
 
 %changelog
-%autochangelog
+* Tue Oct 15 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.43-3
+- Fedora 41 Mass Rebuild
+
+* Fri Apr 26 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.43-2
+- Refactor spec
+
+* Thu Mar 21 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.43-1
+- Initial package

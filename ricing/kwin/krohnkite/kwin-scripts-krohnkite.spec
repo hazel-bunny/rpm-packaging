@@ -1,11 +1,13 @@
 %global _basename krohnkite
-%global forgeurl https://github.com/anametologin/%{_basename}
-%global commit 8aed7a5fc5ff7f3e825d226d593f1138fa329cf6
-%global date 20240617
-%forgemeta
 
 Name:            kwin-scripts-%{_basename}
-Version:         0.9.6
+Version:         0.9.8.2
+
+%global forgeurl https://github.com/anametologin/%{_basename}
+%global commit 56df0da265aa248a4fa7a0133a7b208bdc4f3dbd
+%global date 20241008
+%forgemeta
+
 Release:         1%{?dist}
 Summary:         A dynamic tiling extension for KWin
 License:         MIT
@@ -83,6 +85,9 @@ desktop-file-validate %{buildroot}%{_datadir}/kservices6/%{_basename}.desktop
 #------------------------------------------------------------------
 
 %changelog
-* Wed Jun 19 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.9.6-1
+* Thu Oct 10 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.8.2-1
+- Update to 0.9.8.2
+
+* Wed Jun 19 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.9.6-1
 - initial package
 

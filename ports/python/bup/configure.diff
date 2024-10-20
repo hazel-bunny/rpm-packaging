@@ -1,0 +1,11 @@
+--- a/config/configure	2024-08-25 00:07:53.000000000 +0600
++++ b/config/configure	2024-08-27 00:10:03.747039511 +0600
+@@ -125,7 +125,7 @@
+                          "$BUP_PYTHON_CONFIG")
+     fi
+ else
+-    for py_min_ver in 11 10 9 8 7; do
++    for py_min_ver in 14 13 12 11 10 9 8 7; do
+         bup_python_config="$(bup_find_prog "python3.$py_min_ver-config" '')"
+         test -z "$bup_python_config" || break
+     done

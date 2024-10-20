@@ -4,7 +4,7 @@
 
 Name:           %{_basename}-%{_suffix}
 Version:        0.0.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Ambient Noise Player GUI
 License:        GPLv3
 URL:            https://costales.github.io/projects/%{_basename}
@@ -24,9 +24,9 @@ BuildRequires:  gtk3-devel
 
 Requires:       gtk3
 Requires:       webkit2gtk4.0
-Requires:       anoise
+Requires:       %{_basename}
 
-Enhances:       anoise
+Enhances:       %{_basename}
 
 #------------------------------------------------------------------------------
 
@@ -63,8 +63,11 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 #------------------------------------------------------------------------------
 
 %changelog
-* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.4-2
+* Sun Oct 13 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.4-3
+- Fedora 41 Mass Rebuild
+
+* Tue Jun 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.4-2
 - refactoring of spec file
 
-* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.4-1
+* Thu Apr 11 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.4-1
 - initial package

@@ -1,0 +1,22 @@
+From 3e4bcf5ed93613d7df333ef12b904131cb55446c Mon Sep 17 00:00:00 2001
+From: Xu Zhao <i@xuzhao.net>
+Date: Tue, 16 Jul 2024 22:41:22 -0400
+Subject: [PATCH] Fix dolphin background
+
+---
+ kstyle/lightlystyle.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kstyle/lightlystyle.cpp b/kstyle/lightlystyle.cpp
+index 2c4e8afa..e7923b26 100644
+--- a/kstyle/lightlystyle.cpp
++++ b/kstyle/lightlystyle.cpp
+@@ -1471,7 +1471,7 @@ namespace Lightly
+             {
+                 _helper->renderMenuFrame( &painter, rect, background, outline, false );
+ 
+-            } else if( StyleConfigData::dockWidgetDrawFrame() ||  qobject_cast<const QDockWidget *>(dockWidget) ) {
++            } else if( StyleConfigData::dockWidgetDrawFrame() &&  qobject_cast<const QDockWidget *>(dockWidget) ) {
+     
+                 _helper->renderFrame( &painter, rect, background, palette, windowActive );
+ 

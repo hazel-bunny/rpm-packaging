@@ -1,10 +1,10 @@
 %global _basename syncthingtray
 %global forgeurl https://github.com/Martchus/%{_basename}
-Version:        1.5.4
+Version:        1.6.3
 %forgemeta
 
 %define soname 6
-%define libver 15
+%define libver 19
 %define cfg qt6
 
 # Build web view only for specific architectures
@@ -38,6 +38,7 @@ BuildRequires:  c++utilities-devel
 BuildRequires:  boost-devel > 1.75
 BuildRequires:  pkgconfig
 BuildRequires:  syncthing
+BuildRequires:  ninja-build
 
 BuildRequires:  cmake(Qt6Concurrent)
 BuildRequires:  cmake(Qt6Core)
@@ -254,4 +255,14 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/syncthingfilei
 #------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Thu Oct 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.3-1
+- Update to version 1.6.3
+
+* Fri Sep 20 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.2-1
+- Update to version 1.6.2
+
+* Mon Aug 12 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.0-1
+- Update to version 1.6.0
+
+* Sat Jul 6 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.5.5-1
+- Adopt from obs://home:mkittler

@@ -79,8 +79,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_kf5_metainfodir}/%{app_id}.
 %{_kf5_metainfodir}/%{app_id}.appdata.xml
 
 %changelog
-* Fri May 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 5.0.1-2
+* Fri May 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 5.0.1-2
 - Fix license
 
-* Sun Jun 25 2023 Dipta Biswas <dabiswas112@gmail.com> - 5.0.1-1
+* Sun Jun 25 2023 Hazel Bunny <hazel_bunny@disroot.org> - 5.0.1-1
 - Adapt OpenSUSE spec for Fedora

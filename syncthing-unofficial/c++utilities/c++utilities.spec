@@ -2,7 +2,7 @@ Name:           c++utilities
 
 %global _basename cpp-utilities
 %global forgeurl https://github.com/Martchus/%{_basename}
-Version:        5.24.9
+Version:        5.26.1
 %forgemeta
 
 %define soname 5
@@ -17,6 +17,7 @@ Source:         %{forgesource}
 BuildRequires:  cmake >= 3.17
 BuildRequires:  cppunit-devel >= 1.14.0
 BuildRequires:  gcc-c++
+BuildRequires:  ninja-build
 
 %description
 Common C++ classes and routines such as argument parser, IO and conversion utilities.
@@ -72,4 +73,11 @@ export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 #------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Fri Sep 20 2024 Hazel Bunny <hazel_bunny@disroot.org> - 5.26.1-1
+- Update to version 5.26.1
+
+* Mon Aug 12 2024 Hazel Bunny <hazel_bunny@disroot.org> - 5.26.0-1
+- Update to version 5.26.0
+
+* Fri Jul 5 2024 Hazel Bunny <hazel_bunny@disroot.org> - 5.25.0-1
+- Adopt from obs://home:mkittler

@@ -1,6 +1,6 @@
 %global _basename qtforkawesome
 %global forgeurl0 https://github.com/Martchus/%{_basename}
-Version:        0.2.0
+Version:        0.2.2
 
 %global _base_lib Fork-Awesome
 %global forgeurl1 https://github.com/ForkAwesome/%{_base_lib}
@@ -13,7 +13,7 @@ Version:        0.2.0
 %define soname 1
 
 Name:           %{_basename}-%{cfg}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Library that bundles ForkAwesome for use within Qt applications
 License:        GPL-2.0-or-later
 URL:            %{forgeurl0}
@@ -140,4 +140,14 @@ export LD_LIBRARY_PATH="$PWD/%{__cmake_builddir}:$LD_LIBRARY_PATH"
 #------------------------------------------------------------------
 
 %changelog
-%autochangelog
+* Thu Oct 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.2-1
+- Update to version 0.2.2
+
+* Fri Sep 20 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.1-1
+- Update to version 0.2.1
+
+* Mon Aug 12 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.0-4
+- Rebuild for qtutilities 6.14.2-1
+
+* Sat Jul 6 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.0-3
+- Adopt from obs://home:mkittler

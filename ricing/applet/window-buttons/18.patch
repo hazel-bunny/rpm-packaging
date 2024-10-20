@@ -1,0 +1,3931 @@
+From ff4385e38403ce86ddc1aee53aa9a5c4e2baf6b4 Mon Sep 17 00:00:00 2001
+From: ChrTall <chrtall@gmx.de>
+Date: Sun, 16 Jun 2024 21:55:50 +0200
+Subject: [PATCH 1/4] Removed Latte-Dock specific code from the applet, because
+ Latte Dock is not going to be ported to Plasma 6
+
+---
+ libappletdecoration/types.h                 |   8 --
+ package/contents/ui/LatteWindowsTracker.qml |  64 ----------
+ package/contents/ui/main.qml                | 126 +++-----------------
+ 3 files changed, 14 insertions(+), 184 deletions(-)
+ delete mode 100644 package/contents/ui/LatteWindowsTracker.qml
+
+diff --git a/libappletdecoration/types.h b/libappletdecoration/types.h
+index 25d8343..8df8ab4 100644
+--- a/libappletdecoration/types.h
++++ b/libappletdecoration/types.h
+@@ -85,14 +85,6 @@ class Types
+         EmptySpace
+     };
+     Q_ENUM(HiddenState)
+-
+-    enum ContainmentType
+-    {
+-        Loading = 0,
+-        Plasma,
+-        Latte
+-    };
+-    Q_ENUM(ContainmentType)
+ };
+ 
+ #endif
+diff --git a/package/contents/ui/LatteWindowsTracker.qml b/package/contents/ui/LatteWindowsTracker.qml
+deleted file mode 100644
+index 4f00093..0000000
+--- a/package/contents/ui/LatteWindowsTracker.qml
++++ /dev/null
+@@ -1,64 +0,0 @@
+-/*
+-*  Copyright 2019 Michail Vourlakos <mvourlakos@gmail.com>
+-*
+-*  This file is part of applet-window-title
+-*
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-*/
+-
+-import QtQuick
+-
+-Item {
+-    id: latteWindowsTracker
+-
+-    property bool filterByScreen: true
+-    readonly property bool existsWindowActive: selectedTracker.lastActiveWindow.isValid && !lastActiveTaskItem.isMinimized && lastActiveTaskItem.isActive
+-    readonly property bool existsWindowShown: selectedTracker.lastActiveWindow.isValid && !lastActiveTaskItem.isMinimized
+-    readonly property QtObject selectedTracker: filterByScreen ? latteBridge.windowsTracker.currentScreen : latteBridge.windowsTracker.allScreens
+-    readonly property Item
+-    lastActiveTaskItem: Item {
+-        readonly property string title: selectedTracker.lastActiveWindow.display
+-        readonly property bool isMinimized: selectedTracker.lastActiveWindow.isMinimized
+-        readonly property bool isMaximized: selectedTracker.lastActiveWindow.isMaximized
+-        readonly property bool isActive: selectedTracker.lastActiveWindow.isActive
+-        readonly property bool isOnAllDesktops: selectedTracker.lastActiveWindow.isOnAllDesktops
+-        readonly property bool isKeepAbove: selectedTracker.lastActiveWindow.isKeepAbove
+-        readonly property bool isClosable: selectedTracker.lastActiveWindow.hasOwnProperty("isClosable") ? selectedTracker.lastActiveWindow.isClosable : true
+-        readonly property bool isMinimizable: selectedTracker.lastActiveWindow.hasOwnProperty("isMinimizable") ? selectedTracker.lastActiveWindow.isMinimizable : true
+-        readonly property bool isMaximizable: selectedTracker.lastActiveWindow.hasOwnProperty("isMaximizable") ? selectedTracker.lastActiveWindow.isMaximizable : true
+-        readonly property bool isVirtualDesktopsChangeable: selectedTracker.lastActiveWindow.hasOwnProperty("isVirtualDesktopsChangeable") ? selectedTracker.lastActiveWindow.isVirtualDesktopsChangeable : true
+-        readonly property int winId: selectedTracker.lastActiveWindow.hasOwnProperty("winId") ? selectedTracker.lastActiveWindow.winId : -1
+-    }
+-
+-    function toggleMaximized() {
+-        selectedTracker.lastActiveWindow.requestToggleMaximized();
+-    }
+-
+-    function toggleMinimized() {
+-        selectedTracker.lastActiveWindow.requestToggleMinimized();
+-    }
+-
+-    function toggleClose() {
+-        selectedTracker.lastActiveWindow.requestClose();
+-    }
+-
+-    function togglePinToAllDesktops() {
+-        selectedTracker.lastActiveWindow.requestToggleIsOnAllDesktops();
+-    }
+-
+-    function toggleKeepAbove() {
+-        selectedTracker.lastActiveWindow.requestToggleKeepAbove();
+-    }
+-
+-}
+diff --git a/package/contents/ui/main.qml b/package/contents/ui/main.qml
+index ad8443a..d1faed7 100644
+--- a/package/contents/ui/main.qml
++++ b/package/contents/ui/main.qml
+@@ -27,10 +27,14 @@ import org.kde.plasma.plasmoid
+ PlasmoidItem {
+     id: root
+ 
++    // plasmoid.userConfiguringChanged: {
++    //     console.log("Config Changed")
++    // }
++
+     property int animatedMinimumWidth: minimumWidth
+     property int animatedMinimumHeight: minimumHeight
+     property int screen: plasmoid.containment.screen
+-    readonly property bool inEditMode: latteInEditMode || plasmoid.userConfiguring || plasmoid.containment.corona.editMode
++    readonly property bool inEditMode: plasmoid.userConfiguring || plasmoid.containment.corona.editMode
+     readonly property bool mustHide: {
+         if (visibility === AppletDecoration.Types.AlwaysVisible || inEditMode)
+             return false;
+@@ -38,7 +42,7 @@ PlasmoidItem {
+         if (visibility === AppletDecoration.Types.ActiveWindow && !existsWindowActive)
+             return true;
+ 
+-        if (visibility === AppletDecoration.Types.ActiveMaximizedWindow && (!isLastActiveWindowMaximized || (inPlasmaPanel && !existsWindowActive)))
++        if (visibility === AppletDecoration.Types.ActiveMaximizedWindow && (!isLastActiveWindowMaximized || !existsWindowActive))
+             return true;
+ 
+         if (visibility === AppletDecoration.Types.ShownWindowExists && !existsWindowShown)
+@@ -49,12 +53,11 @@ PlasmoidItem {
+     readonly property bool selectedDecorationExists: decorations.decorationExists(plasmoid.configuration.selectedPlugin, plasmoid.configuration.selectedTheme)
+     readonly property bool slideAnimationEnabled: ((visibility !== AppletDecoration.Types.AlwaysVisible) && (plasmoid.configuration.hiddenState === AppletDecoration.Types.SlideOut))
+     readonly property bool isEmptySpaceEnabled: plasmoid.configuration.hiddenState === AppletDecoration.Types.EmptySpace
+-    readonly property int containmentType: plasmoid.configuration.containmentType
+     readonly property int visibility: plasmoid.configuration.visibility
+     readonly property bool perScreenActive: plasmoid.configuration.perScreenActive
+     readonly property int minimumWidth: {
+         if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
+-            if (mustHide && !isEmptySpaceEnabled && slideAnimationEnabled && !plasmoid.userConfiguring && !latteInEditMode)
++            if (mustHide && !isEmptySpaceEnabled && slideAnimationEnabled && !plasmoid.userConfiguring)
+                 return 0;
+ 
+         }
+@@ -62,7 +65,7 @@ PlasmoidItem {
+     }
+     readonly property int minimumHeight: {
+         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
+-            if (mustHide && !isEmptySpaceEnabled && slideAnimationEnabled && !plasmoid.userConfiguring && !latteInEditMode)
++            if (mustHide && !isEmptySpaceEnabled && slideAnimationEnabled && !plasmoid.userConfiguring)
+                 return 0;
+ 
+         }
+@@ -75,13 +78,6 @@ PlasmoidItem {
+         if (auroraeThemeEngine.isEnabled && plasmoid.configuration.useDecorationMetrics)
+             return plasmoid.formFactor === PlasmaCore.Types.Horizontal ? ((root.height - auroraeThemeEngine.buttonHeight) / 2) - 1 : ((root.width - auroraeThemeEngine.buttonHeight) / 2) - 1;
+ 
+-        //! Latte padding
+-        if (inLatte) {
+-            if (plasmoid.formFactor === PlasmaCore.Types.Horizontal)
+-                return (root.height - (latteBridge.iconSize * (plasmoid.configuration.buttonSizePercentage / 100))) / 2;
+-            else
+-                return (root.width - (latteBridge.iconSize * (plasmoid.configuration.buttonSizePercentage / 100))) / 2;
+-        }
+         //! Plasma panels code
+         if (plasmoid.formFactor === PlasmaCore.Types.Horizontal)
+             return (root.height - (root.height * (plasmoid.configuration.buttonSizePercentage / 100))) / 2;
+@@ -100,8 +96,8 @@ PlasmoidItem {
+         return plasmoid.configuration.spacing;
+     }
+     //! make sure that on startup it will always be shown
+-    readonly property bool existsWindowActive: (windowInfoLoader.item && windowInfoLoader.item.existsWindowActive) || containmentIdentifierTimer.running
+-    readonly property bool existsWindowShown: (windowInfoLoader.item && windowInfoLoader.item.existsWindowShown) || containmentIdentifierTimer.running
++    readonly property bool existsWindowActive: (windowInfoLoader.item && windowInfoLoader.item.existsWindowActive)
++    readonly property bool existsWindowShown: (windowInfoLoader.item && windowInfoLoader.item.existsWindowShown)
+     readonly property bool isLastActiveWindowPinned: lastActiveTaskItem && existsWindowShown && lastActiveTaskItem.isOnAllDesktops
+     readonly property bool isLastActiveWindowMaximized: lastActiveTaskItem && existsWindowShown && lastActiveTaskItem.isMaximized
+     readonly property bool isLastActiveWindowKeepAbove: lastActiveTaskItem && existsWindowShown && lastActiveTaskItem.isKeepAbove
+@@ -112,8 +108,6 @@ PlasmoidItem {
+     property bool hasDesktopsButton: false
+     property bool hasMaximizedButton: false
+     property bool hasKeepAboveButton: false
+-    readonly property bool inPlasmaPanel: latteBridge === null
+-    readonly property bool inLatte: latteBridge !== null
+     readonly property Item lastActiveTaskItem: windowInfoLoader.item.lastActiveTaskItem
+     // START decoration properties
+     property string currentPlugin: plasmoid.configuration.useCurrentDecoration || !selectedDecorationExists ? decorations.currentPlugin : plasmoid.configuration.selectedPlugin
+@@ -122,20 +116,8 @@ PlasmoidItem {
+         if (plasmaThemeExtended.isActive)
+             return plasmaThemeExtended.colors.schemeFile;
+ 
+-        if (enforceLattePalette && plasmoid.configuration.selectedScheme === "kdeglobals")
+-            return latteBridge.palette.scheme;
+-
+         return plasmoid.configuration.selectedScheme === "kdeglobals" ? colorsModel.defaultSchemeFile() : plasmoid.configuration.selectedScheme;
+     }
+-    //BEGIN Latte Dock Communicator
+-    property QtObject latteBridge: null
+-    //END  Latte Dock Communicator
+-    //BEGIN Latte based properties
+-    //!   This applet is a special case and thus the latteBridge.applyPalette is not used.
+-    //!   the applet relys totally to Latte to paint itself correctly at all cases,
+-    //!   even when Latte informs the applets that need to use the default plasma theme.
+-    readonly property bool enforceLattePalette: latteBridge && latteBridge.palette
+-    readonly property bool latteInEditMode: latteBridge && latteBridge.inEditMode
+     property var tasksPreparedArray: []
+ 
+     ///functions
+@@ -201,20 +183,12 @@ PlasmoidItem {
+         }
+         return PlasmaCore.Types.ActiveStatus;
+     }
+-    onLatteBridgeChanged: {
+-        if (latteBridge) {
+-            plasmoid.configuration.containmentType = AppletDecoration.Types.Latte;
+-            latteBridge.actions.setProperty(plasmoid.id, "latteSideColoringEnabled", false);
+-            latteBridge.actions.setProperty(plasmoid.id, "windowsTrackingEnabled", true);
+-        }
+-    }
+     onButtonsStrChanged: initButtons()
+     Component.onCompleted: {
+         if (plasmoid.configuration.buttons.indexOf("9") === -1)
+             plasmoid.configuration.buttons = plasmoid.configuration.buttons.concat("|9");
+ 
+         initButtons();
+-        containmentIdentifierTimer.start();
+     }
+ 
+     Connections {
+@@ -235,16 +209,7 @@ PlasmoidItem {
+     Loader {
+         id: windowInfoLoader
+ 
+-        sourceComponent: latteBridge && latteBridge.windowsTracker && latteBridge.windowsTracker.currentScreen.lastActiveWindow && latteBridge.windowsTracker.allScreens.lastActiveWindow ? latteTrackerComponent : plasmaTasksModel
+-
+-        Component {
+-            id: latteTrackerComponent
+-
+-            LatteWindowsTracker {
+-                filterByScreen: plasmoid.configuration.filterByScreen
+-            }
+-
+-        }
++        sourceComponent: plasmaTasksModel
+ 
+         Component {
+             id: plasmaTasksModel
+@@ -302,15 +267,6 @@ PlasmoidItem {
+     }
+ 
+     Grid {
+-        //when buttons are not sliding out
+-        /* Behavior on opacity {
+-            enabled: isEmptySpaceEnabled
+-            NumberAnimation {
+-                duration: 250
+-                easing.type: Easing.InCubic
+-            }
+-        }*/
+-
+         id: buttonsArea
+ 
+         readonly property int buttonThickness: plasmoid.formFactor === PlasmaCore.Types.Horizontal ? root.height - 2 * thickPadding : root.width - 2 * thickPadding
+@@ -335,26 +291,6 @@ PlasmoidItem {
+         id: pluginButton
+ 
+         AppletDecoration.Button {
+-            /*Rectangle{
+-                anchors.fill: parent
+-                color: "transparent"
+-                border.width: 1
+-                border.color: "red"
+-            }
+-
+-            Rectangle{
+-                x: cButton.padding.left
+-                y: cButton.padding.top
+-                width: cButton.width - cButton.padding.left - cButton.padding.right
+-                height: cButton.height - cButton.padding.top - cButton.padding.bottom
+-
+-                color: "transparent"
+-                border.width: 1
+-                border.color: "blue"
+-            }*/
+-            //! first button
+-            //! last button
+-
+             id: cButton
+ 
+             readonly property bool isVisible: {
+@@ -424,26 +360,6 @@ PlasmoidItem {
+         id: auroraeButton
+ 
+         AppletDecoration.AuroraeButton {
+-            /*  Rectangle{
+-                anchors.fill: parent
+-                color: "transparent"
+-                border.width: 1
+-                border.color: "red"
+-            }
+-
+-            Rectangle{
+-                x: aButton.leftPadding
+-                y: aButton.topPadding
+-                width: aButton.width - aButton.leftPadding - aButton.rightPadding
+-                height: aButton.height - aButton.topPadding - aButton.bottomPadding
+-
+-                color: "transparent"
+-                border.width: 1
+-                border.color: "blue"
+-            } */
+-            //! first button
+-            //! last button
+-
+             id: aButton
+ 
+             readonly property int firstPadding: {
+@@ -492,8 +408,8 @@ PlasmoidItem {
+             isKeepAbove: root.isLastActiveWindowKeepAbove
+             buttonType: model.buttonType
+             auroraeTheme: auroraeThemeEngine
+-            monochromeIconsEnabled: latteBridge && latteBridge.applyPalette && auroraeThemeEngine.hasMonochromeIcons
+-            monochromeIconsColor: latteBridge ? latteBridge.palette.textColor : "transparent"
++            monochromeIconsEnabled: auroraeThemeEngine.hasMonochromeIcons
++            monochromeIconsColor: "transparent"
+             opacity: isVisible ? 1 : 0
+             visible: (isVisible && !root.isEmptySpaceEnabled) || root.isEmptySpaceEnabled
+             onClicked: {
+@@ -510,22 +426,8 @@ PlasmoidItem {
+         id: buttonsRecreator
+ 
+         interval: 200
+-        onTriggered: initializeControlButtonsModel()
+-    }
+-
+-    //! this timer is used in order to identify in which containment the applet is in
+-    //! it should be called only the first time an applet is created and loaded because
+-    //! afterwards the applet has no way to move between different processes such
+-    //! as Plasma and Latte
+-    Timer {
+-        id: containmentIdentifierTimer
+-
+-        interval: 5000
+         onTriggered: {
+-            if (latteBridge)
+-                plasmoid.configuration.containmentType = AppletDecoration.Types.Latte;
+-            else
+-                plasmoid.configuration.containmentType = AppletDecoration.Types.Plasma;
++            initializeControlButtonsModel();
+         }
+     }
+ 
+
+From fb4d203e75e22ceef02ce6ccb5913b6b2a0b9461 Mon Sep 17 00:00:00 2001
+From: ChrTall <chrtall@gmx.de>
+Date: Sun, 16 Jun 2024 21:59:01 +0200
+Subject: [PATCH 2/4] Split settings into two pages: General and Behavior.
+ Added new Setting KWin BorderlessMaximumWindows to the Behavior Page. This
+ setting uses a C++ QML Extension that manipulates ~/.config/kwinrc with
+ KConfig and uses DBus to reload the KWin Config if necessary. KWins
+ BorderlessMaximumWindows is set by a lot of people that use this applet.
+
+---
+ CMakeLists.txt                                |   4 +-
+ libappletdecoration/CMakeLists.txt            |   9 +-
+ .../appletdecorationplugin.cpp                |   2 +
+ libappletdecoration/kwinconfig.cpp            |  27 ++
+ libappletdecoration/kwinconfig.h              |  38 +++
+ package/contents/config/config.qml            |   5 +
+ package/contents/config/main.xml              |  11 +-
+ package/contents/ui/config/ConfigBehavior.qml | 171 ++++++++++++
+ package/contents/ui/config/ConfigGeneral.qml  | 244 ++----------------
+ 9 files changed, 279 insertions(+), 232 deletions(-)
+ create mode 100644 libappletdecoration/kwinconfig.cpp
+ create mode 100644 libappletdecoration/kwinconfig.h
+ create mode 100644 package/contents/ui/config/ConfigBehavior.qml
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ca5e82c..ddbd3f8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,8 +13,8 @@ set(KDECORATION2_MIN_VERSION "5.90")
+ find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
+ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+ 
+-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED NO_MODULE COMPONENTS Gui Qml Quick)
+-find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS CoreAddons Declarative Package Svg)
++find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED NO_MODULE COMPONENTS DBus Gui Qml Quick)
++find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS CoreAddons Config Declarative Package Svg)
+ find_package(Plasma "5.90" REQUIRED)
+ find_package(KDecoration2 ${KDECORATION2_MIN_VERSION} REQUIRED)
+ 
+diff --git a/libappletdecoration/CMakeLists.txt b/libappletdecoration/CMakeLists.txt
+index b5e990f..14811d6 100644
+--- a/libappletdecoration/CMakeLists.txt
++++ b/libappletdecoration/CMakeLists.txt
+@@ -6,9 +6,10 @@ set(KF6_MIN_VERSION "6.0.0")
+ find_package(ECM 0.0.11 REQUIRED NO_MODULE)
+ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+ 
+-include(KDEInstallDirs)
+-include(KDECMakeSettings)
+-include(KDECompilerSettings)
++set(kwin_xml /usr/${KDE_INSTALL_DBUSINTERFACEDIR}/org.kde.KWin.xml)
++message(STATUS "KWIN_XML Path : ${kwin_xml}")
++set(KWinConfig_SRCS)
++qt_add_dbus_interface(KWinConfig_SRCS ${kwin_xml} kwin_interface )
+ 
+ set(appletdecoration_SRCS
+     appletdecorationplugin.cpp
+@@ -28,6 +29,8 @@ set(appletdecoration_SRCS
+     schemesmodel.cpp
+     themeextended.cpp
+     types.cpp
++    kwinconfig.cpp
++    ${KWinConfig_SRCS}
+ )
+ 
+ add_library(appletdecorationplugin SHARED ${appletdecoration_SRCS})
+diff --git a/libappletdecoration/appletdecorationplugin.cpp b/libappletdecoration/appletdecorationplugin.cpp
+index b4c3c56..849d477 100644
+--- a/libappletdecoration/appletdecorationplugin.cpp
++++ b/libappletdecoration/appletdecorationplugin.cpp
+@@ -22,6 +22,7 @@
+ #include "auroraetheme.h"
+ #include "decorationsmodel.h"
+ #include "environment.h"
++#include "kwinconfig.h"
+ #include "padding.h"
+ #include "previewbridge.h"
+ #include "previewbutton.h"
+@@ -49,6 +50,7 @@ void AppletDecorationPlugin::registerTypes(const char *uri)
+     qmlRegisterType<SchemesModel>(uri, 0, 1, "ColorsModel");
+     qmlRegisterType<SharedDecoration>(uri, 0, 1, "SharedDecoration");
+     qmlRegisterType<ExtendedTheme>(uri, 0, 1, "PlasmaThemeExtended");
++    qmlRegisterType<KWinConfig>(uri, 0, 1, "KWinConfig");
+ 
+     qmlRegisterAnonymousType<Padding>("", 1);
+     qmlRegisterAnonymousType<PreviewClient>("", 1);
+diff --git a/libappletdecoration/kwinconfig.cpp b/libappletdecoration/kwinconfig.cpp
+new file mode 100644
+index 0000000..1e9947e
+--- /dev/null
++++ b/libappletdecoration/kwinconfig.cpp
+@@ -0,0 +1,27 @@
++//
++// Created by christian on 6/13/24.
++//
++#include "kwinconfig.h"
++#include <QDBusConnection>
++
++using org::kde::KWin;
++
++KWinConfig::KWinConfig(QObject *parent) : QObject(parent) , config(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QLatin1String("/kwinrc"), KConfig::SimpleConfig)
++{
++    group = config.group(QStringLiteral("Windows"));
++    kwin_ptr = new KWin("org.kde.KWin", "/KWin", QDBusConnection::sessionBus(), this);
++}
++
++bool KWinConfig::borderlessMaximizedWindows() const
++{
++    return group.exists() && group.hasKey(QStringLiteral("BorderlessMaximizedWindows")) && group.readEntry(QStringLiteral("BorderlessMaximizedWindows")) == QString("true");
++}
++
++void KWinConfig::setBorderlessMaximizedWindows(bool isEnabled)
++{
++    if(kwin_ptr != nullptr){
++        group.writeEntry(QStringLiteral("BorderlessMaximizedWindows"), isEnabled);
++        group.sync();
++        kwin_ptr->reconfigure();
++    }
++}
+diff --git a/libappletdecoration/kwinconfig.h b/libappletdecoration/kwinconfig.h
+new file mode 100644
+index 0000000..99d97e8
+--- /dev/null
++++ b/libappletdecoration/kwinconfig.h
+@@ -0,0 +1,38 @@
++//
++// Created by christian on 6/13/24.
++//
++
++#include <KConfig>
++#include <KConfigGroup>
++#include <QObject>
++#include "kwin_interface.h"
++#ifndef APPLET_WINDOWBUTTONS_KWINCONFIG_H
++#define APPLET_WINDOWBUTTONS_KWINCONFIG_H
++
++
++class KWinConfig : public QObject
++{
++    Q_OBJECT
++    Q_PROPERTY(
++        bool borderlessMaximizedWindows
++        READ borderlessMaximizedWindows
++        WRITE setBorderlessMaximizedWindows
++        NOTIFY borderlessMaximizedWindowsChanged
++    )
++
++  public:
++    explicit KWinConfig(QObject *parent = nullptr);
++
++    bool borderlessMaximizedWindows() const;
++    void setBorderlessMaximizedWindows(bool isEnabled);
++
++  signals:
++    void borderlessMaximizedWindowsChanged();
++
++  private:
++    KConfig config;
++    KConfigGroup group;
++    org::kde::KWin *kwin_ptr = nullptr;
++};
++
++#endif // APPLET_WINDOWBUTTONS_KWINCONFIG_H
+diff --git a/package/contents/config/config.qml b/package/contents/config/config.qml
+index 1f6e83b..638c152 100644
+--- a/package/contents/config/config.qml
++++ b/package/contents/config/config.qml
+@@ -27,4 +27,9 @@ ConfigModel {
+         source: "config/ConfigGeneral.qml"
+     }
+ 
++    ConfigCategory {
++        name: i18n("Behavior")
++        icon: "preferences-desktop"
++        source: "config/ConfigBehavior.qml"
++    }
+ }
+diff --git a/package/contents/config/main.xml b/package/contents/config/main.xml
+index ab13be4..05b9969 100644
+--- a/package/contents/config/main.xml
++++ b/package/contents/config/main.xml
+@@ -81,14 +81,9 @@
+       <default>2</default>
+       <label>it is used in order to inform settings window about the plasmoid form factor. 2=Horizontal and 3=Vertical</label>
+     </entry>
+-    <entry name="containmentType" type="Enum">
+-      <choices>
+-        <choice name="Loading" />
+-        <choice name="Plasma" />
+-        <choice name="Latte" />
+-      </choices>
+-      <label>it helps to enable/disable options that are specific to plasma or Latte panels</label>
+-      <default>0</default>
++    <entry name="borderlessMaximizedWindows" type="Bool">
++      <default>false</default>
++      <label>Should KWin Setting BorderlessMaximizedWindows be enabled</label>
+     </entry>
+   </group>
+ </kcfg>
+diff --git a/package/contents/ui/config/ConfigBehavior.qml b/package/contents/ui/config/ConfigBehavior.qml
+new file mode 100644
+index 0000000..c970e2f
+--- /dev/null
++++ b/package/contents/ui/config/ConfigBehavior.qml
+@@ -0,0 +1,171 @@
++import QtQuick
++import QtQuick.Layouts
++import QtQuick.Controls as QQC2
++import org.kde.kcmutils as KCM
++import org.kde.kirigami as Kirigami
++import org.kde.plasma.core as PlasmaCore
++import org.kde.appletdecoration as AppletDecoration
++import org.kde.plasma.plasmoid
++
++KCM.SimpleKCM {
++    id: root
++
++    property alias cfg_visibility: root.visibility
++    property alias cfg_hiddenState: root.hiddenState
++    property alias cfg_perScreenActive: perScreenActiveChk.checked
++    property alias cfg_filterByScreen: filterByScreenChk.checked
++    property alias cfg_inactiveStateEnabled: inactiveChk.checked
++    property alias cfg_borderlessMaximizedWindows: root.borderlessMaximizedWindows
++
++    // used as bridge to communicate properly between configuration and ui
++    property int visibility
++    property int hiddenState
++    property bool borderlessMaximizedWindows: kwinConfig.borderlessMaximizedWindows
++    property bool initialBorderlessMaximizedWindowsValue: kwinConfig.borderlessMaximizedWindows
++
++    // Signal is fired when the user clicks on the save or apply button in the config page.
++    Plasmoid.configuration.onValueChanged: {
++        // Only safe KWin Config if value changed.
++        // Saving to KWin requires reloading KWin config, which is expensive and should be avoided.
++        if (root.borderlessMaximizedWindows !== root.initialBorderlessMaximizedWindowsValue) {
++            console.log("Saving KWin Config")
++            root.initialBorderlessMaximizedWindowsValue = borderlessMaximizedWindows
++            kwinConfig.borderlessMaximizedWindows = borderlessMaximizedWindows
++        }
++    }
++
++    AppletDecoration.KWinConfig {
++        id: kwinConfig
++    }
++
++    Kirigami.FormLayout {
++        id: form
++
++        QQC2.RadioButton {
++            id: alwaysVisibleBtn
++            Kirigami.FormData.label: i18n("Show:")
++            QQC2.ButtonGroup.group: visibilityBtnGroup
++            text: i18n("Always visible")
++            checked: root.visibility === AppletDecoration.Types.AlwaysVisible
++            onCheckedChanged: {
++                if (checked)
++                    root.visibility = AppletDecoration.Types.AlwaysVisible;
++
++            }
++        }
++
++        QQC2.RadioButton {
++            id: activeWindowBtn
++            QQC2.ButtonGroup.group: visibilityBtnGroup
++            text: i18n("Active window is present")
++            checked: root.visibility === AppletDecoration.Types.ActiveWindow
++            onCheckedChanged: {
++                if (checked)
++                    root.visibility = AppletDecoration.Types.ActiveWindow;
++
++            }
++        }
++
++        QQC2.RadioButton {
++            id: activeMaximizedBtn
++            QQC2.ButtonGroup.group: visibilityBtnGroup
++            text: i18n("Active window is maximized")
++            checked: root.visibility === AppletDecoration.Types.ActiveMaximizedWindow
++            onCheckedChanged: {
++                if (checked)
++                    root.visibility = AppletDecoration.Types.ActiveMaximizedWindow;
++
++            }
++        }
++
++        QQC2.RadioButton {
++            id: shownWindowBtn
++            QQC2.ButtonGroup.group: visibilityBtnGroup
++            text: i18n("At least one window is shown")
++            checked: root.visibility === AppletDecoration.Types.ShownWindowExists
++            onCheckedChanged: {
++                if (checked)
++                    root.visibility = AppletDecoration.Types.ShownWindowExists;
++
++            }
++        }
++
++        Item {
++            Kirigami.FormData.isSection: true
++        }
++
++        QQC2.RadioButton {
++            id: slideOutBtn
++            Kirigami.FormData.label: i18n("Hidden State:")
++            QQC2.ButtonGroup.group: hiddenStateBtnGroup
++            text: i18n("Slide out animation")
++            checked: root.hiddenState === AppletDecoration.Types.SlideOut
++            enabled: root.visibility !== AppletDecoration.Types.AlwaysVisible
++            onCheckedChanged: {
++                if (checked)
++                    root.hiddenState = AppletDecoration.Types.SlideOut;
++
++            }
++        }
++
++        QQC2.RadioButton {
++            id: emptySpaceBtn
++            QQC2.ButtonGroup.group: hiddenStateBtnGroup
++            text: i18n("Preserve as empty space")
++            checked: root.hiddenState === AppletDecoration.Types.EmptySpace
++            enabled: root.visibility !== AppletDecoration.Types.AlwaysVisible
++            onCheckedChanged: {
++                if (checked)
++                    root.hiddenState = AppletDecoration.Types.EmptySpace;
++
++            }
++        }
++
++        Item {
++            Kirigami.FormData.isSection: true
++        }
++
++        QQC2.CheckBox {
++            id: filterByScreenChk
++            Kirigami.FormData.label: i18n("Filters:")
++            text: i18n("Show only for windows in current screen")
++        }
++
++        QQC2.CheckBox {
++            id: perScreenActiveChk
++            text: i18n("Per-screen active window:")
++        }
++
++        Item {
++            Kirigami.FormData.isSection: true
++        }
++
++        QQC2.CheckBox {
++            id: inactiveChk
++            Kirigami.FormData.label: i18n("Appearance:")
++            text: i18n("Draw buttons inactive state when needed")
++        }
++
++        Item {
++            Kirigami.FormData.isSection: true
++        }
++
++        QQC2.CheckBox {
++            id: borderlessMaximizedWindowsChk
++            Kirigami.FormData.label: i18n("KWin:")
++            text: i18n("Borderless Maximized Windows")
++            checked: root.borderlessMaximizedWindows
++            onCheckedChanged: {
++                root.borderlessMaximizedWindows = checked
++            }
++        }
++    }
++
++    QQC2.ButtonGroup {
++        id: visibilityBtnGroup
++    }
++
++    QQC2.ButtonGroup {
++        id: hiddenStateBtnGroup
++    }
++}
+diff --git a/package/contents/ui/config/ConfigGeneral.qml b/package/contents/ui/config/ConfigGeneral.qml
+index 873a88f..fecce26 100644
+--- a/package/contents/ui/config/ConfigGeneral.qml
++++ b/package/contents/ui/config/ConfigGeneral.qml
+@@ -18,17 +18,16 @@
+ */
+ 
+ import QtQuick
+-import QtQuick.Controls
+ import QtQuick.Layouts
+-import org.kde.appletdecoration as AppletDecoration
++import QtQuick.Controls as QQC2
++import org.kde.kcmutils as KCM
+ import org.kde.kirigami as Kirigami
+ import org.kde.kitemmodels
+ import org.kde.plasma.components as PlasmaComponents
+ import org.kde.plasma.core as PlasmaCore
++import org.kde.appletdecoration as AppletDecoration
+ 
+-Item {
+-    ///END Decoration Items
+-
++KCM.SimpleKCM {
+     id: root
+ 
+     property alias cfg_useCurrentDecoration: root.useCurrent
+@@ -36,42 +35,16 @@ Item {
+     property alias cfg_selectedScheme: root.selectedScheme
+     property alias cfg_selectedTheme: root.selectedTheme
+     property alias cfg_buttons: root.currentButtons
++
+     property alias cfg_buttonSizePercentage: buttonSizeSpn.value
+-    property alias cfg_visibility: root.visibility
+-    property alias cfg_filterByScreen: byScreenChk.checked
+-    property alias cfg_perScreenActive: stickyChk.checked
+-    property alias cfg_hiddenState: root.hiddenState
+-    property alias cfg_inactiveStateEnabled: inactiveChk.checked
+     property alias cfg_useDecorationMetrics: decorationMetricsChk.checked
+     property alias cfg_spacing: spacingSpn.value
+     property alias cfg_lengthFirstMargin: lengthFirstSpn.value
+     property alias cfg_lengthLastMargin: lengthLastSpn.value
+     property alias cfg_lengthMarginsLock: lockItem.locked
+-    property var cfg_buttonSizePercentageDefault
+-    property var cfg_buttonsDefault
+-    property var cfg_containmentType
+-    property var cfg_containmentTypeDefault
+-    property var cfg_filterByScreenDefault
+-    property var cfg_perScreenActiveDefault
+-    property var cfg_formFactor
+-    property var cfg_formFactorDefault
+-    property var cfg_hiddenStateDefault
+-    property var cfg_inactiveStateEnabledDefault
+-    property var cfg_lengthFirstMarginDefault
+-    property var cfg_lengthLastMarginDefault
+-    property var cfg_lengthMarginsLockDefault
+-    property var cfg_selectedPluginDefault
+-    property var cfg_selectedSchemeDefault
+-    property var cfg_selectedThemeDefault
+-    property var cfg_spacingDefault
+-    property var cfg_useCurrentDecorationDefault
+-    property var cfg_useDecorationMetricsDefault
+-    property var cfg_visibilityDefault
+-    property var title
++    //property var title
+     // used as bridge to communicate properly between configuration and ui
+     property bool useCurrent
+-    property int hiddenState
+-    property int visibility
+     property string selectedPlugin
+     property string selectedScheme
+     property string selectedTheme
+@@ -83,6 +56,10 @@ Item {
+     property string currentPlugin: root.useCurrent || !selectedDecorationExists ? decorations.currentPlugin : root.selectedPlugin
+     property string currentTheme: root.useCurrent || !selectedDecorationExists ? decorations.currentTheme : root.selectedTheme
+ 
++    onSelectedPluginChanged: {
++        console.log("Selected Plugin CHanged: ", root.selectedPlugin)
++    }
++
+     ///START Decoration Items
+     AppletDecoration.Bridge {
+         id: bridgeItem
+@@ -142,12 +119,11 @@ Item {
+ 
+     ColumnLayout {
+         id: mainColumn
+-
+         spacing: Kirigami.Units.largeSpacing
+         Layout.fillWidth: true
+ 
+         RowLayout {
+-            Label {
++            QQC2.Label {
+                 Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                 text: i18n("Decoration:")
+                 horizontalAlignment: Text.AlignRight
+@@ -166,7 +142,7 @@ Item {
+         RowLayout {
+             visible: !auroraeThemeEngine.isEnabled
+ 
+-            Label {
++            QQC2.Label {
+                 Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                 text: i18n("Colors:")
+                 horizontalAlignment: Text.AlignRight
+@@ -188,9 +164,11 @@ Item {
+         }
+ 
+         GridLayout {
++            rowSpacing: Kirigami.Units.largeSpacing
++            columnSpacing: Kirigami.Units.largeSpacing
+             columns: 2
+ 
+-            Label {
++            QQC2.Label {
+                 Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                 text: i18n("Buttons:")
+                 horizontalAlignment: Text.AlignRight
+@@ -214,178 +192,6 @@ Item {
+ 
+         }
+ 
+-        GridLayout {
+-            columns: 2
+-            rows: 4
+-            flow: GridLayout.TopToBottom
+-
+-            Label {
+-                Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+-                Layout.rowSpan: 4
+-                Layout.alignment: Qt.AlignTop | Qt.AlignRight
+-                text: i18n("Show:")
+-                horizontalAlignment: Text.AlignRight
+-            }
+-
+-            ButtonGroup {
+-                buttons: column.children
+-            }
+-
+-            Column {
+-                id: column
+-
+-                RadioButton {
+-                    id: alwaysVisibleBtn
+-
+-                    text: i18n("Always visible")
+-                    checked: root.visibility === AppletDecoration.Types.AlwaysVisible
+-                    onCheckedChanged: {
+-                        if (checked)
+-                            root.visibility = AppletDecoration.Types.AlwaysVisible;
+-
+-                    }
+-                }
+-
+-                RadioButton {
+-                    id: activeWindowBtn
+-
+-                    text: i18n("Active window is present")
+-                    checked: root.visibility === AppletDecoration.Types.ActiveWindow
+-                    onCheckedChanged: {
+-                        if (checked)
+-                            root.visibility = AppletDecoration.Types.ActiveWindow;
+-
+-                    }
+-                }
+-
+-                RadioButton {
+-                    id: activeMaximizedBtn
+-
+-                    text: plasmoid.configuration.containmentType === AppletDecoration.Types.Latte ? i18n("Last active window is maximized") : i18n("Active window is maximized")
+-                    checked: root.visibility === AppletDecoration.Types.ActiveMaximizedWindow
+-                    onCheckedChanged: {
+-                        if (checked)
+-                            root.visibility = AppletDecoration.Types.ActiveMaximizedWindow;
+-
+-                    }
+-                }
+-
+-                RadioButton {
+-                    id: shownWindowBtn
+-
+-                    text: i18n("At least one window is shown")
+-                    checked: root.visibility === AppletDecoration.Types.ShownWindowExists
+-                    onCheckedChanged: {
+-                        if (checked)
+-                            root.visibility = AppletDecoration.Types.ShownWindowExists;
+-
+-                    }
+-                }
+-
+-            }
+-
+-        }
+-
+-        GridLayout {
+-            columns: 2
+-            rows: 2
+-            flow: GridLayout.TopToBottom
+-            enabled: root.visibility !== AppletDecoration.Types.AlwaysVisible
+-
+-            Label {
+-                Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+-                Layout.rowSpan: 2
+-                Layout.alignment: Qt.AlignTop | Qt.AlignRight
+-                text: i18n("Hidden State:")
+-                horizontalAlignment: Text.AlignRight
+-            }
+-
+-            ButtonGroup {
+-                buttons: column2.children
+-            }
+-
+-            Column {
+-                id: column2
+-
+-                RadioButton {
+-                    id: slideOutBtn
+-
+-                    text: i18n("Slide out animation")
+-                    checked: root.hiddenState === AppletDecoration.Types.SlideOut
+-                    onCheckedChanged: {
+-                        if (checked)
+-                            root.hiddenState = AppletDecoration.Types.SlideOut;
+-
+-                    }
+-                }
+-
+-                RadioButton {
+-                    id: emptySpaceBtn
+-
+-                    text: i18n("Preserve as empty space")
+-                    checked: root.hiddenState === AppletDecoration.Types.EmptySpace
+-                    onCheckedChanged: {
+-                        if (checked)
+-                            root.hiddenState = AppletDecoration.Types.EmptySpace;
+-
+-                    }
+-                }
+-
+-            }
+-
+-        }
+-
+-        GridLayout {
+-            Label {
+-                Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+-                text: i18n("Filters:")
+-                horizontalAlignment: Text.AlignRight
+-            }
+-
+-            CheckBox {
+-                id: byScreenChk
+-
+-                text: i18n("Show only for windows in current screen")
+-            }
+-
+-        }
+-
+-        GridLayout {
+-            Label {
+-                Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+-                text: i18n("Per-screen active window:")
+-                horizontalAlignment: Text.AlignRight
+-            }
+-
+-            CheckBox {
+-                id: stickyChk
+-
+-                text: i18n("Enabled")
+-            }
+-
+-        }
+-
+-        GridLayout {
+-            columns: 2
+-            rows: 2
+-            flow: GridLayout.TopToBottom
+-
+-            Label {
+-                Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+-                Layout.alignment: Qt.AlignTop | Qt.AlignRight
+-                Layout.rowSpan: 2
+-                text: i18n("Appearance:")
+-                horizontalAlignment: Text.AlignRight
+-            }
+-
+-            CheckBox {
+-                id: inactiveChk
+-
+-                text: i18n("Draw buttons inactive state when needed")
+-            }
+-
+-        }
+-
+         ColumnLayout {
+             id: visualSettings
+ 
+@@ -394,28 +200,28 @@ Item {
+ 
+                 columns: 2
+ 
+-                Label {
++                QQC2.Label {
+                     Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                     text: i18n("Metrics:")
+                     horizontalAlignment: Text.AlignRight
+                     visible: auroraeThemeEngine.isEnabled
+                 }
+ 
+-                CheckBox {
++                QQC2.CheckBox {
+                     id: decorationMetricsChk
+ 
+                     text: i18n("Use from decoration if any are found")
+                     visible: auroraeThemeEngine.isEnabled
+                 }
+ 
+-                Label {
++                QQC2.Label {
+                     Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                     text: i18n("Size:")
+                     horizontalAlignment: Text.AlignRight
+                     enabled: !(auroraeThemeEngine.isEnabled && decorationMetricsChk.checked)
+                 }
+ 
+-                SpinBox {
++                QQC2.SpinBox {
+                     id: buttonSizeSpn
+ 
+                     from: 40
+@@ -424,14 +230,14 @@ Item {
+                     enabled: !(auroraeThemeEngine.isEnabled && decorationMetricsChk.checked)
+                 }
+ 
+-                Label {
++                QQC2.Label {
+                     Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                     text: i18n("Spacing:")
+                     horizontalAlignment: Text.AlignRight
+                     enabled: !(auroraeThemeEngine.isEnabled && decorationMetricsChk.checked)
+                 }
+ 
+-                SpinBox {
++                QQC2.SpinBox {
+                     id: spacingSpn
+ 
+                     from: 0
+@@ -453,7 +259,7 @@ Item {
+                 columnSpacing: visualSettingsGroup1.columnSpacing
+                 rowSpacing: visualSettingsGroup1.rowSpacing
+ 
+-                Label {
++                QQC2.Label {
+                     id: firstLengthLbl
+ 
+                     Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+@@ -461,14 +267,14 @@ Item {
+                     horizontalAlignment: Text.AlignRight
+                 }
+ 
+-                Label {
++                QQC2.Label {
+                     Layout.minimumWidth: Math.max(centerFactor * root.width, minimumWidth)
+                     text: plasmoid.configuration.formFactor === PlasmaCore.Types.Horizontal ? i18n("Right margin:") : i18n("Bottom margin:")
+                     horizontalAlignment: Text.AlignRight
+                     enabled: !lockItem.locked
+                 }
+ 
+-                SpinBox {
++                QQC2.SpinBox {
+                     // suffix: " " + i18nc("pixels","px.")
+ 
+                     id: lengthFirstSpn
+@@ -489,7 +295,7 @@ Item {
+                     }
+                 }
+ 
+-                SpinBox {
++                QQC2.SpinBox {
+                     id: lengthLastSpn
+ 
+                     from: 0
+
+From c641197801509866ed052f9f579920acc570d381 Mon Sep 17 00:00:00 2001
+From: ChrTall <chrtall@gmx.de>
+Date: Sun, 16 Jun 2024 22:02:39 +0200
+Subject: [PATCH 3/4] Added License comments.
+
+---
+ libappletdecoration/kwinconfig.cpp            | 8 +++++---
+ libappletdecoration/kwinconfig.h              | 9 +++++----
+ package/contents/ui/config/ConfigBehavior.qml | 5 +++++
+ package/contents/ui/main.qml                  | 4 ----
+ 4 files changed, 15 insertions(+), 11 deletions(-)
+
+diff --git a/libappletdecoration/kwinconfig.cpp b/libappletdecoration/kwinconfig.cpp
+index 1e9947e..4eb2aba 100644
+--- a/libappletdecoration/kwinconfig.cpp
++++ b/libappletdecoration/kwinconfig.cpp
+@@ -1,6 +1,8 @@
+-//
+-// Created by christian on 6/13/24.
+-//
++/*
++ *  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
++ *
++ *  SPDX-License-Identifier: GPL-2.0-or-later
++*/
+ #include "kwinconfig.h"
+ #include <QDBusConnection>
+ 
+diff --git a/libappletdecoration/kwinconfig.h b/libappletdecoration/kwinconfig.h
+index 99d97e8..58184e0 100644
+--- a/libappletdecoration/kwinconfig.h
++++ b/libappletdecoration/kwinconfig.h
+@@ -1,7 +1,8 @@
+-//
+-// Created by christian on 6/13/24.
+-//
+-
++/*
++ *  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
++ *
++ *  SPDX-License-Identifier: GPL-2.0-or-later
++*/
+ #include <KConfig>
+ #include <KConfigGroup>
+ #include <QObject>
+diff --git a/package/contents/ui/config/ConfigBehavior.qml b/package/contents/ui/config/ConfigBehavior.qml
+index c970e2f..e6d2c11 100644
+--- a/package/contents/ui/config/ConfigBehavior.qml
++++ b/package/contents/ui/config/ConfigBehavior.qml
+@@ -1,3 +1,8 @@
++/*
++ *  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
++ *
++ *  SPDX-License-Identifier: GPL-2.0-or-later
++*/
+ import QtQuick
+ import QtQuick.Layouts
+ import QtQuick.Controls as QQC2
+diff --git a/package/contents/ui/main.qml b/package/contents/ui/main.qml
+index d1faed7..9584dda 100644
+--- a/package/contents/ui/main.qml
++++ b/package/contents/ui/main.qml
+@@ -27,10 +27,6 @@ import org.kde.plasma.plasmoid
+ PlasmoidItem {
+     id: root
+ 
+-    // plasmoid.userConfiguringChanged: {
+-    //     console.log("Config Changed")
+-    // }
+-
+     property int animatedMinimumWidth: minimumWidth
+     property int animatedMinimumHeight: minimumHeight
+     property int screen: plasmoid.containment.screen
+
+From aeb0b8ee18cd28ede8255653ab757c3a2769eedf Mon Sep 17 00:00:00 2001
+From: Christian Tallner <christian.tallner@gmx.de>
+Date: Tue, 18 Jun 2024 21:07:34 +0200
+Subject: [PATCH 4/4] Migrated the project to SPDX License Format.
+
+---
+ CMakeLists.txt                                |   2 +
+ LICENSES/GPL-2.0-only.txt                     | 311 +++++++++
+ LICENSES/GPL-2.0-or-later.txt                 | 311 +++++++++
+ LICENSES/GPL-3.0-only.txt                     | 604 ++++++++++++++++++
+ LICENSES/LicenseRef-KDE-Accepted-GPL.txt      |  12 +
+ install.sh                                    |   3 +
+ libappletdecoration/CMakeLists.txt            |   2 +
+ .../appletdecorationplugin.cpp                |  15 +-
+ libappletdecoration/appletdecorationplugin.h  |  15 +-
+ libappletdecoration/auroraetheme.cpp          |  15 +-
+ libappletdecoration/auroraetheme.h            |  15 +-
+ libappletdecoration/buttonsmodel.cpp          |  20 +-
+ libappletdecoration/buttonsmodel.h            |  20 +-
+ libappletdecoration/commontools.cpp           |  17 +-
+ libappletdecoration/commontools.h             |  15 +-
+ libappletdecoration/config-decoration.h.cmake |   2 +
+ libappletdecoration/decorationpalette.cpp     |  21 +-
+ libappletdecoration/decorationpalette.h       |  21 +-
+ libappletdecoration/decorationsmodel.cpp      |  20 +-
+ libappletdecoration/decorationsmodel.h        |  20 +-
+ libappletdecoration/environment.cpp           |  15 +-
+ libappletdecoration/environment.h             |  15 +-
+ libappletdecoration/kwinconfig.cpp            |   2 +
+ libappletdecoration/kwinconfig.h              |   2 +
+ libappletdecoration/padding.cpp               |  18 +-
+ libappletdecoration/padding.h                 |  18 +-
+ libappletdecoration/previewbridge.cpp         |  22 +-
+ libappletdecoration/previewbridge.h           |  20 +-
+ libappletdecoration/previewbutton.cpp         |  22 +-
+ libappletdecoration/previewbutton.h           |  20 +-
+ libappletdecoration/previewclient.cpp         |  22 +-
+ libappletdecoration/previewclient.h           |  20 +-
+ libappletdecoration/previewsettings.cpp       |  22 +-
+ libappletdecoration/previewsettings.h         |  20 +-
+ .../previewshareddecoration.cpp               |  18 +-
+ libappletdecoration/previewshareddecoration.h |  18 +-
+ libappletdecoration/qml/AuroraeButton.qml     |  15 +-
+ libappletdecoration/schemecolors.cpp          |  15 +-
+ libappletdecoration/schemecolors.h            |  15 +-
+ libappletdecoration/schemesmodel.cpp          |  15 +-
+ libappletdecoration/schemesmodel.h            |  15 +-
+ libappletdecoration/themeextended.cpp         |  17 +-
+ libappletdecoration/themeextended.h           |  17 +-
+ libappletdecoration/types.cpp                 |  17 +-
+ libappletdecoration/types.h                   |  15 +-
+ package/contents/code/tools.js                |  17 +-
+ package/contents/config/config.qml            |  20 +-
+ package/contents/config/main.xml              |   5 +
+ package/contents/ui/PlasmaTasksModel.qml      |  15 +-
+ package/contents/ui/config/ColorsComboBox.qml |  15 +-
+ package/contents/ui/config/ConfigBehavior.qml |  10 +-
+ package/contents/ui/config/ConfigGeneral.qml  |  16 +-
+ .../ui/config/DecorationsComboBox.qml         |  15 +-
+ package/contents/ui/config/LockItem.qml       |  15 +-
+ .../contents/ui/config/OrderableListView.qml  |  15 +-
+ package/contents/ui/main.qml                  |  16 +-
+ uninstall.sh                                  |   8 +-
+ 57 files changed, 1388 insertions(+), 655 deletions(-)
+ create mode 100644 LICENSES/GPL-2.0-only.txt
+ create mode 100644 LICENSES/GPL-2.0-or-later.txt
+ create mode 100644 LICENSES/GPL-3.0-only.txt
+ create mode 100644 LICENSES/LicenseRef-KDE-Accepted-GPL.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ddbd3f8..4460918 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,3 +1,5 @@
++# SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++# SPDX-License-Identifier: GPL-2.0-or-later
+ cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+ project(applet_windowbuttons)
+ 
+diff --git a/LICENSES/GPL-2.0-only.txt b/LICENSES/GPL-2.0-only.txt
+new file mode 100644
+index 0000000..3b6070f
+--- /dev/null
++++ b/LICENSES/GPL-2.0-only.txt
+@@ -0,0 +1,311 @@
++GNU GENERAL PUBLIC LICENSE
++Version 2, June 1991
++
++Copyright (C) 1989, 1991 Free Software Foundation, Inc.
++51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
++
++Everyone is permitted to copy and distribute verbatim copies of this license
++document, but changing it is not allowed.
++
++Preamble
++
++The licenses for most software are designed to take away your freedom to share
++and change it. By contrast, the GNU General Public License is intended to
++guarantee your freedom to share and change free software--to make sure the
++software is free for all its users. This General Public License applies to
++most of the Free Software Foundation's software and to any other program whose
++authors commit to using it. (Some other Free Software Foundation software
++is covered by the GNU Lesser General Public License instead.) You can apply
++it to your programs, too.
++
++When we speak of free software, we are referring to freedom, not price. Our
++General Public Licenses are designed to make sure that you have the freedom
++to distribute copies of free software (and charge for this service if you
++wish), that you receive source code or can get it if you want it, that you
++can change the software or use pieces of it in new free programs; and that
++you know you can do these things.
++
++To protect your rights, we need to make restrictions that forbid anyone to
++deny you these rights or to ask you to surrender the rights. These restrictions
++translate to certain responsibilities for you if you distribute copies of
++the software, or if you modify it.
++
++For example, if you distribute copies of such a program, whether gratis or
++for a fee, you must give the recipients all the rights that you have. You
++must make sure that they, too, receive or can get the source code. And you
++must show them these terms so they know their rights.
++
++We protect your rights with two steps: (1) copyright the software, and (2)
++offer you this license which gives you legal permission to copy, distribute
++and/or modify the software.
++
++Also, for each author's protection and ours, we want to make certain that
++everyone understands that there is no warranty for this free software. If
++the software is modified by someone else and passed on, we want its recipients
++to know that what they have is not the original, so that any problems introduced
++by others will not reflect on the original authors' reputations.
++
++Finally, any free program is threatened constantly by software patents. We
++wish to avoid the danger that redistributors of a free program will individually
++obtain patent licenses, in effect making the program proprietary. To prevent
++this, we have made it clear that any patent must be licensed for everyone's
++free use or not licensed at all.
++
++The precise terms and conditions for copying, distribution and modification
++follow.
++
++TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
++
++0. This License applies to any program or other work which contains a notice
++placed by the copyright holder saying it may be distributed under the terms
++of this General Public License. The "Program", below, refers to any such program
++or work, and a "work based on the Program" means either the Program or any
++derivative work under copyright law: that is to say, a work containing the
++Program or a portion of it, either verbatim or with modifications and/or translated
++into another language. (Hereinafter, translation is included without limitation
++in the term "modification".) Each licensee is addressed as "you".
++
++Activities other than copying, distribution and modification are not covered
++by this License; they are outside its scope. The act of running the Program
++is not restricted, and the output from the Program is covered only if its
++contents constitute a work based on the Program (independent of having been
++made by running the Program). Whether that is true depends on what the Program
++does.
++
++1. You may copy and distribute verbatim copies of the Program's source code
++as you receive it, in any medium, provided that you conspicuously and appropriately
++publish on each copy an appropriate copyright notice and disclaimer of warranty;
++keep intact all the notices that refer to this License and to the absence
++of any warranty; and give any other recipients of the Program a copy of this
++License along with the Program.
++
++You may charge a fee for the physical act of transferring a copy, and you
++may at your option offer warranty protection in exchange for a fee.
++
++2. You may modify your copy or copies of the Program or any portion of it,
++thus forming a work based on the Program, and copy and distribute such modifications
++or work under the terms of Section 1 above, provided that you also meet all
++of these conditions:
++
++a) You must cause the modified files to carry prominent notices stating that
++you changed the files and the date of any change.
++
++b) You must cause any work that you distribute or publish, that in whole or
++in part contains or is derived from the Program or any part thereof, to be
++licensed as a whole at no charge to all third parties under the terms of this
++License.
++
++c) If the modified program normally reads commands interactively when run,
++you must cause it, when started running for such interactive use in the most
++ordinary way, to print or display an announcement including an appropriate
++copyright notice and a notice that there is no warranty (or else, saying that
++you provide a warranty) and that users may redistribute the program under
++these conditions, and telling the user how to view a copy of this License.
++(Exception: if the Program itself is interactive but does not normally print
++such an announcement, your work based on the Program is not required to print
++an announcement.)
++
++These requirements apply to the modified work as a whole. If identifiable
++sections of that work are not derived from the Program, and can be reasonably
++considered independent and separate works in themselves, then this License,
++and its terms, do not apply to those sections when you distribute them as
++separate works. But when you distribute the same sections as part of a whole
++which is a work based on the Program, the distribution of the whole must be
++on the terms of this License, whose permissions for other licensees extend
++to the entire whole, and thus to each and every part regardless of who wrote
++it.
++
++Thus, it is not the intent of this section to claim rights or contest your
++rights to work written entirely by you; rather, the intent is to exercise
++the right to control the distribution of derivative or collective works based
++on the Program.
++
++In addition, mere aggregation of another work not based on the Program with
++the Program (or with a work based on the Program) on a volume of a storage
++or distribution medium does not bring the other work under the scope of this
++License.
++
++3. You may copy and distribute the Program (or a work based on it, under Section
++2) in object code or executable form under the terms of Sections 1 and 2 above
++provided that you also do one of the following:
++
++a) Accompany it with the complete corresponding machine-readable source code,
++which must be distributed under the terms of Sections 1 and 2 above on a medium
++customarily used for software interchange; or,
++
++b) Accompany it with a written offer, valid for at least three years, to give
++any third party, for a charge no more than your cost of physically performing
++source distribution, a complete machine-readable copy of the corresponding
++source code, to be distributed under the terms of Sections 1 and 2 above on
++a medium customarily used for software interchange; or,
++
++c) Accompany it with the information you received as to the offer to distribute
++corresponding source code. (This alternative is allowed only for noncommercial
++distribution and only if you received the program in object code or executable
++form with such an offer, in accord with Subsection b above.)
++
++The source code for a work means the preferred form of the work for making
++modifications to it. For an executable work, complete source code means all
++the source code for all modules it contains, plus any associated interface
++definition files, plus the scripts used to control compilation and installation
++of the executable. However, as a special exception, the source code distributed
++need not include anything that is normally distributed (in either source or
++binary form) with the major components (compiler, kernel, and so on) of the
++operating system on which the executable runs, unless that component itself
++accompanies the executable.
++
++If distribution of executable or object code is made by offering access to
++copy from a designated place, then offering equivalent access to copy the
++source code from the same place counts as distribution of the source code,
++even though third parties are not compelled to copy the source along with
++the object code.
++
++4. You may not copy, modify, sublicense, or distribute the Program except
++as expressly provided under this License. Any attempt otherwise to copy, modify,
++sublicense or distribute the Program is void, and will automatically terminate
++your rights under this License. However, parties who have received copies,
++or rights, from you under this License will not have their licenses terminated
++so long as such parties remain in full compliance.
++
++5. You are not required to accept this License, since you have not signed
++it. However, nothing else grants you permission to modify or distribute the
++Program or its derivative works. These actions are prohibited by law if you
++do not accept this License. Therefore, by modifying or distributing the Program
++(or any work based on the Program), you indicate your acceptance of this License
++to do so, and all its terms and conditions for copying, distributing or modifying
++the Program or works based on it.
++
++6. Each time you redistribute the Program (or any work based on the Program),
++the recipient automatically receives a license from the original licensor
++to copy, distribute or modify the Program subject to these terms and conditions.
++You may not impose any further restrictions on the recipients' exercise of
++the rights granted herein. You are not responsible for enforcing compliance
++by third parties to this License.
++
++7. If, as a consequence of a court judgment or allegation of patent infringement
++or for any other reason (not limited to patent issues), conditions are imposed
++on you (whether by court order, agreement or otherwise) that contradict the
++conditions of this License, they do not excuse you from the conditions of
++this License. If you cannot distribute so as to satisfy simultaneously your
++obligations under this License and any other pertinent obligations, then as
++a consequence you may not distribute the Program at all. For example, if a
++patent license would not permit royalty-free redistribution of the Program
++by all those who receive copies directly or indirectly through you, then the
++only way you could satisfy both it and this License would be to refrain entirely
++from distribution of the Program.
++
++If any portion of this section is held invalid or unenforceable under any
++particular circumstance, the balance of the section is intended to apply and
++the section as a whole is intended to apply in other circumstances.
++
++It is not the purpose of this section to induce you to infringe any patents
++or other property right claims or to contest validity of any such claims;
++this section has the sole purpose of protecting the integrity of the free
++software distribution system, which is implemented by public license practices.
++Many people have made generous contributions to the wide range of software
++distributed through that system in reliance on consistent application of that
++system; it is up to the author/donor to decide if he or she is willing to
++distribute software through any other system and a licensee cannot impose
++that choice.
++
++This section is intended to make thoroughly clear what is believed to be a
++consequence of the rest of this License.
++
++8. If the distribution and/or use of the Program is restricted in certain
++countries either by patents or by copyrighted interfaces, the original copyright
++holder who places the Program under this License may add an explicit geographical
++distribution limitation excluding those countries, so that distribution is
++permitted only in or among countries not thus excluded. In such case, this
++License incorporates the limitation as if written in the body of this License.
++
++9. The Free Software Foundation may publish revised and/or new versions of
++the General Public License from time to time. Such new versions will be similar
++in spirit to the present version, but may differ in detail to address new
++problems or concerns.
++
++Each version is given a distinguishing version number. If the Program specifies
++a version number of this License which applies to it and "any later version",
++you have the option of following the terms and conditions either of that version
++or of any later version published by the Free Software Foundation. If the
++Program does not specify a version number of this License, you may choose
++any version ever published by the Free Software Foundation.
++
++10. If you wish to incorporate parts of the Program into other free programs
++whose distribution conditions are different, write to the author to ask for
++permission. For software which is copyrighted by the Free Software Foundation,
++write to the Free Software Foundation; we sometimes make exceptions for this.
++Our decision will be guided by the two goals of preserving the free status
++of all derivatives of our free software and of promoting the sharing and reuse
++of software generally.
++
++NO WARRANTY
++
++11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR
++THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE
++STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM
++"AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,
++BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
++FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE
++OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME
++THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
++
++12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
++WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE
++THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
++GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE
++OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
++OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES
++OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH
++HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
++
++END OF TERMS AND CONDITIONS
++
++How to Apply These Terms to Your New Programs
++
++If you develop a new program, and you want it to be of the greatest possible
++use to the public, the best way to achieve this is to make it free software
++which everyone can redistribute and change under these terms.
++
++To do so, attach the following notices to the program. It is safest to attach
++them to the start of each source file to most effectively convey the exclusion
++of warranty; and each file should have at least the "copyright" line and a
++pointer to where the full notice is found.
++
++one line to give the program's name and an idea of what it does. Copyright
++(C) yyyy name of author
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU General Public License as published by the Free Software
++Foundation; either version 2 of the License, or (at your option) any later
++version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License along with
++this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
++Street, Fifth Floor, Boston, MA 02110-1301, USA. Also add information on how
++to contact you by electronic and paper mail.
++
++If the program is interactive, make it output a short notice like this when
++it starts in an interactive mode:
++
++Gnomovision version 69, Copyright (C) year name of author Gnomovision comes
++with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software,
++and you are welcome to redistribute it under certain conditions; type `show
++c' for details.
++
++The hypothetical commands `show w' and `show c' should show the appropriate
++parts of the General Public License. Of course, the commands you use may be
++called something other than `show w' and `show c'; they could even be mouse-clicks
++or menu items--whatever suits your program.
++
++You should also get your employer (if you work as a programmer) or your school,
++if any, to sign a "copyright disclaimer" for the program, if necessary. Here
++is a sample; alter the names:
++
++Yoyodyne, Inc., hereby disclaims all copyright interest in the program `Gnomovision'
++(which makes passes at compilers) written by James Hacker.
++
++signature of Ty Coon, 1 April 1989 Ty Coon, President of Vice
+diff --git a/LICENSES/GPL-2.0-or-later.txt b/LICENSES/GPL-2.0-or-later.txt
+new file mode 100644
+index 0000000..3b6070f
+--- /dev/null
++++ b/LICENSES/GPL-2.0-or-later.txt
+@@ -0,0 +1,311 @@
++GNU GENERAL PUBLIC LICENSE
++Version 2, June 1991
++
++Copyright (C) 1989, 1991 Free Software Foundation, Inc.
++51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
++
++Everyone is permitted to copy and distribute verbatim copies of this license
++document, but changing it is not allowed.
++
++Preamble
++
++The licenses for most software are designed to take away your freedom to share
++and change it. By contrast, the GNU General Public License is intended to
++guarantee your freedom to share and change free software--to make sure the
++software is free for all its users. This General Public License applies to
++most of the Free Software Foundation's software and to any other program whose
++authors commit to using it. (Some other Free Software Foundation software
++is covered by the GNU Lesser General Public License instead.) You can apply
++it to your programs, too.
++
++When we speak of free software, we are referring to freedom, not price. Our
++General Public Licenses are designed to make sure that you have the freedom
++to distribute copies of free software (and charge for this service if you
++wish), that you receive source code or can get it if you want it, that you
++can change the software or use pieces of it in new free programs; and that
++you know you can do these things.
++
++To protect your rights, we need to make restrictions that forbid anyone to
++deny you these rights or to ask you to surrender the rights. These restrictions
++translate to certain responsibilities for you if you distribute copies of
++the software, or if you modify it.
++
++For example, if you distribute copies of such a program, whether gratis or
++for a fee, you must give the recipients all the rights that you have. You
++must make sure that they, too, receive or can get the source code. And you
++must show them these terms so they know their rights.
++
++We protect your rights with two steps: (1) copyright the software, and (2)
++offer you this license which gives you legal permission to copy, distribute
++and/or modify the software.
++
++Also, for each author's protection and ours, we want to make certain that
++everyone understands that there is no warranty for this free software. If
++the software is modified by someone else and passed on, we want its recipients
++to know that what they have is not the original, so that any problems introduced
++by others will not reflect on the original authors' reputations.
++
++Finally, any free program is threatened constantly by software patents. We
++wish to avoid the danger that redistributors of a free program will individually
++obtain patent licenses, in effect making the program proprietary. To prevent
++this, we have made it clear that any patent must be licensed for everyone's
++free use or not licensed at all.
++
++The precise terms and conditions for copying, distribution and modification
++follow.
++
++TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
++
++0. This License applies to any program or other work which contains a notice
++placed by the copyright holder saying it may be distributed under the terms
++of this General Public License. The "Program", below, refers to any such program
++or work, and a "work based on the Program" means either the Program or any
++derivative work under copyright law: that is to say, a work containing the
++Program or a portion of it, either verbatim or with modifications and/or translated
++into another language. (Hereinafter, translation is included without limitation
++in the term "modification".) Each licensee is addressed as "you".
++
++Activities other than copying, distribution and modification are not covered
++by this License; they are outside its scope. The act of running the Program
++is not restricted, and the output from the Program is covered only if its
++contents constitute a work based on the Program (independent of having been
++made by running the Program). Whether that is true depends on what the Program
++does.
++
++1. You may copy and distribute verbatim copies of the Program's source code
++as you receive it, in any medium, provided that you conspicuously and appropriately
++publish on each copy an appropriate copyright notice and disclaimer of warranty;
++keep intact all the notices that refer to this License and to the absence
++of any warranty; and give any other recipients of the Program a copy of this
++License along with the Program.
++
++You may charge a fee for the physical act of transferring a copy, and you
++may at your option offer warranty protection in exchange for a fee.
++
++2. You may modify your copy or copies of the Program or any portion of it,
++thus forming a work based on the Program, and copy and distribute such modifications
++or work under the terms of Section 1 above, provided that you also meet all
++of these conditions:
++
++a) You must cause the modified files to carry prominent notices stating that
++you changed the files and the date of any change.
++
++b) You must cause any work that you distribute or publish, that in whole or
++in part contains or is derived from the Program or any part thereof, to be
++licensed as a whole at no charge to all third parties under the terms of this
++License.
++
++c) If the modified program normally reads commands interactively when run,
++you must cause it, when started running for such interactive use in the most
++ordinary way, to print or display an announcement including an appropriate
++copyright notice and a notice that there is no warranty (or else, saying that
++you provide a warranty) and that users may redistribute the program under
++these conditions, and telling the user how to view a copy of this License.
++(Exception: if the Program itself is interactive but does not normally print
++such an announcement, your work based on the Program is not required to print
++an announcement.)
++
++These requirements apply to the modified work as a whole. If identifiable
++sections of that work are not derived from the Program, and can be reasonably
++considered independent and separate works in themselves, then this License,
++and its terms, do not apply to those sections when you distribute them as
++separate works. But when you distribute the same sections as part of a whole
++which is a work based on the Program, the distribution of the whole must be
++on the terms of this License, whose permissions for other licensees extend
++to the entire whole, and thus to each and every part regardless of who wrote
++it.
++
++Thus, it is not the intent of this section to claim rights or contest your
++rights to work written entirely by you; rather, the intent is to exercise
++the right to control the distribution of derivative or collective works based
++on the Program.
++
++In addition, mere aggregation of another work not based on the Program with
++the Program (or with a work based on the Program) on a volume of a storage
++or distribution medium does not bring the other work under the scope of this
++License.
++
++3. You may copy and distribute the Program (or a work based on it, under Section
++2) in object code or executable form under the terms of Sections 1 and 2 above
++provided that you also do one of the following:
++
++a) Accompany it with the complete corresponding machine-readable source code,
++which must be distributed under the terms of Sections 1 and 2 above on a medium
++customarily used for software interchange; or,
++
++b) Accompany it with a written offer, valid for at least three years, to give
++any third party, for a charge no more than your cost of physically performing
++source distribution, a complete machine-readable copy of the corresponding
++source code, to be distributed under the terms of Sections 1 and 2 above on
++a medium customarily used for software interchange; or,
++
++c) Accompany it with the information you received as to the offer to distribute
++corresponding source code. (This alternative is allowed only for noncommercial
++distribution and only if you received the program in object code or executable
++form with such an offer, in accord with Subsection b above.)
++
++The source code for a work means the preferred form of the work for making
++modifications to it. For an executable work, complete source code means all
++the source code for all modules it contains, plus any associated interface
++definition files, plus the scripts used to control compilation and installation
++of the executable. However, as a special exception, the source code distributed
++need not include anything that is normally distributed (in either source or
++binary form) with the major components (compiler, kernel, and so on) of the
++operating system on which the executable runs, unless that component itself
++accompanies the executable.
++
++If distribution of executable or object code is made by offering access to
++copy from a designated place, then offering equivalent access to copy the
++source code from the same place counts as distribution of the source code,
++even though third parties are not compelled to copy the source along with
++the object code.
++
++4. You may not copy, modify, sublicense, or distribute the Program except
++as expressly provided under this License. Any attempt otherwise to copy, modify,
++sublicense or distribute the Program is void, and will automatically terminate
++your rights under this License. However, parties who have received copies,
++or rights, from you under this License will not have their licenses terminated
++so long as such parties remain in full compliance.
++
++5. You are not required to accept this License, since you have not signed
++it. However, nothing else grants you permission to modify or distribute the
++Program or its derivative works. These actions are prohibited by law if you
++do not accept this License. Therefore, by modifying or distributing the Program
++(or any work based on the Program), you indicate your acceptance of this License
++to do so, and all its terms and conditions for copying, distributing or modifying
++the Program or works based on it.
++
++6. Each time you redistribute the Program (or any work based on the Program),
++the recipient automatically receives a license from the original licensor
++to copy, distribute or modify the Program subject to these terms and conditions.
++You may not impose any further restrictions on the recipients' exercise of
++the rights granted herein. You are not responsible for enforcing compliance
++by third parties to this License.
++
++7. If, as a consequence of a court judgment or allegation of patent infringement
++or for any other reason (not limited to patent issues), conditions are imposed
++on you (whether by court order, agreement or otherwise) that contradict the
++conditions of this License, they do not excuse you from the conditions of
++this License. If you cannot distribute so as to satisfy simultaneously your
++obligations under this License and any other pertinent obligations, then as
++a consequence you may not distribute the Program at all. For example, if a
++patent license would not permit royalty-free redistribution of the Program
++by all those who receive copies directly or indirectly through you, then the
++only way you could satisfy both it and this License would be to refrain entirely
++from distribution of the Program.
++
++If any portion of this section is held invalid or unenforceable under any
++particular circumstance, the balance of the section is intended to apply and
++the section as a whole is intended to apply in other circumstances.
++
++It is not the purpose of this section to induce you to infringe any patents
++or other property right claims or to contest validity of any such claims;
++this section has the sole purpose of protecting the integrity of the free
++software distribution system, which is implemented by public license practices.
++Many people have made generous contributions to the wide range of software
++distributed through that system in reliance on consistent application of that
++system; it is up to the author/donor to decide if he or she is willing to
++distribute software through any other system and a licensee cannot impose
++that choice.
++
++This section is intended to make thoroughly clear what is believed to be a
++consequence of the rest of this License.
++
++8. If the distribution and/or use of the Program is restricted in certain
++countries either by patents or by copyrighted interfaces, the original copyright
++holder who places the Program under this License may add an explicit geographical
++distribution limitation excluding those countries, so that distribution is
++permitted only in or among countries not thus excluded. In such case, this
++License incorporates the limitation as if written in the body of this License.
++
++9. The Free Software Foundation may publish revised and/or new versions of
++the General Public License from time to time. Such new versions will be similar
++in spirit to the present version, but may differ in detail to address new
++problems or concerns.
++
++Each version is given a distinguishing version number. If the Program specifies
++a version number of this License which applies to it and "any later version",
++you have the option of following the terms and conditions either of that version
++or of any later version published by the Free Software Foundation. If the
++Program does not specify a version number of this License, you may choose
++any version ever published by the Free Software Foundation.
++
++10. If you wish to incorporate parts of the Program into other free programs
++whose distribution conditions are different, write to the author to ask for
++permission. For software which is copyrighted by the Free Software Foundation,
++write to the Free Software Foundation; we sometimes make exceptions for this.
++Our decision will be guided by the two goals of preserving the free status
++of all derivatives of our free software and of promoting the sharing and reuse
++of software generally.
++
++NO WARRANTY
++
++11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR
++THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE
++STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM
++"AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,
++BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
++FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE
++OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME
++THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
++
++12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
++WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE
++THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
++GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE
++OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
++OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES
++OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH
++HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
++
++END OF TERMS AND CONDITIONS
++
++How to Apply These Terms to Your New Programs
++
++If you develop a new program, and you want it to be of the greatest possible
++use to the public, the best way to achieve this is to make it free software
++which everyone can redistribute and change under these terms.
++
++To do so, attach the following notices to the program. It is safest to attach
++them to the start of each source file to most effectively convey the exclusion
++of warranty; and each file should have at least the "copyright" line and a
++pointer to where the full notice is found.
++
++one line to give the program's name and an idea of what it does. Copyright
++(C) yyyy name of author
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU General Public License as published by the Free Software
++Foundation; either version 2 of the License, or (at your option) any later
++version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License along with
++this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
++Street, Fifth Floor, Boston, MA 02110-1301, USA. Also add information on how
++to contact you by electronic and paper mail.
++
++If the program is interactive, make it output a short notice like this when
++it starts in an interactive mode:
++
++Gnomovision version 69, Copyright (C) year name of author Gnomovision comes
++with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software,
++and you are welcome to redistribute it under certain conditions; type `show
++c' for details.
++
++The hypothetical commands `show w' and `show c' should show the appropriate
++parts of the General Public License. Of course, the commands you use may be
++called something other than `show w' and `show c'; they could even be mouse-clicks
++or menu items--whatever suits your program.
++
++You should also get your employer (if you work as a programmer) or your school,
++if any, to sign a "copyright disclaimer" for the program, if necessary. Here
++is a sample; alter the names:
++
++Yoyodyne, Inc., hereby disclaims all copyright interest in the program `Gnomovision'
++(which makes passes at compilers) written by James Hacker.
++
++signature of Ty Coon, 1 April 1989 Ty Coon, President of Vice
+diff --git a/LICENSES/GPL-3.0-only.txt b/LICENSES/GPL-3.0-only.txt
+new file mode 100644
+index 0000000..5990771
+--- /dev/null
++++ b/LICENSES/GPL-3.0-only.txt
+@@ -0,0 +1,604 @@
++GNU GENERAL PUBLIC LICENSE
++Version 3, 29 June 2007
++
++Copyright © 2007 Free Software Foundation, Inc. <http://fsf.org/>
++
++Everyone is permitted to copy and distribute verbatim copies of this license
++document, but changing it is not allowed.
++
++Preamble
++
++The GNU General Public License is a free, copyleft license for software and
++other kinds of works.
++
++The licenses for most software and other practical works are designed to take
++away your freedom to share and change the works. By contrast, the GNU General
++Public License is intended to guarantee your freedom to share and change all
++versions of a program--to make sure it remains free software for all its users.
++We, the Free Software Foundation, use the GNU General Public License for most
++of our software; it applies also to any other work released this way by its
++authors. You can apply it to your programs, too.
++
++When we speak of free software, we are referring to freedom, not price. Our
++General Public Licenses are designed to make sure that you have the freedom
++to distribute copies of free software (and charge for them if you wish), that
++you receive source code or can get it if you want it, that you can change
++the software or use pieces of it in new free programs, and that you know you
++can do these things.
++
++To protect your rights, we need to prevent others from denying you these rights
++or asking you to surrender the rights. Therefore, you have certain responsibilities
++if you distribute copies of the software, or if you modify it: responsibilities
++to respect the freedom of others.
++
++For example, if you distribute copies of such a program, whether gratis or
++for a fee, you must pass on to the recipients the same freedoms that you received.
++You must make sure that they, too, receive or can get the source code. And
++you must show them these terms so they know their rights.
++
++Developers that use the GNU GPL protect your rights with two steps: (1) assert
++copyright on the software, and (2) offer you this License giving you legal
++permission to copy, distribute and/or modify it.
++
++For the developers' and authors' protection, the GPL clearly explains that
++there is no warranty for this free software. For both users' and authors'
++sake, the GPL requires that modified versions be marked as changed, so that
++their problems will not be attributed erroneously to authors of previous versions.
++
++Some devices are designed to deny users access to install or run modified
++versions of the software inside them, although the manufacturer can do so.
++This is fundamentally incompatible with the aim of protecting users' freedom
++to change the software. The systematic pattern of such abuse occurs in the
++area of products for individuals to use, which is precisely where it is most
++unacceptable. Therefore, we have designed this version of the GPL to prohibit
++the practice for those products. If such problems arise substantially in other
++domains, we stand ready to extend this provision to those domains in future
++versions of the GPL, as needed to protect the freedom of users.
++
++Finally, every program is threatened constantly by software patents. States
++should not allow patents to restrict development and use of software on general-purpose
++computers, but in those that do, we wish to avoid the special danger that
++patents applied to a free program could make it effectively proprietary. To
++prevent this, the GPL assures that patents cannot be used to render the program
++non-free.
++
++The precise terms and conditions for copying, distribution and modification
++follow.
++
++TERMS AND CONDITIONS
++
++0. Definitions.
++
++“This License” refers to version 3 of the GNU General Public License.
++
++“Copyright” also means copyright-like laws that apply to other kinds of works,
++such as semiconductor masks.
++
++“The Program” refers to any copyrightable work licensed under this License.
++Each licensee is addressed as “you”. “Licensees” and “recipients” may be individuals
++or organizations.
++
++To “modify” a work means to copy from or adapt all or part of the work in
++a fashion requiring copyright permission, other than the making of an exact
++copy. The resulting work is called a “modified version” of the earlier work
++or a work “based on” the earlier work.
++
++A “covered work” means either the unmodified Program or a work based on the
++Program.
++
++To “propagate” a work means to do anything with it that, without permission,
++would make you directly or secondarily liable for infringement under applicable
++copyright law, except executing it on a computer or modifying a private copy.
++Propagation includes copying, distribution (with or without modification),
++making available to the public, and in some countries other activities as
++well.
++
++To “convey” a work means any kind of propagation that enables other parties
++to make or receive copies. Mere interaction with a user through a computer
++network, with no transfer of a copy, is not conveying.
++
++An interactive user interface displays “Appropriate Legal Notices” to the
++extent that it includes a convenient and prominently visible feature that
++(1) displays an appropriate copyright notice, and (2) tells the user that
++there is no warranty for the work (except to the extent that warranties are
++provided), that licensees may convey the work under this License, and how
++to view a copy of this License. If the interface presents a list of user commands
++or options, such as a menu, a prominent item in the list meets this criterion.
++
++1. Source Code.
++The “source code” for a work means the preferred form of the work for making
++modifications to it. “Object code” means any non-source form of a work.
++
++A “Standard Interface” means an interface that either is an official standard
++defined by a recognized standards body, or, in the case of interfaces specified
++for a particular programming language, one that is widely used among developers
++working in that language.
++
++The “System Libraries” of an executable work include anything, other than
++the work as a whole, that (a) is included in the normal form of packaging
++a Major Component, but which is not part of that Major Component, and (b)
++serves only to enable use of the work with that Major Component, or to implement
++a Standard Interface for which an implementation is available to the public
++in source code form. A “Major Component”, in this context, means a major essential
++component (kernel, window system, and so on) of the specific operating system
++(if any) on which the executable work runs, or a compiler used to produce
++the work, or an object code interpreter used to run it.
++
++The “Corresponding Source” for a work in object code form means all the source
++code needed to generate, install, and (for an executable work) run the object
++code and to modify the work, including scripts to control those activities.
++However, it does not include the work's System Libraries, or general-purpose
++tools or generally available free programs which are used unmodified in performing
++those activities but which are not part of the work. For example, Corresponding
++Source includes interface definition files associated with source files for
++the work, and the source code for shared libraries and dynamically linked
++subprograms that the work is specifically designed to require, such as by
++intimate data communication or control flow between those subprograms and
++other parts of the work.
++
++The Corresponding Source need not include anything that users can regenerate
++automatically from other parts of the Corresponding Source.
++
++The Corresponding Source for a work in source code form is that same work.
++
++2. Basic Permissions.
++All rights granted under this License are granted for the term of copyright
++on the Program, and are irrevocable provided the stated conditions are met.
++This License explicitly affirms your unlimited permission to run the unmodified
++Program. The output from running a covered work is covered by this License
++only if the output, given its content, constitutes a covered work. This License
++acknowledges your rights of fair use or other equivalent, as provided by copyright
++law.
++
++You may make, run and propagate covered works that you do not convey, without
++conditions so long as your license otherwise remains in force. You may convey
++covered works to others for the sole purpose of having them make modifications
++exclusively for you, or provide you with facilities for running those works,
++provided that you comply with the terms of this License in conveying all material
++for which you do not control copyright. Those thus making or running the covered
++works for you must do so exclusively on your behalf, under your direction
++and control, on terms that prohibit them from making any copies of your copyrighted
++material outside their relationship with you.
++
++Conveying under any other circumstances is permitted solely under the conditions
++stated below. Sublicensing is not allowed; section 10 makes it unnecessary.
++
++3. Protecting Users' Legal Rights From Anti-Circumvention Law.
++No covered work shall be deemed part of an effective technological measure
++under any applicable law fulfilling obligations under article 11 of the WIPO
++copyright treaty adopted on 20 December 1996, or similar laws prohibiting
++or restricting circumvention of such measures.
++
++When you convey a covered work, you waive any legal power to forbid circumvention
++of technological measures to the extent such circumvention is effected by
++exercising rights under this License with respect to the covered work, and
++you disclaim any intention to limit operation or modification of the work
++as a means of enforcing, against the work's users, your or third parties'
++legal rights to forbid circumvention of technological measures.
++
++4. Conveying Verbatim Copies.
++You may convey verbatim copies of the Program's source code as you receive
++it, in any medium, provided that you conspicuously and appropriately publish
++on each copy an appropriate copyright notice; keep intact all notices stating
++that this License and any non-permissive terms added in accord with section
++7 apply to the code; keep intact all notices of the absence of any warranty;
++and give all recipients a copy of this License along with the Program.
++
++You may charge any price or no price for each copy that you convey, and you
++may offer support or warranty protection for a fee.
++
++5. Conveying Modified Source Versions.
++You may convey a work based on the Program, or the modifications to produce
++it from the Program, in the form of source code under the terms of section
++4, provided that you also meet all of these conditions:
++
++a) The work must carry prominent notices stating that you modified it, and
++giving a relevant date.
++
++b) The work must carry prominent notices stating that it is released under
++this License and any conditions added under section 7. This requirement modifies
++the requirement in section 4 to “keep intact all notices”.
++
++c) You must license the entire work, as a whole, under this License to anyone
++who comes into possession of a copy. This License will therefore apply, along
++with any applicable section 7 additional terms, to the whole of the work,
++and all its parts, regardless of how they are packaged. This License gives
++no permission to license the work in any other way, but it does not invalidate
++such permission if you have separately received it.
++
++d) If the work has interactive user interfaces, each must display Appropriate
++Legal Notices; however, if the Program has interactive interfaces that do
++not display Appropriate Legal Notices, your work need not make them do so.
++
++A compilation of a covered work with other separate and independent works,
++which are not by their nature extensions of the covered work, and which are
++not combined with it such as to form a larger program, in or on a volume of
++a storage or distribution medium, is called an “aggregate” if the compilation
++and its resulting copyright are not used to limit the access or legal rights
++of the compilation's users beyond what the individual works permit. Inclusion
++of a covered work in an aggregate does not cause this License to apply to
++the other parts of the aggregate.
++
++6. Conveying Non-Source Forms.
++You may convey a covered work in object code form under the terms of sections
++4 and 5, provided that you also convey the machine-readable Corresponding
++Source under the terms of this License, in one of these ways:
++
++a) Convey the object code in, or embodied in, a physical product (including
++a physical distribution medium), accompanied by the Corresponding Source fixed
++on a durable physical medium customarily used for software interchange.
++
++b) Convey the object code in, or embodied in, a physical product (including
++a physical distribution medium), accompanied by a written offer, valid for
++at least three years and valid for as long as you offer spare parts or customer
++support for that product model, to give anyone who possesses the object code
++either (1) a copy of the Corresponding Source for all the software in the
++product that is covered by this License, on a durable physical medium customarily
++used for software interchange, for a price no more than your reasonable cost
++of physically performing this conveying of source, or (2) access to copy the
++Corresponding Source from a network server at no charge.
++
++c) Convey individual copies of the object code with a copy of the written
++offer to provide the Corresponding Source. This alternative is allowed only
++occasionally and noncommercially, and only if you received the object code
++with such an offer, in accord with subsection 6b.
++
++d) Convey the object code by offering access from a designated place (gratis
++or for a charge), and offer equivalent access to the Corresponding Source
++in the same way through the same place at no further charge. You need not
++require recipients to copy the Corresponding Source along with the object
++code. If the place to copy the object code is a network server, the Corresponding
++Source may be on a different server (operated by you or a third party) that
++supports equivalent copying facilities, provided you maintain clear directions
++next to the object code saying where to find the Corresponding Source. Regardless
++of what server hosts the Corresponding Source, you remain obligated to ensure
++that it is available for as long as needed to satisfy these requirements.
++
++e) Convey the object code using peer-to-peer transmission, provided you inform
++other peers where the object code and Corresponding Source of the work are
++being offered to the general public at no charge under subsection 6d.
++
++A separable portion of the object code, whose source code is excluded from
++the Corresponding Source as a System Library, need not be included in conveying
++the object code work.
++
++A “User Product” is either (1) a “consumer product”, which means any tangible
++personal property which is normally used for personal, family, or household
++purposes, or (2) anything designed or sold for incorporation into a dwelling.
++In determining whether a product is a consumer product, doubtful cases shall
++be resolved in favor of coverage. For a particular product received by a particular
++user, “normally used” refers to a typical or common use of that class of product,
++regardless of the status of the particular user or of the way in which the
++particular user actually uses, or expects or is expected to use, the product.
++A product is a consumer product regardless of whether the product has substantial
++commercial, industrial or non-consumer uses, unless such uses represent the
++only significant mode of use of the product.
++
++“Installation Information” for a User Product means any methods, procedures,
++authorization keys, or other information required to install and execute modified
++versions of a covered work in that User Product from a modified version of
++its Corresponding Source. The information must suffice to ensure that the
++continued functioning of the modified object code is in no case prevented
++or interfered with solely because modification has been made.
++
++If you convey an object code work under this section in, or with, or specifically
++for use in, a User Product, and the conveying occurs as part of a transaction
++in which the right of possession and use of the User Product is transferred
++to the recipient in perpetuity or for a fixed term (regardless of how the
++transaction is characterized), the Corresponding Source conveyed under this
++section must be accompanied by the Installation Information. But this requirement
++does not apply if neither you nor any third party retains the ability to install
++modified object code on the User Product (for example, the work has been installed
++in ROM).
++
++The requirement to provide Installation Information does not include a requirement
++to continue to provide support service, warranty, or updates for a work that
++has been modified or installed by the recipient, or for the User Product in
++which it has been modified or installed. Access to a network may be denied
++when the modification itself materially and adversely affects the operation
++of the network or violates the rules and protocols for communication across
++the network.
++
++Corresponding Source conveyed, and Installation Information provided, in accord
++with this section must be in a format that is publicly documented (and with
++an implementation available to the public in source code form), and must require
++no special password or key for unpacking, reading or copying.
++
++7. Additional Terms.
++“Additional permissions” are terms that supplement the terms of this License
++by making exceptions from one or more of its conditions. Additional permissions
++that are applicable to the entire Program shall be treated as though they
++were included in this License, to the extent that they are valid under applicable
++law. If additional permissions apply only to part of the Program, that part
++may be used separately under those permissions, but the entire Program remains
++governed by this License without regard to the additional permissions.
++
++When you convey a copy of a covered work, you may at your option remove any
++additional permissions from that copy, or from any part of it. (Additional
++permissions may be written to require their own removal in certain cases when
++you modify the work.) You may place additional permissions on material, added
++by you to a covered work, for which you have or can give appropriate copyright
++permission.
++
++Notwithstanding any other provision of this License, for material you add
++to a covered work, you may (if authorized by the copyright holders of that
++material) supplement the terms of this License with terms:
++
++a) Disclaiming warranty or limiting liability differently from the terms of
++sections 15 and 16 of this License; or
++
++b) Requiring preservation of specified reasonable legal notices or author
++attributions in that material or in the Appropriate Legal Notices displayed
++by works containing it; or
++
++c) Prohibiting misrepresentation of the origin of that material, or requiring
++that modified versions of such material be marked in reasonable ways as different
++from the original version; or
++
++d) Limiting the use for publicity purposes of names of licensors or authors
++of the material; or
++
++e) Declining to grant rights under trademark law for use of some trade names,
++trademarks, or service marks; or
++
++f) Requiring indemnification of licensors and authors of that material by
++anyone who conveys the material (or modified versions of it) with contractual
++assumptions of liability to the recipient, for any liability that these contractual
++assumptions directly impose on those licensors and authors.
++
++All other non-permissive additional terms are considered “further restrictions”
++within the meaning of section 10. If the Program as you received it, or any
++part of it, contains a notice stating that it is governed by this License
++along with a term that is a further restriction, you may remove that term.
++If a license document contains a further restriction but permits relicensing
++or conveying under this License, you may add to a covered work material governed
++by the terms of that license document, provided that the further restriction
++does not survive such relicensing or conveying.
++
++If you add terms to a covered work in accord with this section, you must place,
++in the relevant source files, a statement of the additional terms that apply
++to those files, or a notice indicating where to find the applicable terms.
++
++Additional terms, permissive or non-permissive, may be stated in the form
++of a separately written license, or stated as exceptions; the above requirements
++apply either way.
++
++8. Termination.
++You may not propagate or modify a covered work except as expressly provided
++under this License. Any attempt otherwise to propagate or modify it is void,
++and will automatically terminate your rights under this License (including
++any patent licenses granted under the third paragraph of section 11).
++
++However, if you cease all violation of this License, then your license from
++a particular copyright holder is reinstated (a) provisionally, unless and
++until the copyright holder explicitly and finally terminates your license,
++and (b) permanently, if the copyright holder fails to notify you of the violation
++by some reasonable means prior to 60 days after the cessation.
++
++Moreover, your license from a particular copyright holder is reinstated permanently
++if the copyright holder notifies you of the violation by some reasonable means,
++this is the first time you have received notice of violation of this License
++(for any work) from that copyright holder, and you cure the violation prior
++to 30 days after your receipt of the notice.
++
++Termination of your rights under this section does not terminate the licenses
++of parties who have received copies or rights from you under this License.
++If your rights have been terminated and not permanently reinstated, you do
++not qualify to receive new licenses for the same material under section 10.
++
++9. Acceptance Not Required for Having Copies.
++You are not required to accept this License in order to receive or run a copy
++of the Program. Ancillary propagation of a covered work occurring solely as
++a consequence of using peer-to-peer transmission to receive a copy likewise
++does not require acceptance. However, nothing other than this License grants
++you permission to propagate or modify any covered work. These actions infringe
++copyright if you do not accept this License. Therefore, by modifying or propagating
++a covered work, you indicate your acceptance of this License to do so.
++
++10. Automatic Licensing of Downstream Recipients.
++Each time you convey a covered work, the recipient automatically receives
++a license from the original licensors, to run, modify and propagate that work,
++subject to this License. You are not responsible for enforcing compliance
++by third parties with this License.
++
++An “entity transaction” is a transaction transferring control of an organization,
++or substantially all assets of one, or subdividing an organization, or merging
++organizations. If propagation of a covered work results from an entity transaction,
++each party to that transaction who receives a copy of the work also receives
++whatever licenses to the work the party's predecessor in interest had or could
++give under the previous paragraph, plus a right to possession of the Corresponding
++Source of the work from the predecessor in interest, if the predecessor has
++it or can get it with reasonable efforts.
++
++You may not impose any further restrictions on the exercise of the rights
++granted or affirmed under this License. For example, you may not impose a
++license fee, royalty, or other charge for exercise of rights granted under
++this License, and you may not initiate litigation (including a cross-claim
++or counterclaim in a lawsuit) alleging that any patent claim is infringed
++by making, using, selling, offering for sale, or importing the Program or
++any portion of it.
++
++11. Patents.
++A “contributor” is a copyright holder who authorizes use under this License
++of the Program or a work on which the Program is based. The work thus licensed
++is called the contributor's “contributor version”.
++
++A contributor's “essential patent claims” are all patent claims owned or controlled
++by the contributor, whether already acquired or hereafter acquired, that would
++be infringed by some manner, permitted by this License, of making, using,
++or selling its contributor version, but do not include claims that would be
++infringed only as a consequence of further modification of the contributor
++version. For purposes of this definition, “control” includes the right to
++grant patent sublicenses in a manner consistent with the requirements of this
++License.
++
++Each contributor grants you a non-exclusive, worldwide, royalty-free patent
++license under the contributor's essential patent claims, to make, use, sell,
++offer for sale, import and otherwise run, modify and propagate the contents
++of its contributor version.
++
++In the following three paragraphs, a “patent license” is any express agreement
++or commitment, however denominated, not to enforce a patent (such as an express
++permission to practice a patent or covenant not to sue for patent infringement).
++To “grant” such a patent license to a party means to make such an agreement
++or commitment not to enforce a patent against the party.
++
++If you convey a covered work, knowingly relying on a patent license, and the
++Corresponding Source of the work is not available for anyone to copy, free
++of charge and under the terms of this License, through a publicly available
++network server or other readily accessible means, then you must either (1)
++cause the Corresponding Source to be so available, or (2) arrange to deprive
++yourself of the benefit of the patent license for this particular work, or
++(3) arrange, in a manner consistent with the requirements of this License,
++to extend the patent license to downstream recipients. “Knowingly relying”
++means you have actual knowledge that, but for the patent license, your conveying
++the covered work in a country, or your recipient's use of the covered work
++in a country, would infringe one or more identifiable patents in that country
++that you have reason to believe are valid.
++
++If, pursuant to or in connection with a single transaction or arrangement,
++you convey, or propagate by procuring conveyance of, a covered work, and grant
++a patent license to some of the parties receiving the covered work authorizing
++them to use, propagate, modify or convey a specific copy of the covered work,
++then the patent license you grant is automatically extended to all recipients
++of the covered work and works based on it.
++
++A patent license is “discriminatory” if it does not include within the scope
++of its coverage, prohibits the exercise of, or is conditioned on the non-exercise
++of one or more of the rights that are specifically granted under this License.
++You may not convey a covered work if you are a party to an arrangement with
++a third party that is in the business of distributing software, under which
++you make payment to the third party based on the extent of your activity of
++conveying the work, and under which the third party grants, to any of the
++parties who would receive the covered work from you, a discriminatory patent
++license (a) in connection with copies of the covered work conveyed by you
++(or copies made from those copies), or (b) primarily for and in connection
++with specific products or compilations that contain the covered work, unless
++you entered into that arrangement, or that patent license was granted, prior
++to 28 March 2007.
++
++Nothing in this License shall be construed as excluding or limiting any implied
++license or other defenses to infringement that may otherwise be available
++to you under applicable patent law.
++
++12. No Surrender of Others' Freedom.
++If conditions are imposed on you (whether by court order, agreement or otherwise)
++that contradict the conditions of this License, they do not excuse you from
++the conditions of this License. If you cannot convey a covered work so as
++to satisfy simultaneously your obligations under this License and any other
++pertinent obligations, then as a consequence you may not convey it at all.
++For example, if you agree to terms that obligate you to collect a royalty
++for further conveying from those to whom you convey the Program, the only
++way you could satisfy both those terms and this License would be to refrain
++entirely from conveying the Program.
++
++13. Use with the GNU Affero General Public License.
++Notwithstanding any other provision of this License, you have permission to
++link or combine any covered work with a work licensed under version 3 of the
++GNU Affero General Public License into a single combined work, and to convey
++the resulting work. The terms of this License will continue to apply to the
++part which is the covered work, but the special requirements of the GNU Affero
++General Public License, section 13, concerning interaction through a network
++will apply to the combination as such.
++
++14. Revised Versions of this License.
++The Free Software Foundation may publish revised and/or new versions of the
++GNU General Public License from time to time. Such new versions will be similar
++in spirit to the present version, but may differ in detail to address new
++problems or concerns.
++
++Each version is given a distinguishing version number. If the Program specifies
++that a certain numbered version of the GNU General Public License “or any
++later version” applies to it, you have the option of following the terms and
++conditions either of that numbered version or of any later version published
++by the Free Software Foundation. If the Program does not specify a version
++number of the GNU General Public License, you may choose any version ever
++published by the Free Software Foundation.
++
++If the Program specifies that a proxy can decide which future versions of
++the GNU General Public License can be used, that proxy's public statement
++of acceptance of a version permanently authorizes you to choose that version
++for the Program.
++
++Later license versions may give you additional or different permissions. However,
++no additional obligations are imposed on any author or copyright holder as
++a result of your choosing to follow a later version.
++
++15. Disclaimer of Warranty.
++THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE
++LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
++OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER
++EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
++OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS
++TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM
++PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR
++CORRECTION.
++
++16. Limitation of Liability.
++IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL
++ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM
++AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
++INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO
++USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED
++INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
++PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER
++PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
++
++17. Interpretation of Sections 15 and 16.
++If the disclaimer of warranty and limitation of liability provided above cannot
++be given local legal effect according to their terms, reviewing courts shall
++apply local law that most closely approximates an absolute waiver of all civil
++liability in connection with the Program, unless a warranty or assumption
++of liability accompanies a copy of the Program in return for a fee.
++
++END OF TERMS AND CONDITIONS
++
++How to Apply These Terms to Your New Programs
++
++If you develop a new program, and you want it to be of the greatest possible
++use to the public, the best way to achieve this is to make it free software
++which everyone can redistribute and change under these terms.
++
++To do so, attach the following notices to the program. It is safest to attach
++them to the start of each source file to most effectively state the exclusion
++of warranty; and each file should have at least the “copyright” line and a
++pointer to where the full notice is found.
++
++     <one line to give the program's name and a brief idea of what it does.>
++     Copyright (C) <year>  <name of author>
++
++This program is free software: you can redistribute it and/or modify it under
++the terms of the GNU General Public License as published by the Free Software
++Foundation, either version 3 of the License, or (at your option) any later
++version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License along with
++this program.  If not, see <http://www.gnu.org/licenses/>.
++
++Also add information on how to contact you by electronic and paper mail.
++
++If the program does terminal interaction, make it output a short notice like
++this when it starts in an interactive mode:
++
++     <program>  Copyright (C) <year>  <name of author>
++     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
++This is free software, and you are welcome to redistribute it under certain
++conditions; type `show c' for details.
++
++The hypothetical commands `show w' and `show c' should show the appropriate
++parts of the General Public License. Of course, your program's commands might
++be different; for a GUI interface, you would use an “about box”.
++
++You should also get your employer (if you work as a programmer) or school,
++if any, to sign a “copyright disclaimer” for the program, if necessary. For
++more information on this, and how to apply and follow the GNU GPL, see <http://www.gnu.org/licenses/>.
++
++The GNU General Public License does not permit incorporating your program
++into proprietary programs. If your program is a subroutine library, you may
++consider it more useful to permit linking proprietary applications with the
++library. If this is what you want to do, use the GNU Lesser General Public
++License instead of this License. But first, please read <http://www.gnu.org/philosophy/why-not-lgpl.html>.
+diff --git a/LICENSES/LicenseRef-KDE-Accepted-GPL.txt b/LICENSES/LicenseRef-KDE-Accepted-GPL.txt
+new file mode 100644
+index 0000000..60a2dff
+--- /dev/null
++++ b/LICENSES/LicenseRef-KDE-Accepted-GPL.txt
+@@ -0,0 +1,12 @@
++This library is free software; you can redistribute it and/or
++modify it under the terms of the GNU General Public License as
++published by the Free Software Foundation; either version 3 of
++the license or (at your option) at any later version that is
++accepted by the membership of KDE e.V. (or its successor
++approved by the membership of KDE e.V.), which shall act as a
++proxy as defined in Section 14 of version 3 of the license.
++
++This program is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++GNU General Public License for more details.
+diff --git a/install.sh b/install.sh
+index 67647bd..c9907ed 100755
+--- a/install.sh
++++ b/install.sh
+@@ -1,3 +1,6 @@
++# SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++# SPDX-License-Identifier: GPL-2.0-or-later
++*/
+ if ! [ -a build ] ; then
+     mkdir build
+ fi
+diff --git a/libappletdecoration/CMakeLists.txt b/libappletdecoration/CMakeLists.txt
+index 14811d6..1144518 100644
+--- a/libappletdecoration/CMakeLists.txt
++++ b/libappletdecoration/CMakeLists.txt
+@@ -1,3 +1,5 @@
++# SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++# SPDX-License-Identifier: GPL-2.0-or-later
+ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+ 
+ set(QT_MIN_VERSION "6.6.0")
+diff --git a/libappletdecoration/appletdecorationplugin.cpp b/libappletdecoration/appletdecorationplugin.cpp
+index 849d477..93805ee 100644
+--- a/libappletdecoration/appletdecorationplugin.cpp
++++ b/libappletdecoration/appletdecorationplugin.cpp
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of the libappletdecoration library
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #include "appletdecorationplugin.h"
+diff --git a/libappletdecoration/appletdecorationplugin.h b/libappletdecoration/appletdecorationplugin.h
+index f89458a..d14cde1 100644
+--- a/libappletdecoration/appletdecorationplugin.h
++++ b/libappletdecoration/appletdecorationplugin.h
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of the libappletdecoration library
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #ifndef APPLETDECORATIONPLUGIN_H
+diff --git a/libappletdecoration/auroraetheme.cpp b/libappletdecoration/auroraetheme.cpp
+index cad31d5..aabe2d2 100644
+--- a/libappletdecoration/auroraetheme.cpp
++++ b/libappletdecoration/auroraetheme.cpp
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of the libappletdecoration library
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #include "auroraetheme.h"
+diff --git a/libappletdecoration/auroraetheme.h b/libappletdecoration/auroraetheme.h
+index 7b5e53f..f7a8358 100644
+--- a/libappletdecoration/auroraetheme.h
++++ b/libappletdecoration/auroraetheme.h
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of the libappletdecoration library
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #ifndef AURORAETHEME_H
+diff --git a/libappletdecoration/buttonsmodel.cpp b/libappletdecoration/buttonsmodel.cpp
+index f47f275..760dcfe 100644
+--- a/libappletdecoration/buttonsmodel.cpp
++++ b/libappletdecoration/buttonsmodel.cpp
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018  Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "buttonsmodel.h"
+diff --git a/libappletdecoration/buttonsmodel.h b/libappletdecoration/buttonsmodel.h
+index 03c69f2..b73e3c5 100644
+--- a/libappletdecoration/buttonsmodel.h
++++ b/libappletdecoration/buttonsmodel.h
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018  Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef KDECOARTIONS_PREVIEW_BUTTONS_MODEL_H
+diff --git a/libappletdecoration/commontools.cpp b/libappletdecoration/commontools.cpp
+index 2276823..7f5fb6e 100644
+--- a/libappletdecoration/commontools.cpp
++++ b/libappletdecoration/commontools.cpp
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+- * This file is part of Latte-Dock
++ * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/commontools.h b/libappletdecoration/commontools.h
+index 42f6d7c..2fdee43 100644
+--- a/libappletdecoration/commontools.h
++++ b/libappletdecoration/commontools.h
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2019  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2019 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/config-decoration.h.cmake b/libappletdecoration/config-decoration.h.cmake
+index a1cd68a..81d039e 100644
+--- a/libappletdecoration/config-decoration.h.cmake
++++ b/libappletdecoration/config-decoration.h.cmake
+@@ -1,3 +1,5 @@
++# SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++# SPDX-License-Identifier: GPL-2.0-or-later
+ #ifndef CONFIG_DECORATION_H
+ #define CONFIG_DECORATION_H
+ 
+diff --git a/libappletdecoration/decorationpalette.cpp b/libappletdecoration/decorationpalette.cpp
+index a8bf776..18b199b 100644
+--- a/libappletdecoration/decorationpalette.cpp
++++ b/libappletdecoration/decorationpalette.cpp
+@@ -2,22 +2,11 @@
+  KWin - the KDE window manager
+  This file is part of the KDE project.
+ 
+-Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+-Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
+-Copyright 2015  Mika Allan Rauhala <mika.allan.rauhala@gmail.com>
+-
+-This program is free software; you can redistribute it and/or modify
+-it under the terms of the GNU General Public License as published by
+-the Free Software Foundation; either version 2 of the License, or
+-(at your option) any later version.
+-
+-This program is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program.  If not, see <http://www.gnu.org/licenses/>.
++SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
++SPDX-FileCopyrightText: 2015 Mika Allan Rauhala <mika.allan.rauhala@gmail.com>
++
++SPDX-License-Identifier: GPL-2.0-or-later
+ *********************************************************************/
+ 
+ #include "decorationpalette.h"
+diff --git a/libappletdecoration/decorationpalette.h b/libappletdecoration/decorationpalette.h
+index 7de1746..9d1133e 100644
+--- a/libappletdecoration/decorationpalette.h
++++ b/libappletdecoration/decorationpalette.h
+@@ -2,22 +2,11 @@
+  KWin - the KDE window manager
+  This file is part of the KDE project.
+ 
+-Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+-Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
+-Copyright 2015  Mika Allan Rauhala <mika.allan.rauhala@gmail.com>
+-
+-This program is free software; you can redistribute it and/or modify
+-it under the terms of the GNU General Public License as published by
+-the Free Software Foundation; either version 2 of the License, or
+-(at your option) any later version.
+-
+-This program is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program.  If not, see <http://www.gnu.org/licenses/>.
++SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
++SPDX-FileCopyrightText: 2015 Mika Allan Rauhala <mika.allan.rauhala@gmail.com>
++
++SPDX-License-Identifier: GPL-2.0-or-later
+ *********************************************************************/
+ 
+ #ifndef KWIN_DECORATION_PALETTE_H
+diff --git a/libappletdecoration/decorationsmodel.cpp b/libappletdecoration/decorationsmodel.cpp
+index 78d5833..8348c63 100644
+--- a/libappletdecoration/decorationsmodel.cpp
++++ b/libappletdecoration/decorationsmodel.cpp
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "decorationsmodel.h"
+diff --git a/libappletdecoration/decorationsmodel.h b/libappletdecoration/decorationsmodel.h
+index f771466..7a4821a 100644
+--- a/libappletdecoration/decorationsmodel.h
++++ b/libappletdecoration/decorationsmodel.h
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef DECORATIONSMODEL_H
+diff --git a/libappletdecoration/environment.cpp b/libappletdecoration/environment.cpp
+index 703f98a..2915c01 100644
+--- a/libappletdecoration/environment.cpp
++++ b/libappletdecoration/environment.cpp
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2019  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2019 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of Window Buttons Applet
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #include "environment.h"
+diff --git a/libappletdecoration/environment.h b/libappletdecoration/environment.h
+index e1e1077..49c1c53 100644
+--- a/libappletdecoration/environment.h
++++ b/libappletdecoration/environment.h
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2019  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2019 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of Window Buttons Applet
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #ifndef ENVIRONMENT_H
+diff --git a/libappletdecoration/kwinconfig.cpp b/libappletdecoration/kwinconfig.cpp
+index 4eb2aba..be81718 100644
+--- a/libappletdecoration/kwinconfig.cpp
++++ b/libappletdecoration/kwinconfig.cpp
+@@ -1,6 +1,8 @@
+ /*
+  *  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
+  *
++ *  This file is part of Window Buttons Applet
++ *
+  *  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ #include "kwinconfig.h"
+diff --git a/libappletdecoration/kwinconfig.h b/libappletdecoration/kwinconfig.h
+index 58184e0..4fd451a 100644
+--- a/libappletdecoration/kwinconfig.h
++++ b/libappletdecoration/kwinconfig.h
+@@ -1,6 +1,8 @@
+ /*
+  *  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
+  *
++ *  This file is part of Window Buttons Applet
++ *
+  *  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ #include <KConfig>
+diff --git a/libappletdecoration/padding.cpp b/libappletdecoration/padding.cpp
+index db7166e..f6c558f 100644
+--- a/libappletdecoration/padding.cpp
++++ b/libappletdecoration/padding.cpp
+@@ -1,23 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "padding.h"
+diff --git a/libappletdecoration/padding.h b/libappletdecoration/padding.h
+index 7dde307..ec5f139 100644
+--- a/libappletdecoration/padding.h
++++ b/libappletdecoration/padding.h
+@@ -1,23 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef PADDING_H
+diff --git a/libappletdecoration/previewbridge.cpp b/libappletdecoration/previewbridge.cpp
+index ac24000..aa8def8 100644
+--- a/libappletdecoration/previewbridge.cpp
++++ b/libappletdecoration/previewbridge.cpp
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+- *  This file is part of the libappletdecoration library
++ * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "previewbridge.h"
+diff --git a/libappletdecoration/previewbridge.h b/libappletdecoration/previewbridge.h
+index ac54e15..aa52da7 100644
+--- a/libappletdecoration/previewbridge.h
++++ b/libappletdecoration/previewbridge.h
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef KDECORATIONS_PREVIEW_BRIDGE_H
+diff --git a/libappletdecoration/previewbutton.cpp b/libappletdecoration/previewbutton.cpp
+index ce28cd2..82ca6aa 100644
+--- a/libappletdecoration/previewbutton.cpp
++++ b/libappletdecoration/previewbutton.cpp
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+- *  This file is part of the libappletdecoration library
++ * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "previewbutton.h"
+diff --git a/libappletdecoration/previewbutton.h b/libappletdecoration/previewbutton.h
+index 3b7371a..89420a8 100644
+--- a/libappletdecoration/previewbutton.h
++++ b/libappletdecoration/previewbutton.h
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef KDECORATIONS_PREVIEW_BUTTON_ITEM_H
+diff --git a/libappletdecoration/previewclient.cpp b/libappletdecoration/previewclient.cpp
+index a16e329..bfb837c 100644
+--- a/libappletdecoration/previewclient.cpp
++++ b/libappletdecoration/previewclient.cpp
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+- *  This file is part of the libappletdecoration library
++ * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "previewclient.h"
+diff --git a/libappletdecoration/previewclient.h b/libappletdecoration/previewclient.h
+index 9a1d953..2346475 100644
+--- a/libappletdecoration/previewclient.h
++++ b/libappletdecoration/previewclient.h
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef KDECORATIONS_PREVIEW_CLIENT_H
+diff --git a/libappletdecoration/previewsettings.cpp b/libappletdecoration/previewsettings.cpp
+index 432ae99..8e1ba1b 100644
+--- a/libappletdecoration/previewsettings.cpp
++++ b/libappletdecoration/previewsettings.cpp
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+- *  This file is part of the libappletdecoration library
++ * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "previewsettings.h"
+diff --git a/libappletdecoration/previewsettings.h b/libappletdecoration/previewsettings.h
+index 2f5ef33..99afa1a 100644
+--- a/libappletdecoration/previewsettings.h
++++ b/libappletdecoration/previewsettings.h
+@@ -1,24 +1,10 @@
+ /*
+- * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+- *           2018  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef KDECOARTIONS_PREVIEW_SETTINGS_H
+diff --git a/libappletdecoration/previewshareddecoration.cpp b/libappletdecoration/previewshareddecoration.cpp
+index e10b37c..88f4cd1 100644
+--- a/libappletdecoration/previewshareddecoration.cpp
++++ b/libappletdecoration/previewshareddecoration.cpp
+@@ -1,23 +1,9 @@
+ /*
+- * Copyright 2019  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2019 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #include "previewshareddecoration.h"
+diff --git a/libappletdecoration/previewshareddecoration.h b/libappletdecoration/previewshareddecoration.h
+index 1cd195b..3dca536 100644
+--- a/libappletdecoration/previewshareddecoration.h
++++ b/libappletdecoration/previewshareddecoration.h
+@@ -1,23 +1,9 @@
+ /*
+- * Copyright 2019  Michail Vourlakos <mvourlakos@gmail.org>
++ * SPDX-FileCopyrightText: 2019 Michail Vourlakos <mvourlakos@gmail.org>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License or (at your option) version 3 or any later version
+- * accepted by the membership of KDE e.V. (or its successor approved
+- * by the membership of KDE e.V.), which shall act as a proxy
+- * defined in Section 14 of version 3 of the license.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+  */
+ 
+ #ifndef PREVIEWSHAREDDECORATION_H
+diff --git a/libappletdecoration/qml/AuroraeButton.qml b/libappletdecoration/qml/AuroraeButton.qml
+index 720a518..fe94f22 100644
+--- a/libappletdecoration/qml/AuroraeButton.qml
++++ b/libappletdecoration/qml/AuroraeButton.qml
+@@ -1,20 +1,9 @@
+ /*
+-*  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+ *  This file is part of the libappletdecoration library
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import QtQuick 2.7
+diff --git a/libappletdecoration/schemecolors.cpp b/libappletdecoration/schemecolors.cpp
+index d443950..1c5a9ac 100644
+--- a/libappletdecoration/schemecolors.cpp
++++ b/libappletdecoration/schemecolors.cpp
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/schemecolors.h b/libappletdecoration/schemecolors.h
+index fb882ba..aa4bdcc 100644
+--- a/libappletdecoration/schemecolors.h
++++ b/libappletdecoration/schemecolors.h
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/schemesmodel.cpp b/libappletdecoration/schemesmodel.cpp
+index 9610404..1b102eb 100644
+--- a/libappletdecoration/schemesmodel.cpp
++++ b/libappletdecoration/schemesmodel.cpp
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/schemesmodel.h b/libappletdecoration/schemesmodel.h
+index 5a3df1b..a20ffa3 100644
+--- a/libappletdecoration/schemesmodel.h
++++ b/libappletdecoration/schemesmodel.h
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/themeextended.cpp b/libappletdecoration/themeextended.cpp
+index f5d7817..e030316 100644
+--- a/libappletdecoration/themeextended.cpp
++++ b/libappletdecoration/themeextended.cpp
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+- * This file is part of Latte-Dock
++ * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/themeextended.h b/libappletdecoration/themeextended.h
+index 7e78e38..222447f 100644
+--- a/libappletdecoration/themeextended.h
++++ b/libappletdecoration/themeextended.h
+@@ -1,20 +1,9 @@
+ /*
+- * Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+- * This file is part of Latte-Dock
++ * This file is part of the libappletdecoration library
+  *
+- * Latte-Dock is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * Latte-Dock is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  *
+  */
+ 
+diff --git a/libappletdecoration/types.cpp b/libappletdecoration/types.cpp
+index c4bf55c..73e5ea3 100644
+--- a/libappletdecoration/types.cpp
++++ b/libappletdecoration/types.cpp
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ * SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+- *  This file is part of the libappletdecoration library
++ * This file is part of the libappletdecoration library
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ * SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #include "types.h"
+diff --git a/libappletdecoration/types.h b/libappletdecoration/types.h
+index 8df8ab4..09bb42d 100644
+--- a/libappletdecoration/types.h
++++ b/libappletdecoration/types.h
+@@ -1,20 +1,9 @@
+ /*
+- *  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++ *  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+  *
+  *  This file is part of the libappletdecoration library
+  *
+- *  Latte-Dock is free software; you can redistribute it and/or
+- *  modify it under the terms of the GNU General Public License as
+- *  published by the Free Software Foundation; either version 2 of
+- *  the License, or (at your option) any later version.
+- *
+- *  Latte-Dock is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *  SPDX-License-Identifier: GPL-2.0-or-later
+  */
+ 
+ #ifndef TYPES_H
+diff --git a/package/contents/code/tools.js b/package/contents/code/tools.js
+index 27938fb..e18cbfb 100644
+--- a/package/contents/code/tools.js
++++ b/package/contents/code/tools.js
+@@ -1,20 +1,9 @@
+ /*
+-*  Copyright 2018  Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+-*  This file is part of Latte-Dock
++*  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ function addButton(preparedArray, buttonType) {
+diff --git a/package/contents/config/config.qml b/package/contents/config/config.qml
+index 638c152..491e26e 100644
+--- a/package/contents/config/config.qml
++++ b/package/contents/config/config.qml
+@@ -1,24 +1,14 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+-import QtQuick 2.0
+-import org.kde.plasma.configuration 2.0
++import QtQuick
++import org.kde.plasma.configuration
+ 
+ ConfigModel {
+     ConfigCategory {
+diff --git a/package/contents/config/main.xml b/package/contents/config/main.xml
+index 05b9969..216b678 100644
+--- a/package/contents/config/main.xml
++++ b/package/contents/config/main.xml
+@@ -1,4 +1,9 @@
+ <?xml version="1.0" encoding="UTF-8"?>
++<!--
++SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
++SPDX-License-Identifier: GPL-2.0-or-later
++-->
+ <kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+diff --git a/package/contents/ui/PlasmaTasksModel.qml b/package/contents/ui/PlasmaTasksModel.qml
+index 6e8dea8..86cd1a9 100644
+--- a/package/contents/ui/PlasmaTasksModel.qml
++++ b/package/contents/ui/PlasmaTasksModel.qml
+@@ -1,20 +1,9 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import QtQml.Models 2.2
+diff --git a/package/contents/ui/config/ColorsComboBox.qml b/package/contents/ui/config/ColorsComboBox.qml
+index 97c8c4f..d224708 100644
+--- a/package/contents/ui/config/ColorsComboBox.qml
++++ b/package/contents/ui/config/ColorsComboBox.qml
+@@ -1,20 +1,9 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import QtQuick
+diff --git a/package/contents/ui/config/ConfigBehavior.qml b/package/contents/ui/config/ConfigBehavior.qml
+index e6d2c11..09b8787 100644
+--- a/package/contents/ui/config/ConfigBehavior.qml
++++ b/package/contents/ui/config/ConfigBehavior.qml
+@@ -28,13 +28,19 @@ KCM.SimpleKCM {
+     property bool borderlessMaximizedWindows: kwinConfig.borderlessMaximizedWindows
+     property bool initialBorderlessMaximizedWindowsValue: kwinConfig.borderlessMaximizedWindows
+ 
++    Component.onCompleted: {
++        if(kwinConfig.borderlessMaximizedWindows !== plasmoid.configuration.borderlessMaximizedWindows){
++            root.borderlessMaximizedWindows = kwinConfig.borderlessMaximizedWindows
++            plasmoid.configuration.borderlessMaximizedWindows = kwinConfig.borderlessMaximizedWindows
++        }
++    }
++
+     // Signal is fired when the user clicks on the save or apply button in the config page.
+     Plasmoid.configuration.onValueChanged: {
+         // Only safe KWin Config if value changed.
+         // Saving to KWin requires reloading KWin config, which is expensive and should be avoided.
+         if (root.borderlessMaximizedWindows !== root.initialBorderlessMaximizedWindowsValue) {
+-            console.log("Saving KWin Config")
+-            root.initialBorderlessMaximizedWindowsValue = borderlessMaximizedWindows
++            root.initialBorderlessMaximizedWindowsValue = root.borderlessMaximizedWindows
+             kwinConfig.borderlessMaximizedWindows = borderlessMaximizedWindows
+         }
+     }
+diff --git a/package/contents/ui/config/ConfigGeneral.qml b/package/contents/ui/config/ConfigGeneral.qml
+index fecce26..7f702cf 100644
+--- a/package/contents/ui/config/ConfigGeneral.qml
++++ b/package/contents/ui/config/ConfigGeneral.qml
+@@ -1,20 +1,10 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import QtQuick
+diff --git a/package/contents/ui/config/DecorationsComboBox.qml b/package/contents/ui/config/DecorationsComboBox.qml
+index 5ef0c7e..1cd3f8a 100644
+--- a/package/contents/ui/config/DecorationsComboBox.qml
++++ b/package/contents/ui/config/DecorationsComboBox.qml
+@@ -1,20 +1,9 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import QtQuick
+diff --git a/package/contents/ui/config/LockItem.qml b/package/contents/ui/config/LockItem.qml
+index fbda2a1..333e4f7 100644
+--- a/package/contents/ui/config/LockItem.qml
++++ b/package/contents/ui/config/LockItem.qml
+@@ -1,20 +1,9 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import QtQuick
+diff --git a/package/contents/ui/config/OrderableListView.qml b/package/contents/ui/config/OrderableListView.qml
+index d03f5c6..81f164f 100644
+--- a/package/contents/ui/config/OrderableListView.qml
++++ b/package/contents/ui/config/OrderableListView.qml
+@@ -1,21 +1,10 @@
+ import "../../code/tools.js" as ModelTools
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ import QtQuick
+ import QtQuick.Controls
+diff --git a/package/contents/ui/main.qml b/package/contents/ui/main.qml
+index 9584dda..da47b71 100644
+--- a/package/contents/ui/main.qml
++++ b/package/contents/ui/main.qml
+@@ -1,20 +1,10 @@
+ /*
+-*  Copyright 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++*  SPDX-FileCopyrightText: 2024 Christian Tallner <chrtall@gmx.de>
+ *
+ *  This file is part of applet-window-buttons
+ *
+-*  Latte-Dock is free software; you can redistribute it and/or
+-*  modify it under the terms of the GNU General Public License as
+-*  published by the Free Software Foundation; either version 2 of
+-*  the License, or (at your option) any later version.
+-*
+-*  Latte-Dock is distributed in the hope that it will be useful,
+-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-*  GNU General Public License for more details.
+-*
+-*  You should have received a copy of the GNU General Public License
+-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*  SPDX-License-Identifier: GPL-2.0-or-later
+ */
+ 
+ import "../code/tools.js" as ModelTools
+diff --git a/uninstall.sh b/uninstall.sh
+index 1644176..f96c81f 100644
+--- a/uninstall.sh
++++ b/uninstall.sh
+@@ -1,8 +1,8 @@
+ #!/bin/bash
+-#Author: Michail Vourlakos
+-#Summary: Uninstallation script
+-#This script was written and tested on openSuSe Leap 42.1
+-
++# SPDX-FileCopyrightText: 2018 Michail Vourlakos <mvourlakos@gmail.com>
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Summary: Uninstallation script
++# This script was written and tested on openSuSe Leap 42.1
+ if [ -f build/install_manifest.txt ]; then
+    echo "Uninstallation file exists..."
+    sudo xargs -d '\n' rm < build/install_manifest.txt

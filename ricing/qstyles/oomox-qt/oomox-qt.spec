@@ -73,15 +73,15 @@ that use liboomox-qt5.
 
 #-----------------------------------------------------------------------------
 
-%package -n qt5-style-oomox
+%package    qt5
 Summary:    Native style to bend Qt5 applications to look with Themix colors
 Requires:   liboomox-qt5
 Enhances:   oomox-qt
 
-%description -n qt5-style-oomox
+%description qt5
 %{summary}
 
-%files -n qt5-style-oomox
+%files qt5
 %license LICENSE.GPL2 LICENSE.LGPL2
 %doc AUTHORS README.md
 %{_qt5_plugindir}/styles/oodwaita.so
@@ -118,15 +118,15 @@ that use liboomox-qt6.
 
 #-----------------------------------------------------------------------------
 
-%package -n qt6-style-oomox
+%package    qt6
 Summary:    Native style to bend Qt6 applications to look with Themix colors
 Requires:   liboomox-qt6
 Enhances:   oomox-qt
 
-%description -n qt6-style-oomox
+%description qt6
 %{summary}
 
-%files -n qt6-style-oomox
+%files qt6
 %license LICENSE.GPL2 LICENSE.LGPL2
 %doc AUTHORS README.md
 %{_qt6_plugindir}/styles/oodwaita.so
@@ -159,4 +159,11 @@ Enhances:   oomox-qt
 %undefine _vpath_builddir
 
 %changelog
-%autochangelog
+* Tue Oct 15 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.4.2-3
+- Refactor spec
+
+* Fri Apr 26 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.4.2-2
+- Rebuild for Qt 6.8
+
+* Tue Feb 27 2024 Hazel Bunny <hazel_bunny@disroot.org> 1.4.2-1
+- Initial Package.

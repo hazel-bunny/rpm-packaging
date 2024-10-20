@@ -9,7 +9,7 @@ Version:        0.6.0
 %global applet_id org.kde.plasma.ambientnoise
 %global debug_package %{nil}
 
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Ambient noise player applet (plasmoid) for KDE Plasma 6
 License:        GPL-3.0
 URL:            %{forgeurl}
@@ -93,8 +93,11 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{applet_
 #------------------------------------------------------------------------------
 
 %changelog
-* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.6.0-2
+* Sun Oct 13 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.6.0-3
+- Fedora 41 Mass Rebuild
+
+* Tue Jun 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.6.0-2
 - refactoring of spec file
 
-* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.6.0-1
+* Thu Apr 11 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.6.0-1
 - initial package

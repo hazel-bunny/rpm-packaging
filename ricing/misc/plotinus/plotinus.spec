@@ -11,9 +11,11 @@ Epoch:             1
 Summary:           A searchable command palette in every modern GTK+ application
 License:           WTFPL-1.0
 URL:               %{forgeurl}
-Source:            %{forgesource}
+Source0:           %{forgesource}
+Source1:           %{name}.sh
 
 BuildRequires:     cmake
+BuildRequires:     gcc
 BuildRequires:     vala
 BuildRequires:     gtk3-devel
 
@@ -42,6 +44,7 @@ sed -i 's,LIBRARY DESTINATION lib,LIBRARY DESTINATION %{_libdir},' CMakeLists.tx
 
 %install
 %cmake_install
+install -Dm644 -t %{buildroot}%{_sysconfdir}/profile.d/ %{SOURCE1}
 
 %check
 #nothing
@@ -51,6 +54,8 @@ sed -i 's,LIBRARY DESTINATION lib,LIBRARY DESTINATION %{_libdir},' CMakeLists.tx
 %{_bindir}/plotinus
 %{_libdir}/libplotinus.so
 %{_datadir}/glib-2.0/schemas/com.worldwidemann.plotinus.gschema.xml
+%{_sysconfdir}/profile.d/%{name}.sh
 
 %changelog
-%autochangelog
+* Fri Oct 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.0-1
+- Initial package

@@ -1,10 +1,10 @@
 Name:           kwin-effects-forceblur
 
 %global forgeurl https://github.com/taj-ny/%{name}
-Version:        1.3.0
+Version:        1.3.2
 %forgemeta
 
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Blur any window on Wayland and X11
 License:        GPL-3.0
 URL:            %{forgeurl}
@@ -58,7 +58,7 @@ Features
 
 
 %files
-%{_kf6_qtplugindir}/kwin/effects/configs/kwin_forceblur_config.so
+%{_kf6_qtplugindir}/kwin/effects/configs/kwin_better_blur_config.so
 %{_kf6_qtplugindir}/kwin/effects/plugins/forceblur.so
 
 #------------------------------------------------------------------
@@ -74,11 +74,23 @@ Features
 %cmake_install
 
 %changelog
-* Fri Jun 7 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.2.1-1
+* Sat Oct 19 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.3.2-2
+- Rebuild for KWin 6.2.1
+
+* Thu Oct 10 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.3.2-1
+- Update to 1.3.2
+
+* Fri Sep 20 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.3.1-2
+- rebuild for kwin 6.1.5
+
+* Sun Aug 11 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.3.1-1
+- Update to 1.3.1
+
+* Fri Jun 7 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.2.1-1
 - Update to 1.2.1
 
-* Sun May 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.2.0-2
+* Sun May 26 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.2.0-2
 - rebuild for kwin 6.0.5
 
-* Fri Apr 26 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.2.0-1
+* Fri Apr 26 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.2.0-1
 - initial package

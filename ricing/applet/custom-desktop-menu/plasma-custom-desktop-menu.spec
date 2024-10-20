@@ -6,7 +6,7 @@ Name:           plasma-custom-desktop-menu
 %forgemeta
 
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Custom desktop menu for Plasma 6
 License:        GPL-3.0-or-later
 URL:            %{forgeurl}
@@ -54,5 +54,8 @@ popd
 #------------------------------------------------------------------
 
 %changelog
-* Fri Jun 14 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.2.0-1
+* Mon Oct 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.0-2
+- Fedora 41 Mass Rebuild
+
+* Fri Jun 14 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.2.0-1
 - initial package

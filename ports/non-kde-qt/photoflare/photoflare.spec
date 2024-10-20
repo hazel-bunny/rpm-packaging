@@ -53,5 +53,5 @@ mkdir -p %{buildroot}%{_bindir}
 %{_datadir}/%{name}/languages/*.qm
 
 %changelog
-* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 1.6.13-1
+* Tue Jun 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 1.6.13-1
 - initial package

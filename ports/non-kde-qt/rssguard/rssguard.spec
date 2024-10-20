@@ -1,14 +1,14 @@
 Name:           rssguard
-Version:        4.7.2
+Version:        4.7.4
 
 %global forgeurl https://github.com/martinrotter/%{name}
 %global tag %{version}
-%global date 20240531
+%global date 20240926
 %forgemeta
 
 %global app_id io.github.martinrotter.rssguard
 
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Simple yet powerful feed reader
 
 # GPL-3.0-or-later: main program
@@ -106,4 +106,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{app_id}.meta
 %{_includedir}/lib%{name}/
 
 %changelog
-%autochangelog
+* Thu Oct 10 2024 Hazel Bunny <hazel_bunny@disroot.org> - 4.7.4-1
+- Update to 4.7.4
+
+* Mon Aug 12 2024 Hazel Bunny <hazel_bunny@disroot.org> - 4.7.3-1
+- Initial package

@@ -9,7 +9,7 @@ Version:    0.8.5
 # %%global date 20220315
 %forgemeta
 
-Release:    3%{?dist}
+Release:    4%{?dist}
 License:    GPL-3.0
 Summary:    Document layout analysis and optical character recognition system
 URL:        %{forgeurl}
@@ -20,6 +20,25 @@ Source:     %{forgesource}
 Patch0:     11.patch
 # Port to GooCanvas 3.0
 Patch1:     12.patch
+# Convert README to MD
+# Patch2:   14.patch
+# Specify Gtk version
+Patch2:     22.patch
+# Fix typos in help
+Patch3:     15.patch
+# Fix Tesseract abbreviation for Czech
+Patch4:     16.patch
+# Avoid deprecated imghdr module
+Patch5:     17.patch
+# Avoid deprecated imp module
+Patch6:     18.patch
+# Set default window size instead of size request
+Patch7:     19.patch
+# Set program name to application ID
+Patch8:     20.patch
+# Add URLs for translate and vcs-browser to appdata
+Patch9:     21.patch
+
 
 BuildArch:  noarch
 
@@ -79,7 +98,7 @@ project, export everything to multiple formats, etc.
 %prep
 %forgeautosetup -p1
 # Fix build with Python 3.12
-sed -e 's|import imp; imp.find_module|import importlib; importlib.import_module|' -i m4/m4_ax_python_module.m4
+# sed -e 's|import imp; imp.find_module|import importlib; importlib.import_module|' -i m4/m4_ax_python_module.m4
 
 %build
 ./autogen.sh
@@ -125,15 +144,18 @@ appstream-util validate-relax --nonet "%{buildroot}%{_metainfodir}/%{app_id}.app
 %{python3_sitelib}/%{name}/
 
 %changelog
-* Mon Jun 17 2024 Dipta Biswas <dabiswas112@gmail.com> 0.8.5-3
+* Tue Aug 27 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.8.5-4
+- Rebuild for Fedora 41
+
+* Mon Jun 17 2024 Hazel Bunny <hazel_bunny@disroot.org> 0.8.5-3
 - Fix build for python 3.12
 - Fix gocr parameters
 - Port to goocanvas-3.0
 
-* Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 0.8.5-2
+* Wed Apr 26 2023 Hazel Bunny <hazel_bunny@disroot.org> 0.8.5-2
 - Switch to forge macros
 
-* Wed Apr 26 2023 Dipta Biswas <dabiswas112@gmail.com> 0.8.5-1
+* Wed Apr 26 2023 Hazel Bunny <hazel_bunny@disroot.org> 0.8.5-1
 - Update to version 0.8.5
 - Update spec for python3
 - Remove patches and use upstream source

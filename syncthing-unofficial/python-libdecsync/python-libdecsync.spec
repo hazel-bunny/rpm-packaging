@@ -10,7 +10,7 @@ Version:        2.2.1
 %global date 20211224
 %forgemeta
 
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python3 bindings for %{module}
 License:        LGPL-2.0
 URL:            %forgeurl
@@ -19,9 +19,9 @@ Source:         %forgesource
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  libxcrypt-compat
-%ifarch x86_64
+# %%ifarch x86_64
 BuildRequires:  %{module}-devel
-%endif
+# %%endif
 BuildRequires:  %{module}
 Requires:       %{module}
 

@@ -9,7 +9,7 @@ Version:        3.0.0
 %global date 20210116
 %forgemeta
 
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A new canvas widget for GTK+ that uses cairo for drawing
 
 License:        LGPLv2+
@@ -76,5 +76,11 @@ find %buildroot -name '*.la' -exec rm -f {} ';'
 #------------------------------------------------------------------------------
 
 %changelog
-* Mon Jun 17 2024 Dipta Biswas <dabiswas112@gmail.com> - 3.0.0-1
+* Wed Oct 16 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.0-2
+- Fedora 42 Mass Rebuild
+
+* Tue Aug 27 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.0-2
+- Rebuild for Fedora 41
+
+* Mon Jun 17 2024 Hazel Bunny <hazel_bunny@disroot.org> - 3.0.0-1
 - initial package

@@ -4,11 +4,11 @@
 
 Name:           %{_basename}-community-extension%{_suffix}
 Version:        0.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Ambient Noise Community Extension %{_suffix}
 License:        GPLv3
-URL:            https://costales.github.io/projects/anoise
-Source:         https://launchpad.net/~costales/+archive/ubuntu/anoise/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
+URL:            https://costales.github.io/projects/%{_basename}
+Source:         https://launchpad.net/~costales/+archive/ubuntu/%{_basename}/+sourcefiles/%{name}/%{version}/%{name}_%{version}.tar.gz
 
 #------------------------------------------------------------------------------
 
@@ -21,9 +21,9 @@ BuildRequires:  python3-installer
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 
-Requires:       anoise-media
+Requires:       %{_basename}-media
 
-Enhances:       anoise
+Enhances:       %{_basename}
 
 #------------------------------------------------------------------------------
 
@@ -63,8 +63,11 @@ rm -rf %{buildroot}%{python3_sitelib}%{_prefix}/
 #------------------------------------------------------------------------------
 
 %changelog
-* Tue Jun 18 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.1-2
+* Sun Oct 13 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.1-3
+- Fedora 41 Mass Rebuild
+
+* Tue Jun 18 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.1-2
 - refactoring of spec file
 
-* Thu Apr 11 2024 Dipta Biswas <dabiswas112@gmail.com> - 0.0.1-1
+* Thu Apr 11 2024 Hazel Bunny <hazel_bunny@disroot.org> - 0.0.1-1
 - initial package

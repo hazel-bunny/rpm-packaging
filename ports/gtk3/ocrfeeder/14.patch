@@ -1,0 +1,76 @@
+From ac397304ede527c9508dd05f4a4521daa8ab3d91 Mon Sep 17 00:00:00 2001
+From: Doomsdayrs <doomsdayrs@gmail.com>
+Date: Tue, 10 May 2022 21:10:41 +0000
+Subject: [PATCH 1/2] Convert README to MD
+
+---
+ README => README.md | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+ rename README => README.md (89%)
+
+diff --git a/README b/README.md
+similarity index 89%
+rename from README
+rename to README.md
+index 17502de..7d454bf 100644
+--- a/README
++++ b/README.md
+@@ -1,6 +1,5 @@
+-=================================
+-OCRFeeder - A Complete OCR Suite
+-=================================
++# OCRFeeder
++A Complete OCR Suite
+ 
+ OCRFeeder is a complete Optical Character Recognition and Document Analysis and Recognition program.
+ 
+@@ -12,16 +11,16 @@ For help on how to use the command line interface, run the command:
+ 
+ The graphical interface also features documentation on how to use it, which can be accessed through the Help menu or by pressing F1.
+ 
+-Building from git
+-==================
+-
++## Building
++```
+ $ git clone https://gitlab.gnome.org/GNOME/ocrfeeder.git
+ $ cd ocrfeeder
+ $ ./autogen.sh
+ $ make
++```
++
++## Copyright
+ 
+-Copyright
+-==========
+ 
+ OCRFeeder is (c) 2008-2014 Joaquim Rocha
+ 
+-- 
+GitLab
+
+
+From 77036d89083015a5a670589718c33c934e269486 Mon Sep 17 00:00:00 2001
+From: Doomsdayrs <doomsdayrs@gmail.com>
+Date: Tue, 10 May 2022 21:11:11 +0000
+Subject: [PATCH 2/2] Update README.md
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 7d454bf..179ddcd 100644
+--- a/README.md
++++ b/README.md
+@@ -7,7 +7,7 @@ Author: Joaquim Rocha
+ 
+ OCRFeeder comes with a graphical user and a command line interfaces.
+ For help on how to use the command line interface, run the command:
+-  ocrfeeder-cli --help
++`ocrfeeder-cli --help`
+ 
+ The graphical interface also features documentation on how to use it, which can be accessed through the Help menu or by pressing F1.
+ 
+-- 
+GitLab
